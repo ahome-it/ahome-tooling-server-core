@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ait.tooling.json.JSONObject;
-import com.ait.tooling.server.core.support.spring.ServerContext;
+import com.ait.tooling.server.core.support.spring.IServerContext;
 
 public interface IJSONRequestContext
 {
@@ -31,7 +31,7 @@ public interface IJSONRequestContext
 
     public String getSessionID();
 
-    public ServerContext getServerContext();
+    public IServerContext getServerContext();
 
     public ServletContext getServletContext();
 

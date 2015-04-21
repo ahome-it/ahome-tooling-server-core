@@ -23,8 +23,9 @@ import com.ait.tooling.json.JSONObject
 import com.ait.tooling.json.schema.JSONSchema
 import com.ait.tooling.server.core.rpc.IJSONCommand
 import com.ait.tooling.server.core.security.IAuthorizationProvider
-import com.ait.tooling.server.core.support.spring.ICommandRegistry;
-import com.ait.tooling.server.core.support.spring.IPropertiesProvider;
+import com.ait.tooling.server.core.support.spring.ICommandRegistry
+import com.ait.tooling.server.core.support.spring.IPropertiesProvider
+import com.ait.tooling.server.core.support.spring.IServerContext
 import com.ait.tooling.server.core.support.spring.ServerContext
 
 @CompileStatic
@@ -36,7 +37,7 @@ public class CoreGroovySupport implements Closeable
     }
 
     @Memoized
-    public ServerContext getServerContext()
+    public IServerContext getServerContext()
     {
         ServerContext.get()
     }

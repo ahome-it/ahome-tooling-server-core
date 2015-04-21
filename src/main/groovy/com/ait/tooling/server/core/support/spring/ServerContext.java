@@ -16,25 +16,73 @@
 
 package com.ait.tooling.server.core.support.spring;
 
+import java.util.LinkedHashMap;
 import java.util.Objects;
 
 import org.springframework.core.env.Environment;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.server.core.jmx.management.IServerManager;
 import com.ait.tooling.server.core.rpc.IJSONCommand;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 
-public final class ServerContext
+public final class ServerContext implements IServerContext, IServerContextModule<IServerContext>
 {
-    private static final ServerContext    INSTANCE  = new ServerContext();
+    private final static ServerContext                                  INSTANCE  = new ServerContext();
 
-    private WebApplicationContext         m_context;
+    public final static String                                          MODULE_ID = "Server.Core";
 
-    private final IAuthorizationProvider  m_authpro = new AnonOnlyAuthorizationProvider();
+    private static final LinkedHashMap<String, IServerContextModule<?>> s_modules = new LinkedHashMap<String, IServerContextModule<?>>();
 
-    private final IPrincipalsKeysProvider m_keyspro = new DefaultPrincipalsKeysProvider();
+    private WebApplicationContext                                       m_context;
+
+    private final IAuthorizationProvider                                m_authpro = new AnonOnlyAuthorizationProvider();
+
+    private final IPrincipalsKeysProvider                               m_keyspro = new DefaultPrincipalsKeysProvider();
+
+    static
+    {
+        addModule(INSTANCE);
+    }
+
+    protected static synchronized final void addModule(final IServerContextModule<?> module)
+    {
+        Objects.requireNonNull(module);
+
+        final String id = StringOps.requireTrimOrNull(module.getID());
+
+        if (null == s_modules.get(id))
+        {
+            s_modules.put(id, module);
+        }
+    }
+
+    public final IServerContextModule<? extends IServerContext> getModule(final String id)
+    {
+        return s_modules.get(StringOps.requireTrimOrNull(id));
+    }
+
+    @SuppressWarnings("unchecked")
+    public final <T extends IServerContext> T getModuleContext(String id, Class<T> claz)
+    {
+        final IServerContextModule<?> modu = getModule(id);
+
+        if (null != modu)
+        {
+            final IServerContext ctxt = modu.getModuleContext();
+
+            if (null != ctxt)
+            {
+                if (ctxt.getClass().isAssignableFrom(claz))
+                {
+                    return ((T) ctxt);
+                }
+            }
+        }
+        return null;
+    }
 
     public static final ServerContext get()
     {
@@ -50,46 +98,55 @@ public final class ServerContext
         m_context = Objects.requireNonNull(context);
     }
 
+    @Override
     public final WebApplicationContext getApplicationContext()
     {
         return m_context;
     }
 
+    @Override
     public final Environment getEnvironment()
     {
         return m_context.getEnvironment();
     }
 
+    @Override
     public final <T> T getBean(final String name, final Class<T> type)
     {
         return m_context.getBean(Objects.requireNonNull(name), Objects.requireNonNull(type));
     }
 
+    @Override
     public final ICommandRegistry getCommandRegistry()
     {
         return getBean("CommandRegistry", ICommandRegistry.class);
     }
 
+    @Override
     public final IJSONCommand getCommand(final String name)
     {
         return getCommandRegistry().getCommand(Objects.requireNonNull(name));
     }
 
+    @Override
     public final IPropertiesProvider getPropertiesProvider()
     {
         return getBean("PropertiesProvider", IPropertiesProvider.class);
     }
 
+    @Override
     public final String getPropertyByName(final String name)
     {
         return getPropertiesProvider().getPropertyByName(Objects.requireNonNull(name));
     }
 
+    @Override
     public final String getPropertyByName(final String name, final String otherwise)
     {
         return getPropertiesProvider().getPropertyByName(Objects.requireNonNull(name), otherwise);
     }
 
+    @Override
     public final IAuthorizationProvider getAuthorizationProvider()
     {
         final IAuthorizationProvider auth = getBean("AuthorizationProvider", IAuthorizationProvider.class);
@@ -101,6 +158,7 @@ public final class ServerContext
         return auth;
     }
 
+    @Override
     public final Iterable<String> getPrincipalsKeys()
     {
         final Iterable<String> iter = getBean("PrincipalsKeysProvider", IPrincipalsKeysProvider.class);
@@ -112,8 +170,21 @@ public final class ServerContext
         return iter;
     }
 
+    @Override
     public final IServerManager getServerManager()
     {
         return getBean("ServerManager", IServerManager.class);
+    }
+
+    @Override
+    public String getID()
+    {
+        return MODULE_ID;
+    }
+
+    @Override
+    public IServerContext getModuleContext()
+    {
+        return this;
     }
 }
