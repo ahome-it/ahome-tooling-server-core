@@ -47,7 +47,7 @@ public final class ServerContext implements IServerContext, IServerContextModule
         addModule(INSTANCE);
     }
 
-    protected static synchronized final void addModule(final IServerContextModule<?> module)
+    public static synchronized final void addModule(final IServerContextModule<?> module)
     {
         Objects.requireNonNull(module);
 
@@ -59,13 +59,20 @@ public final class ServerContext implements IServerContext, IServerContextModule
         }
     }
 
+    @Override
+    public final IServerContext getServerContext()
+    {
+        return this;
+    }
+
+    @Override
     public final IServerContextModule<? extends IServerContext> getModule(final String id)
     {
         return s_modules.get(StringOps.requireTrimOrNull(id));
     }
 
-    @SuppressWarnings("unchecked")
-    public final <T extends IServerContext> T getModuleContext(String id, Class<T> claz)
+    @Override
+    public final <T extends IServerContext> T getModuleContext(final String id, final Class<T> type)
     {
         final IServerContextModule<?> modu = getModule(id);
 
@@ -75,9 +82,13 @@ public final class ServerContext implements IServerContext, IServerContextModule
 
             if (null != ctxt)
             {
-                if (ctxt.getClass().isAssignableFrom(claz))
+                try
                 {
-                    return ((T) ctxt);
+                    return type.cast(ctxt);
+                }
+                catch (Exception e)
+                {
+                    ;
                 }
             }
         }

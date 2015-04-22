@@ -25,6 +25,8 @@ import com.ait.tooling.server.core.security.IAuthorizationProvider;
 
 public interface IServerContext
 {
+    public IServerContext getServerContext();
+
     public WebApplicationContext getApplicationContext();
 
     public Environment getEnvironment();
