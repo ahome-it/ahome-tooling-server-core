@@ -48,8 +48,4 @@ public interface IServerContext
     public Iterable<String> getPrincipalsKeys();
 
     public IServerManager getServerManager();
-    
-    public IServerContextModule<? extends IServerContext> getModule(String id);
-    
-    public <T extends IServerContext> T getModuleContext(String id, Class<T> type);
 }

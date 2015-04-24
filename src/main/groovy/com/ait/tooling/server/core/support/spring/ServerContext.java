@@ -16,83 +16,30 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import java.util.LinkedHashMap;
 import java.util.Objects;
 
 import org.springframework.core.env.Environment;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.server.core.jmx.management.IServerManager;
 import com.ait.tooling.server.core.rpc.IJSONCommand;
-import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
+import com.ait.tooling.server.core.security.IAuthorizationProvider;
 
-public final class ServerContext implements IServerContext, IServerContextModule<IServerContext>
+public final class ServerContext implements IServerContext
 {
-    private final static ServerContext                                  INSTANCE  = new ServerContext();
+    private final static ServerContext    INSTANCE  = new ServerContext();
 
-    public final static String                                          MODULE_ID = "Server.Core";
+    private WebApplicationContext         m_context;
 
-    private static final LinkedHashMap<String, IServerContextModule<?>> s_modules = new LinkedHashMap<String, IServerContextModule<?>>();
+    private final IAuthorizationProvider  m_authpro = new AnonOnlyAuthorizationProvider();
 
-    private WebApplicationContext                                       m_context;
-
-    private final IAuthorizationProvider                                m_authpro = new AnonOnlyAuthorizationProvider();
-
-    private final IPrincipalsKeysProvider                               m_keyspro = new DefaultPrincipalsKeysProvider();
-
-    static
-    {
-        addModule(INSTANCE);
-    }
-
-    public static synchronized final void addModule(final IServerContextModule<?> module)
-    {
-        Objects.requireNonNull(module);
-
-        final String id = StringOps.requireTrimOrNull(module.getID());
-
-        if (null == s_modules.get(id))
-        {
-            s_modules.put(id, module);
-        }
-    }
+    private final IPrincipalsKeysProvider m_keyspro = new DefaultPrincipalsKeysProvider();
 
     @Override
     public final IServerContext getServerContext()
     {
         return this;
-    }
-
-    @Override
-    public final IServerContextModule<? extends IServerContext> getModule(final String id)
-    {
-        return s_modules.get(StringOps.requireTrimOrNull(id));
-    }
-
-    @Override
-    public final <T extends IServerContext> T getModuleContext(final String id, final Class<T> type)
-    {
-        final IServerContextModule<?> modu = getModule(id);
-
-        if (null != modu)
-        {
-            final IServerContext ctxt = modu.getModuleContext();
-
-            if (null != ctxt)
-            {
-                try
-                {
-                    return type.cast(ctxt);
-                }
-                catch (Exception e)
-                {
-                    ;
-                }
-            }
-        }
-        return null;
     }
 
     public static final ServerContext get()
@@ -185,17 +132,5 @@ public final class ServerContext implements IServerContext, IServerContextModule
     public final IServerManager getServerManager()
     {
         return getBean("ServerManager", IServerManager.class);
-    }
-
-    @Override
-    public String getID()
-    {
-        return MODULE_ID;
-    }
-
-    @Override
-    public IServerContext getModuleContext()
-    {
-        return this;
     }
 }
