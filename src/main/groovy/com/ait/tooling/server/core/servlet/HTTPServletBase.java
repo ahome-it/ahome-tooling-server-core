@@ -33,7 +33,7 @@ import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.server.core.security.AuthorizationResult;
 import com.ait.tooling.server.core.support.spring.IPropertiesProvider;
 import com.ait.tooling.server.core.support.spring.IServerContext;
-import com.ait.tooling.server.core.support.spring.ServerContext;
+import com.ait.tooling.server.core.support.spring.ServerContextInstance;
 import com.google.common.util.concurrent.RateLimiter;
 
 @SuppressWarnings("serial")
@@ -69,7 +69,7 @@ public abstract class HTTPServletBase extends HttpServlet implements IHTTPConsta
 
     protected final static IServerContext getServerContext()
     {
-        return ServerContext.get();
+        return ServerContextInstance.get();
     }
 
     @Override

@@ -26,7 +26,7 @@ import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.support.spring.ICommandRegistry
 import com.ait.tooling.server.core.support.spring.IPropertiesProvider
 import com.ait.tooling.server.core.support.spring.IServerContext
-import com.ait.tooling.server.core.support.spring.ServerContext
+import com.ait.tooling.server.core.support.spring.ServerContextInstance
 
 @CompileStatic
 public class CoreGroovySupport implements Closeable
@@ -39,7 +39,7 @@ public class CoreGroovySupport implements Closeable
     @Memoized
     public IServerContext getServerContext()
     {
-        ServerContext.get()
+        ServerContextInstance.get()
     }
 
     @Memoized

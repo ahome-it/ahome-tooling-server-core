@@ -31,7 +31,7 @@ public class ToolingServerContextListener extends ContextLoaderListener
     {
         super.contextInitialized(event);
 
-        ServerContext.get().setApplicationContext(WebApplicationContextUtils.getWebApplicationContext(event.getServletContext()));
+        ServerContextInstance.get().setApplicationContext(WebApplicationContextUtils.getWebApplicationContext(event.getServletContext()));
 
         logger.info("ToolingServerContextListener initialized");
     }

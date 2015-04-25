@@ -26,7 +26,7 @@ import org.apache.log4j.MDC;
 import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.server.core.servlet.HTTPServletBase;
 import com.ait.tooling.server.core.support.spring.IServerContext;
-import com.ait.tooling.server.core.support.spring.ServerContext;
+import com.ait.tooling.server.core.support.spring.ServerContextInstance;
 
 public class JSONRequestContext implements IJSONRequestContext
 {
@@ -65,7 +65,7 @@ public class JSONRequestContext implements IJSONRequestContext
 
     public IServerContext getServerContext()
     {
-        return ServerContext.get();
+        return ServerContextInstance.get();
     }
 
     @Override

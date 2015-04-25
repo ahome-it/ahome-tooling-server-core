@@ -26,15 +26,15 @@ import com.ait.tooling.server.core.rpc.IJSONCommand;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 
-public final class ServerContext implements IServerContext
+public final class ServerContextInstance implements IServerContext
 {
-    private final static ServerContext    INSTANCE  = new ServerContext();
+    private final static ServerContextInstance INSTANCE  = new ServerContextInstance();
 
-    private WebApplicationContext         m_context;
+    private WebApplicationContext              m_context;
 
-    private final IAuthorizationProvider  m_authpro = new AnonOnlyAuthorizationProvider();
+    private final IAuthorizationProvider       m_authpro = new AnonOnlyAuthorizationProvider();
 
-    private final IPrincipalsKeysProvider m_keyspro = new DefaultPrincipalsKeysProvider();
+    private final IPrincipalsKeysProvider      m_keyspro = new DefaultPrincipalsKeysProvider();
 
     @Override
     public final IServerContext getServerContext()
@@ -42,12 +42,12 @@ public final class ServerContext implements IServerContext
         return this;
     }
 
-    public static final ServerContext get()
+    public static final ServerContextInstance get()
     {
         return INSTANCE;
     }
 
-    private ServerContext()
+    private ServerContextInstance()
     {
     }
 
