@@ -21,9 +21,7 @@ import groovy.transform.Memoized
 
 import com.ait.tooling.json.JSONObject
 import com.ait.tooling.json.schema.JSONSchema
-import com.ait.tooling.server.core.rpc.IJSONCommand
 import com.ait.tooling.server.core.security.IAuthorizationProvider
-import com.ait.tooling.server.core.support.spring.ICommandRegistry
 import com.ait.tooling.server.core.support.spring.IPropertiesProvider
 import com.ait.tooling.server.core.support.spring.IServerContext
 import com.ait.tooling.server.core.support.spring.ServerContextInstance
@@ -41,23 +39,11 @@ public class CoreGroovySupport implements Closeable
     {
         ServerContextInstance.get()
     }
-
-    @Memoized
-    public ICommandRegistry getCommandRegistry()
-    {
-        getServerContext().getCommandRegistry()
-    }
     
     @Memoized
     public IPropertiesProvider getPropertiesProvider()
     {
         getServerContext().getPropertiesProvider()
-    }
-
-    @Memoized
-    public IJSONCommand getCommand(String name)
-    {
-        getCommandRegistry().getCommand(name)
     }
 
     @Memoized

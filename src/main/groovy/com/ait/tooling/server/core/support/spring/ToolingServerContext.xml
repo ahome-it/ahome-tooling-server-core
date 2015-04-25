@@ -34,15 +34,11 @@
 		<constructor-arg value="${jmx.role}" />
 	</bean>
 	
-	<bean id="CommandRegistry" class="com.ait.tooling.server.core.support.spring.CommandRegistry" destroy-method="close" />
-
 	<bean id="CryptoProvider" class="com.ait.tooling.server.core.security.CryptoProvider" destroy-method="close">
 		<constructor-arg value="${crypto.provider.pass}" />
 		<constructor-arg value="${crypto.provider.salt}" />
 	</bean>
-	
-	<context:component-scan base-package="com.ait.tooling.server.core.rpc.commands" />
-	
+		
 	<context:component-scan base-package="com.ait.tooling.server.core.jmx" />
         
 	<context:mbean-export />

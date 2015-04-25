@@ -20,7 +20,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.ait.tooling.server.core.jmx.management.IServerManager;
-import com.ait.tooling.server.core.rpc.IJSONCommand;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 
 public interface IServerContext
@@ -32,10 +31,6 @@ public interface IServerContext
     public Environment getEnvironment();
 
     public <T> T getBean(String name, Class<T> type);
-
-    public ICommandRegistry getCommandRegistry();
-
-    public IJSONCommand getCommand(String name);
 
     public IPropertiesProvider getPropertiesProvider();
 

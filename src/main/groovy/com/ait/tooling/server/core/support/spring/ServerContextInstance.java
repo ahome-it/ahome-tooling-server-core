@@ -22,7 +22,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.ait.tooling.server.core.jmx.management.IServerManager;
-import com.ait.tooling.server.core.rpc.IJSONCommand;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 
@@ -72,18 +71,6 @@ public final class ServerContextInstance implements IServerContext
     public final <T> T getBean(final String name, final Class<T> type)
     {
         return m_context.getBean(Objects.requireNonNull(name), Objects.requireNonNull(type));
-    }
-
-    @Override
-    public final ICommandRegistry getCommandRegistry()
-    {
-        return getBean("CommandRegistry", ICommandRegistry.class);
-    }
-
-    @Override
-    public final IJSONCommand getCommand(final String name)
-    {
-        return getCommandRegistry().getCommand(Objects.requireNonNull(name));
     }
 
     @Override
