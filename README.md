@@ -1,7 +1,7 @@
 Ahome Tooling Server Core
 ======
 
-Ahome Tooling Server Core is a package containing basic server RPC support.
+Ahome Tooling Server Core is a package containing basic server support.
 
 https://github.com/ahome-it/ahome-tooling-server-core
 
