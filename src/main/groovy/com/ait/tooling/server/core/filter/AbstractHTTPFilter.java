@@ -27,8 +27,18 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public abstract class AbstractHTTPFilter implements Filter
+import com.ait.tooling.common.api.java.util.IHTTPConstants;
+
+public abstract class AbstractHTTPFilter implements Filter, IHTTPConstants
 {
+    protected static final long WEEK_IN_SECONDS      = 604800L;
+
+    protected static final long WEEK_IN_MILLISECONDS = 604800000L;
+
+    protected static final long YEAR_IN_SECONDS      = 31536000L;
+
+    protected static final long YEAR_IN_MILLISECONDS = 31536000000L;
+
     public abstract void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException;
 
     @Override
