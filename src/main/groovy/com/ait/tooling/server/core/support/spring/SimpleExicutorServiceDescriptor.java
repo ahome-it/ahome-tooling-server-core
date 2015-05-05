@@ -16,13 +16,21 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import java.util.Collection;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
 
-public interface IPropertiesProvider
+public class SimpleExicutorServiceDescriptor extends AbstractExecutorServiceDescriptor
 {
-    public Collection<String> keys();
+    private final ExecutorService m_executor;
 
-    public String getPropertyByName(String name);
+    public SimpleExicutorServiceDescriptor(final ExecutorService executor)
+    {
+        m_executor = Objects.requireNonNull(executor);
+    }
 
-    public String getPropertyByName(String name, String otherwise);
+    @Override
+    public ExecutorService getExecutorService()
+    {
+        return m_executor;
+    }
 }

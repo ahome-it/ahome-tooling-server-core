@@ -16,11 +16,14 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import java.io.Closeable;
+import java.util.concurrent.ExecutorService;
 
-public class PropertiesProvider extends PropertySourcesPlaceholderConfigurer
+import com.ait.tooling.common.api.types.INamed;
+
+public interface IExecutorServiceDescriptor extends INamed, Closeable
 {
-    public PropertiesProvider()
-    {
-    }
+    public void setName(String name);
+
+    public ExecutorService getExecutorService();
 }

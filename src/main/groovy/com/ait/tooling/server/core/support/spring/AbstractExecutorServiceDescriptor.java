@@ -16,11 +16,28 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import java.io.IOException;
 
-public class PropertiesProvider extends PropertySourcesPlaceholderConfigurer
+import com.ait.tooling.common.api.java.util.StringOps;
+
+public abstract class AbstractExecutorServiceDescriptor implements IExecutorServiceDescriptor
 {
-    public PropertiesProvider()
+    private String m_name;
+
+    @Override
+    public String getName()
     {
+        return m_name;
+    }
+
+    @Override
+    public void close() throws IOException
+    {
+    }
+
+    @Override
+    public void setName(final String name)
+    {
+        m_name = StringOps.requireTrimOrNull(name);
     }
 }

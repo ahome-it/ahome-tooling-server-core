@@ -31,7 +31,6 @@ import com.ait.tooling.common.api.java.util.IHTTPConstants;
 import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.server.core.security.AuthorizationResult;
-import com.ait.tooling.server.core.support.spring.IPropertiesProvider;
 import com.ait.tooling.server.core.support.spring.IServerContext;
 import com.ait.tooling.server.core.support.spring.ServerContextInstance;
 import com.google.common.util.concurrent.RateLimiter;
@@ -138,8 +137,6 @@ public abstract class HTTPServletBase extends HttpServlet implements IHTTPConsta
     public static final JSONObject getUserPrincipalsFromRequest(final HttpServletRequest request, final Iterable<String> keys)
     {
         final JSONObject principals = new JSONObject();
-        
-        final IPropertiesProvider prop = getServerContext().getPropertiesProvider();
 
         for (String k : keys)
         {
@@ -155,8 +152,8 @@ public abstract class HTTPServletBase extends HttpServlet implements IHTTPConsta
                 }
                 else
                 {
-                    valu = prop.getPropertyByName(name);
-                    
+                    valu = getServerContext().getPropertyByName(name);
+
                     if (null != valu)
                     {
                         principals.put(name, valu);

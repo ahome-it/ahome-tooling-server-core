@@ -22,46 +22,41 @@ import groovy.transform.Memoized
 import com.ait.tooling.json.JSONObject
 import com.ait.tooling.json.schema.JSONSchema
 import com.ait.tooling.server.core.security.IAuthorizationProvider
-import com.ait.tooling.server.core.support.spring.IPropertiesProvider
+import com.ait.tooling.server.core.support.spring.IExecutorServiceDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IServerContext
 import com.ait.tooling.server.core.support.spring.ServerContextInstance
 
 @CompileStatic
-public class CoreGroovySupport implements Closeable
+public trait CoreGroovyTrait
 {
-    @Override
-    public void close() throws IOException
-    {
-    }
-
     @Memoized
     public IServerContext getServerContext()
     {
         ServerContextInstance.get()
     }
-    
-    @Memoized
-    public IPropertiesProvider getPropertiesProvider()
-    {
-        getServerContext().getPropertiesProvider()
-    }
 
     @Memoized
     public String getPropertyByName(String name)
     {
-        getPropertiesProvider().getPropertyByName(name)
+        getServerContext().getPropertyByName(name)
     }
 
     @Memoized
     public String getPropertyByName(String name, String otherwise)
     {
-        getPropertiesProvider().getPropertyByName(name, otherwise)
+        getServerContext().getPropertyByName(name, otherwise)
     }
     
     @Memoized
     public IAuthorizationProvider getAuthorizationProvider()
     {
-        return getServerContext().getAuthorizationProvider();
+        getServerContext().getAuthorizationProvider()
+    }
+    
+    @Memoized
+    public IExecutorServiceDescriptorProvider getExecutorServiceDescriptorProvider()
+    {
+        getServerContext().getExecutorServiceDescriptorProvider()
     }
 
     public JSONObject json()

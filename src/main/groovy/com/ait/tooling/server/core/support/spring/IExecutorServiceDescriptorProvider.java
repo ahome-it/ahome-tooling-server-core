@@ -16,11 +16,12 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import java.io.Closeable;
+import java.util.Collection;
 
-public class PropertiesProvider extends PropertySourcesPlaceholderConfigurer
+public interface IExecutorServiceDescriptorProvider extends Closeable
 {
-    public PropertiesProvider()
-    {
-    }
+    public IExecutorServiceDescriptor getExecutorServiceDescriptor(String name);
+
+    public Collection<String> getExecutorServiceDescriptorNames();
 }

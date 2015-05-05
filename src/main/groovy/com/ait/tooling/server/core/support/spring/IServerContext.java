@@ -32,8 +32,6 @@ public interface IServerContext
 
     public <T> T getBean(String name, Class<T> type);
 
-    public IPropertiesProvider getPropertiesProvider();
-
     public String getPropertyByName(String name);
 
     public String getPropertyByName(String name, String otherwise);
@@ -43,4 +41,6 @@ public interface IServerContext
     public Iterable<String> getPrincipalsKeys();
 
     public IServerManager getServerManager();
+
+    public IExecutorServiceDescriptorProvider getExecutorServiceDescriptorProvider();
 }

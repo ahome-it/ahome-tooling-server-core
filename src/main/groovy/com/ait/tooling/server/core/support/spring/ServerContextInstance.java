@@ -74,21 +74,15 @@ public final class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public final IPropertiesProvider getPropertiesProvider()
-    {
-        return getBean("PropertiesProvider", IPropertiesProvider.class);
-    }
-
-    @Override
     public final String getPropertyByName(final String name)
     {
-        return getPropertiesProvider().getPropertyByName(Objects.requireNonNull(name));
+        return getEnvironment().getProperty(Objects.requireNonNull(name));
     }
 
     @Override
     public final String getPropertyByName(final String name, final String otherwise)
     {
-        return getPropertiesProvider().getPropertyByName(Objects.requireNonNull(name), otherwise);
+        return getEnvironment().getProperty(Objects.requireNonNull(name), otherwise);
     }
 
     @Override
@@ -119,5 +113,11 @@ public final class ServerContextInstance implements IServerContext
     public final IServerManager getServerManager()
     {
         return getBean("ServerManager", IServerManager.class);
+    }
+
+    @Override
+    public IExecutorServiceDescriptorProvider getExecutorServiceDescriptorProvider()
+    {
+        return getBean("ExecutorServiceDescriptorProvider", IExecutorServiceDescriptorProvider.class);
     }
 }

@@ -20,7 +20,7 @@ apply plugin: 'maven'
 
 sourceCompatibility = 1.7
 
-version = '1.0.9-SNAPSHOT'
+version = '1.0.10-SNAPSHOT'
 
 group = 'com.ahome-it'
 
@@ -60,7 +60,8 @@ dependencies {
         compile(group: 'org.springframework.security', name: name, version: '4.0.0.RELEASE')
     }
     compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.3', classifier: 'indy')
-    compile(group: 'org.codehaus.gpars', name :'gpars', version: '1.2.1')
+    compile(group: 'org.codehaus.gpars', name: 'gpars', version: '1.2.1')
+    compile(group: 'org.jdeferred', name: 'jdeferred-core', version: '1.2.4')
     compile(group: 'log4j', name: 'log4j', version: '1.2.17')
     compile(group: 'com.google.guava', name: 'guava', version: '18.0')
     compile(group: 'commons-io', name: 'commons-io', version: '2.4')
