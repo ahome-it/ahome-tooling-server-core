@@ -17,12 +17,18 @@
 package com.ait.tooling.server.core.support.spring;
 
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import com.ait.tooling.common.api.java.util.StringOps;
 
 public abstract class AbstractExecutorServiceDescriptor implements IExecutorServiceDescriptor
 {
-    private String m_name;
+    protected static final int DEFAULT_THREAD_POOL_SIZE = 2;
+
+    protected static final int MAXIMUM_THREAD_POOL_SIZE = 128;
+
+    private String             m_name;
 
     @Override
     public String getName()
@@ -39,5 +45,11 @@ public abstract class AbstractExecutorServiceDescriptor implements IExecutorServ
     public void setName(final String name)
     {
         m_name = StringOps.requireTrimOrNull(name);
+    }
+
+    @Override
+    public ThreadFactory getThreadFactory()
+    {
+        return Executors.defaultThreadFactory();
     }
 }

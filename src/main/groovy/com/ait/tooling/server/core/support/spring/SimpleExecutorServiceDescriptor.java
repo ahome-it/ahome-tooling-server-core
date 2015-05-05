@@ -16,15 +16,30 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import java.io.Closeable;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadFactory;
 
-import com.ait.tooling.common.api.types.INamedDefinition;
-
-public interface IExecutorServiceDescriptor extends INamedDefinition, Closeable
+public class SimpleExecutorServiceDescriptor extends AbstractExecutorServiceDescriptor
 {
-    public ThreadFactory getThreadFactory();
+    private ExecutorService m_executor;
 
-    public ExecutorService getExecutorService();
+    protected SimpleExecutorServiceDescriptor()
+    {
+    }
+
+    public SimpleExecutorServiceDescriptor(final ExecutorService executor)
+    {
+        setExecutorService(executor);
+    }
+
+    @Override
+    public ExecutorService getExecutorService()
+    {
+        return m_executor;
+    }
+
+    protected void setExecutorService(final ExecutorService executor)
+    {
+        m_executor = Objects.requireNonNull(executor);
+    }
 }

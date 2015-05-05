@@ -14,17 +14,26 @@
    limitations under the License.
  */
 
-package com.ait.tooling.server.core.support.spring;
+package com.ait.tooling.server.core.support.spring.executors;
 
-import java.io.Closeable;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
-import com.ait.tooling.common.api.types.INamedDefinition;
+import com.ait.tooling.server.core.support.spring.SimpleExecutorServiceDescriptor;
 
-public interface IExecutorServiceDescriptor extends INamedDefinition, Closeable
+public class SingleThreadPoolExecutorServiceDescriptor extends SimpleExecutorServiceDescriptor
 {
-    public ThreadFactory getThreadFactory();
+    public SingleThreadPoolExecutorServiceDescriptor()
+    {
+        final ThreadFactory factory = getThreadFactory();
 
-    public ExecutorService getExecutorService();
+        if (null == factory)
+        {
+            setExecutorService(Executors.newSingleThreadExecutor());
+        }
+        else
+        {
+            setExecutorService(Executors.newSingleThreadExecutor(factory));
+        }
+    }
 }

@@ -14,23 +14,26 @@
    limitations under the License.
  */
 
-package com.ait.tooling.server.core.support.spring;
+package com.ait.tooling.server.core.support.spring.executors;
 
-import java.util.Objects;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
-public class SimpleExicutorServiceDescriptor extends AbstractExecutorServiceDescriptor
+import com.ait.tooling.server.core.support.spring.SimpleExecutorServiceDescriptor;
+
+public class CachedThreadPoolExecutorServiceDescriptor extends SimpleExecutorServiceDescriptor
 {
-    private final ExecutorService m_executor;
-
-    public SimpleExicutorServiceDescriptor(final ExecutorService executor)
+    public CachedThreadPoolExecutorServiceDescriptor()
     {
-        m_executor = Objects.requireNonNull(executor);
-    }
+        final ThreadFactory factory = getThreadFactory();
 
-    @Override
-    public ExecutorService getExecutorService()
-    {
-        return m_executor;
+        if (null == factory)
+        {
+            setExecutorService(Executors.newCachedThreadPool());
+        }
+        else
+        {
+            setExecutorService(Executors.newCachedThreadPool(factory));
+        }
     }
 }

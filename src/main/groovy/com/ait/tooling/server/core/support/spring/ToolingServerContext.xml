@@ -39,6 +39,12 @@
 		<constructor-arg value="${crypto.provider.salt}" />
 	</bean>
 	
+	<bean id="CachedThreadPoolExecutorServiceDescriptor" class="com.ait.tooling.server.core.support.spring.executors.CachedThreadPoolExecutorServiceDescriptor" />
+	
+	<bean id="SingleThreadPoolExecutorServiceDescriptor" class="com.ait.tooling.server.core.support.spring.executors.SingleThreadPoolExecutorServiceDescriptor" />
+	
+	<bean id="DefaultFixedThreadPoolExecutorServiceDescriptor" class="com.ait.tooling.server.core.support.spring.executors.FixedThreadPoolExecutorServiceDescriptor" />
+	
 	<bean id="ExecutorServiceDescriptorProvider" class="com.ait.tooling.server.core.support.spring.ExecutorServiceDescriptorProvider" destroy-method="close" />
 		
 	<context:component-scan base-package="com.ait.tooling.server.core.jmx" />
