@@ -64,22 +64,42 @@ public class CoreGroovySupport implements Closeable
         new JSONObject()
     }
 
-    public JSONObject json(Map<String, ?> valu)
+    public JSONObject json(final Map<String, ?> valu)
     {
         new JSONObject(valu)
     }
 
-    public JSONObject json(String name, Object value)
+    public JSONObject json(final String name, Object value)
     {
         new JSONObject(name, value)
     }
+    
+    public JSONObject json(final Collection<?> collection)
+    {
+        if (collection instanceof List)
+        {
+            return json((List<?>) collection)
+        }
+        else if(collection instanceof Map)
+        {
+            return json((Map<String, ?>) collection)
+        }
+        else
+        {
+            final List list = []
+            
+            list.addAll(collection)
+            
+            return json(list)
+        }
+    }
 
-    public JSONObject json(List<?> list)
+    public JSONObject json(final List<?> list)
     {
         new JSONObject(list)
     }
 
-    public JSONSchema schema(Map<String, ?> schema)
+    public JSONSchema schema(final Map<String, ?> schema)
     {
         JSONSchema.cast(json(schema))
     }

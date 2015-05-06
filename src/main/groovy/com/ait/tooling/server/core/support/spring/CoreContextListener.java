@@ -22,9 +22,9 @@ import org.apache.log4j.Logger;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-public class ToolingServerContextListener extends ContextLoaderListener
+public class CoreContextListener extends ContextLoaderListener
 {
-    private static final Logger logger = Logger.getLogger(ToolingServerContextListener.class);
+    private static final Logger logger = Logger.getLogger(CoreContextListener.class);
 
     @Override
     public void contextInitialized(final ServletContextEvent event)
@@ -33,13 +33,13 @@ public class ToolingServerContextListener extends ContextLoaderListener
 
         ServerContextInstance.get().setApplicationContext(WebApplicationContextUtils.getWebApplicationContext(event.getServletContext()));
 
-        logger.info("ToolingServerContextListener initialized");
+        logger.info("CoreContextListener initialized");
     }
 
     @Override
     public void contextDestroyed(final ServletContextEvent event)
     {
-        logger.info("ToolingServerContextListener shutting down");
+        logger.info("CoreContextListener shutting down");
 
         super.contextDestroyed(event);
     }
