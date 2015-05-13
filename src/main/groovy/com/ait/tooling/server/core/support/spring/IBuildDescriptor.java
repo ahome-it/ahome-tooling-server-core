@@ -16,12 +16,34 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import java.io.Closeable;
-import java.util.List;
+import java.io.Serializable;
+import java.util.Properties;
 
-public interface IExecutorServiceDescriptorProvider extends Closeable
+import com.ait.tooling.json.JSONObject;
+
+public interface IBuildDescriptor extends Serializable
 {
-    public IExecutorServiceDescriptor getExecutorServiceDescriptor(String name);
+    public String getNameSpace();
 
-    public List<String> getExecutorServiceDescriptorNames();
+    public String getBuildUser();
+
+    public String getBuildDate();
+
+    public String getJavaVersion();
+
+    public String getBuildServerHost();
+
+    public String getBuildServerBuild();
+
+    public String getBuildGITCommitHash();
+
+    public String getBuildGITCommitUser();
+    
+    public String getBuildGITCommitMessage();
+
+    public String getBuildModuleVersion();
+
+    public Properties getAsBuildProperties();
+
+    public JSONObject getAsJSONObject();
 }

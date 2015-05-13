@@ -16,6 +16,8 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-public interface IPrincipalsKeysProvider extends Iterable<String>
+import java.io.Serializable;
+
+public interface IPrincipalsKeysProvider extends Iterable<String>, Serializable
 {
 }

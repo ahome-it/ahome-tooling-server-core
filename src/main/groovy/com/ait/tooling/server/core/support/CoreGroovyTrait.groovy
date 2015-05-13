@@ -16,17 +16,19 @@
 
 package com.ait.tooling.server.core.support
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 
+import org.springframework.core.env.Environment
+import org.springframework.web.context.WebApplicationContext
+
 import com.ait.tooling.json.JSONObject
 import com.ait.tooling.json.schema.JSONSchema
+import com.ait.tooling.server.core.jmx.management.IServerManager
 import com.ait.tooling.server.core.security.IAuthorizationProvider
+import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IExecutorServiceDescriptorProvider
+import com.ait.tooling.server.core.support.spring.IPropertiesResolver
 import com.ait.tooling.server.core.support.spring.IServerContext
 import com.ait.tooling.server.core.support.spring.ServerContextInstance
 
@@ -37,6 +39,48 @@ public trait CoreGroovyTrait
     public IServerContext getServerContext()
     {
         ServerContextInstance.get()
+    }
+    
+    @Memoized
+    public WebApplicationContext getApplicationContext()
+    {
+        getServerContext().getApplicationContext()
+    }
+
+    @Memoized
+    public Environment getEnvironment()
+    {
+        getServerContext().getEnvironment()
+    }
+
+    @Memoized
+    public <T> T getBean(String name, Class<T> type)
+    {
+        getServerContext().getBean(name, type)
+    }
+
+    @Memoized
+    public Iterable<String> getPrincipalsKeys()
+    {
+        getServerContext().getPrincipalsKeys()
+    }
+
+    @Memoized
+    public IServerManager getServerManager()
+    {
+        getServerContext().getServerManager()
+    }
+
+    @Memoized
+    public IBuildDescriptorProvider getBuildDescriptorProvider()
+    {
+        getServerContext().getBuildDescriptorProvider()
+    }
+
+    @Memoized
+    public IPropertiesResolver getPropertiesResolver()
+    {
+        getServerContext().getPropertiesResolver()
     }
 
     @Memoized

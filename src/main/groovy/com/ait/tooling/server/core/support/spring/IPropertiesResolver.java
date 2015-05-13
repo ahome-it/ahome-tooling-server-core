@@ -16,12 +16,9 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import java.io.Closeable;
-import java.util.List;
+public interface IPropertiesResolver
+{    
+    public String getPropertyByName(String name);
 
-public interface IExecutorServiceDescriptorProvider extends Closeable
-{
-    public IExecutorServiceDescriptor getExecutorServiceDescriptor(String name);
-
-    public List<String> getExecutorServiceDescriptorNames();
+    public String getPropertyByName(String name, String otherwise);
 }

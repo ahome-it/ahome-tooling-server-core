@@ -22,7 +22,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.ait.tooling.server.core.jmx.management.IServerManager;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 
-public interface IServerContext
+public interface IServerContext extends IPropertiesResolver
 {
     public IServerContext getServerContext();
 
@@ -32,10 +32,6 @@ public interface IServerContext
 
     public <T> T getBean(String name, Class<T> type);
 
-    public String getPropertyByName(String name);
-
-    public String getPropertyByName(String name, String otherwise);
-
     public IAuthorizationProvider getAuthorizationProvider();
 
     public Iterable<String> getPrincipalsKeys();
@@ -43,4 +39,8 @@ public interface IServerContext
     public IServerManager getServerManager();
 
     public IExecutorServiceDescriptorProvider getExecutorServiceDescriptorProvider();
+    
+    public IBuildDescriptorProvider getBuildDescriptorProvider();
+    
+    public IPropertiesResolver getPropertiesResolver();
 }

@@ -27,13 +27,13 @@ import com.ait.tooling.server.core.security.IAuthorizationProvider;
 
 public final class ServerContextInstance implements IServerContext
 {
-    private final static ServerContextInstance INSTANCE  = new ServerContextInstance();
+    private final static ServerContextInstance INSTANCE = new ServerContextInstance();
 
     private WebApplicationContext              m_context;
 
-    private final IAuthorizationProvider       m_authpro = new AnonOnlyAuthorizationProvider();
+    private IAuthorizationProvider             m_authpro;
 
-    private final IPrincipalsKeysProvider      m_keyspro = new DefaultPrincipalsKeysProvider();
+    private IPrincipalsKeysProvider            m_keyspro;
 
     @Override
     public final IServerContext getServerContext()
@@ -74,39 +74,79 @@ public final class ServerContextInstance implements IServerContext
     }
 
     @Override
+    public IPropertiesResolver getPropertiesResolver()
+    {
+        return this;
+    }
+
+    @Override
     public final String getPropertyByName(final String name)
     {
-        return getEnvironment().getProperty(Objects.requireNonNull(name));
+        final String valu = getEnvironment().getProperty(Objects.requireNonNull(name));
+
+        if (null != valu)
+        {
+            return valu;
+        }
+        return getCorePropertiesResolver().getPropertyByName(name);
     }
 
     @Override
     public final String getPropertyByName(final String name, final String otherwise)
     {
-        return getEnvironment().getProperty(Objects.requireNonNull(name), otherwise);
+        final String valu = getEnvironment().getProperty(Objects.requireNonNull(name));
+
+        if (null != valu)
+        {
+            return valu;
+        }
+        return getCorePropertiesResolver().getPropertyByName(name, otherwise);
     }
 
     @Override
     public final IAuthorizationProvider getAuthorizationProvider()
     {
-        final IAuthorizationProvider auth = getBean("AuthorizationProvider", IAuthorizationProvider.class);
-
-        if (null == auth)
+        if (null == m_authpro)
         {
-            return m_authpro;
+            if (m_context.containsBean("AuthorizationProvider"))
+            {
+                try
+                {
+                    m_authpro = getBean("AuthorizationProvider", IAuthorizationProvider.class);
+                }
+                catch (Exception e)
+                {
+                }
+            }
         }
-        return auth;
+        if (null == m_authpro)
+        {
+            m_authpro = new AnonOnlyAuthorizationProvider();
+        }
+        return m_authpro;
     }
 
     @Override
     public final Iterable<String> getPrincipalsKeys()
     {
-        final Iterable<String> iter = getBean("PrincipalsKeysProvider", IPrincipalsKeysProvider.class);
-
-        if (null == iter)
+        if (null == m_keyspro)
         {
-            return m_keyspro;
+            if (m_context.containsBean("PrincipalsKeysProvider"))
+            {
+                try
+                {
+                    m_keyspro = getBean("PrincipalsKeysProvider", IPrincipalsKeysProvider.class);
+                }
+                catch (Exception e)
+                {
+                }
+            }
         }
-        return iter;
+        if (null == m_keyspro)
+        {
+            m_keyspro = new DefaultPrincipalsKeysProvider();
+        }
+        return m_keyspro;
     }
 
     @Override
@@ -119,5 +159,16 @@ public final class ServerContextInstance implements IServerContext
     public IExecutorServiceDescriptorProvider getExecutorServiceDescriptorProvider()
     {
         return getBean("ExecutorServiceDescriptorProvider", IExecutorServiceDescriptorProvider.class);
+    }
+
+    @Override
+    public IBuildDescriptorProvider getBuildDescriptorProvider()
+    {
+        return getBean("BuildDescriptorProvider", IBuildDescriptorProvider.class);
+    }
+
+    private final CorePropertiesResolver getCorePropertiesResolver()
+    {
+        return getBean("CorePropertiesResolver", CorePropertiesResolver.class);
     }
 }

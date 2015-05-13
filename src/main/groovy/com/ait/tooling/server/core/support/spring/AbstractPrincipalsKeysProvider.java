@@ -20,14 +20,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
+@SuppressWarnings("serial")
 public abstract class AbstractPrincipalsKeysProvider implements IPrincipalsKeysProvider
 {
     private final ArrayList<String> m_list = new ArrayList<String>();
 
+    protected AbstractPrincipalsKeysProvider()
+    {
+    }
+
     protected AbstractPrincipalsKeysProvider(final List<String> keys)
     {
-        m_list.addAll(keys);
+        m_list.addAll(Objects.requireNonNull(keys));
     }
 
     @Override

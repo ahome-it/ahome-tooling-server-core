@@ -13,22 +13,51 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 */
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath('org.ajoberstar:grgit:1.1.0')
+    }
+}
+
 import java.util.List
+import org.apache.tools.ant.filters.FixCrLfFilter
+import org.apache.tools.ant.filters.ReplaceTokens
+import java.net.InetAddress
+import org.ajoberstar.grgit.Grgit
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
 
 sourceCompatibility = 1.7
 
-version = '1.0.35-SNAPSHOT'
+version = '1.0.36-SNAPSHOT'
 
 group = 'com.ahome-it'
+
+task('deleteConfigs', type: Delete) {
+    FileTree tree = fileTree (dir: 'build/resources/main');
+    tree.each { File file ->
+        delete(file)
+    }
+}
+
+task('filterConfigs', dependsOn: deleteConfigs, type: Copy) {
+    from sourceSets.main.allSource
+    into 'build/resources/main'
+    filter(FixCrLfFilter)
+    filter(ReplaceTokens, tokens: getFilterTokens())
+}
+
+jar.dependsOn(filterConfigs)
 
 jar {
     manifest {
         attributes 'Implementation-Title': 'Ahome-Tooling-Server-Core', 'Implementation-Version': version
     }
-    from sourceSets.main.allSource
 }
 
 repositories {
@@ -52,12 +81,76 @@ configurations {
     compile.exclude(group: 'org.slf4j', module: 'log4j-over-slf4j')
 }
 
+def getFilterTokens() {
+    [GRADLE_BUILD_USER: getBuildUser(), GRADLE_BUILD_DATE: getBuildDate(), GRADLE_JAVA_VERSION: getJavaVersion(), GRADLE_GIT_COMMIT_HASH: getBuildGITCommitHash(), GRADLE_GIT_COMMIT_USER: getBuildGITCommitUser(), GRADLE_GIT_COMMIT_MESSAGE: getBuildGITCommitMessage(), GRADLE_BUILD_SERVER_HOST: getBuildServerHost(), GRADLE_BUILD_SERVER_BUILD: getBuildServerBuild(), GRADLE_BUILD_MODULE_VERSION: getBuildModuleVersion()]
+}
+
+def getBuildModuleVersion() {
+    version
+}
+def getBuildDate() {
+    (new Date()).toString()
+}
+
+def getBuildServerHost() {
+    try
+    {
+        InetAddress.getLocalHost().getHostName()
+    }
+    catch (Exception e)
+    {
+        "localhost"
+    }
+}
+
+def getJavaVersion() {
+    String java = System.getProperty('java.version')
+    if (java)
+    {
+        return java
+    }
+    'unknown'
+}
+
+def getBuildUser() {
+    String user = System.getProperty('user.name')
+    if (user)
+    {
+        return user
+    }
+    'unknown'
+}
+
+def getBuildServerBuild() {
+    String name = System.getProperty('BUILD_DISPLAY_NAME')
+    if (name)
+    {
+        return name
+    }
+    'unknown'
+}
+
+def getBuildGITCommitHash() {
+    def grgit = Grgit.open(project.file('.'))
+    grgit.head().id
+}
+
+def getBuildGITCommitUser() {
+    def grgit = Grgit.open(project.file('.'))
+    grgit.head().committer.email
+}
+
+def getBuildGITCommitMessage() {
+    def grgit = Grgit.open(project.file('.'))
+    grgit.head().shortMessage
+}
+
 dependencies {
     springCorePackages().each { String name ->
         compile(group: 'org.springframework', name: name, version: '4.1.6.RELEASE')
     }
     springSecurityPackages().each { String name ->
-        compile(group: 'org.springframework.security', name: name, version: '4.0.0.RELEASE')
+        compile(group: 'org.springframework.security', name: name, version: '4.0.1.RELEASE')
     }
     compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.3', classifier: 'indy')
     compile(group: 'org.codehaus.gpars', name: 'gpars', version: '1.2.1')
@@ -66,7 +159,7 @@ dependencies {
     compile(group: 'com.google.guava', name: 'guava', version: '18.0')
     compile(group: 'commons-io', name: 'commons-io', version: '2.4')
     compile(group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.2')
-    compile(group: 'com.ahome-it', name: 'ahome-tooling-json', version: '1.0.29-SNAPSHOT')
+    compile(group: 'com.ahome-it', name: 'ahome-tooling-json', version: '1.0.30-SNAPSHOT')
     compile(group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0')
 }
 

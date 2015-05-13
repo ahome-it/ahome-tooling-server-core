@@ -17,9 +17,10 @@
 package com.ait.tooling.server.core.support.spring;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
@@ -67,9 +68,9 @@ public class ExecutorServiceDescriptorProvider implements IExecutorServiceDescri
     }
 
     @Override
-    public Collection<String> getExecutorServiceDescriptorNames()
+    public List<String> getExecutorServiceDescriptorNames()
     {
-        return Collections.unmodifiableCollection(m_descriptors.keySet());
+        return Collections.unmodifiableList(new ArrayList<String>(m_descriptors.keySet()));
     }
 
     @Override

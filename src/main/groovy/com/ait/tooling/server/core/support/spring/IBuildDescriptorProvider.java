@@ -19,9 +19,15 @@ package com.ait.tooling.server.core.support.spring;
 import java.io.Closeable;
 import java.util.List;
 
-public interface IExecutorServiceDescriptorProvider extends Closeable
-{
-    public IExecutorServiceDescriptor getExecutorServiceDescriptor(String name);
+import com.ait.tooling.json.JSONArray;
 
-    public List<String> getExecutorServiceDescriptorNames();
+public interface IBuildDescriptorProvider extends Closeable
+{
+    public List<String> getBuildDescriptorNames();
+
+    public List<IBuildDescriptor> getBuildDescriptors();
+
+    public JSONArray getBuildDescriptorsAsJSONArray();
+
+    public IBuildDescriptor getBuildDescriptor(String name);
 }
