@@ -67,7 +67,6 @@ public final class ServerContextInstance implements IServerContext
         return m_context.getEnvironment();
     }
 
-    @Override
     public final <T> T getBean(final String name, final Class<T> type)
     {
         return m_context.getBean(Objects.requireNonNull(name), Objects.requireNonNull(type));

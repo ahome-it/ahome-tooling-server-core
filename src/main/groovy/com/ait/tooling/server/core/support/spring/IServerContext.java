@@ -30,8 +30,6 @@ public interface IServerContext extends IPropertiesResolver
 
     public Environment getEnvironment();
 
-    public <T> T getBean(String name, Class<T> type);
-
     public IAuthorizationProvider getAuthorizationProvider();
 
     public Iterable<String> getPrincipalsKeys();
@@ -39,8 +37,8 @@ public interface IServerContext extends IPropertiesResolver
     public IServerManager getServerManager();
 
     public IExecutorServiceDescriptorProvider getExecutorServiceDescriptorProvider();
-    
+
     public IBuildDescriptorProvider getBuildDescriptorProvider();
-    
+
     public IPropertiesResolver getPropertiesResolver();
 }

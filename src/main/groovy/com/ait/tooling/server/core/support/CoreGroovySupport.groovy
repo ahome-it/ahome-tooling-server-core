@@ -64,12 +64,6 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     }
 
     @Memoized
-    public <T> T getBean(String name, Class<T> type)
-    {
-        getServerContext().getBean(name, type)
-    }
-
-    @Memoized
     public Iterable<String> getPrincipalsKeys()
     {
         getServerContext().getPrincipalsKeys()
