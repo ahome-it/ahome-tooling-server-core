@@ -34,7 +34,7 @@ apply plugin: 'maven'
 
 sourceCompatibility = 1.7
 
-version = '1.0.41-SNAPSHOT'
+version = '1.0.42-SNAPSHOT'
 
 group = 'com.ahome-it'
 
@@ -150,7 +150,7 @@ dependencies {
         compile(group: 'org.springframework', name: name, version: '4.1.6.RELEASE')
     }
     springSecurityPackages().each { String name ->
-        compile(group: 'org.springframework.security', name: name, version: '4.0.1.RELEASE')
+        compile(group: 'org.springframework.security', name: name, version: '4.0.0.RELEASE')
     }
     compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.3', classifier: 'indy')
     compile(group: 'org.codehaus.gpars', name: 'gpars', version: '1.2.1')
