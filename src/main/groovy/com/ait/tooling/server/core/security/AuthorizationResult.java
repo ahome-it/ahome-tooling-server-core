@@ -1,20 +1,22 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+ * Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.ait.tooling.server.core.security;
+
+import com.ait.tooling.common.api.java.util.StringOps;
 
 public class AuthorizationResult
 {
@@ -26,7 +28,7 @@ public class AuthorizationResult
 
     private final String  m_etext;
 
-    public AuthorizationResult(boolean authd, boolean admin, int ecode, String etext)
+    public AuthorizationResult(final boolean authd, final boolean admin, final int ecode, final String etext)
     {
         m_authd = authd;
 
@@ -34,7 +36,18 @@ public class AuthorizationResult
 
         m_ecode = ecode;
 
-        m_etext = etext;
+        m_etext = doFixText(etext);
+    }
+
+    private final String doFixText(String etext)
+    {
+        etext = StringOps.toTrimOrNull(etext);
+
+        if (null != etext)
+        {
+            return etext;
+        }
+        return "unknown";
     }
 
     public boolean isAuthorized()

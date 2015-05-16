@@ -1,18 +1,18 @@
 /*
- Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-*/
+ * Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.ait.tooling.server.core.support
 
@@ -25,6 +25,7 @@ import org.springframework.web.context.WebApplicationContext
 import com.ait.tooling.json.JSONObject
 import com.ait.tooling.json.schema.JSONSchema
 import com.ait.tooling.server.core.jmx.management.IServerManager
+import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IExecutorServiceDescriptorProvider
@@ -36,21 +37,21 @@ import com.ait.tooling.server.core.support.spring.ServerContextInstance
 public class CoreGroovySupport implements IServerContext, Closeable, Serializable
 {
     public static final CoreGroovySupport INSTANCE = new CoreGroovySupport()
-    
+
     private static final long serialVersionUID = 6853938976110096947L
-    
+
     @Memoized
     public static final CoreGroovySupport getCoreGroovySupport()
     {
         INSTANCE
     }
-    
+
     @Memoized
     public IServerContext getServerContext()
     {
         ServerContextInstance.get()
     }
-    
+
     @Memoized
     public WebApplicationContext getApplicationContext()
     {
@@ -98,13 +99,19 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     {
         getServerContext().getPropertyByName(name, otherwise)
     }
-    
+
     @Memoized
     public IAuthorizationProvider getAuthorizationProvider()
     {
         getServerContext().getAuthorizationProvider()
     }
-    
+
+    @Override
+    public AuthorizationResult isAuthorized(Object target, JSONObject principals)
+    {
+        return getServerContext().isAuthorized(target, principals)
+    }
+
     @Memoized
     public IExecutorServiceDescriptorProvider getExecutorServiceDescriptorProvider()
     {
@@ -116,17 +123,17 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
         new JSONObject()
     }
 
-    public JSONObject json(final Map<String, ?> valu)
+    public JSONObject json(Map<String, ?> valu)
     {
         new JSONObject(valu)
     }
 
-    public JSONObject json(final String name, Object value)
+    public JSONObject json(String name, Object value)
     {
         new JSONObject(name, value)
     }
-    
-    public JSONObject json(final Collection<?> collection)
+
+    public JSONObject json(Collection<?> collection)
     {
         if (collection instanceof List)
         {
@@ -139,25 +146,25 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
         else
         {
             final List list = []
-            
+
             list.addAll(collection)
-            
+
             return json(list)
         }
     }
 
-    public JSONObject json(final List<?> list)
+    public JSONObject json(List<?> list)
     {
         new JSONObject(list)
     }
 
-    public JSONSchema schema(final Map<String, ?> schema)
+    public JSONSchema schema(Map<String, ?> schema)
     {
         JSONSchema.cast(json(schema))
     }
 
     @Override
     public void close() throws IOException
-    {        
+    {
     }
 }

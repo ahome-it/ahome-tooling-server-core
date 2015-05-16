@@ -1,22 +1,26 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+ * Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * code example from http://blogs.oracle.com/jmxetc/entry/connecting_through_firewall_using_jmx modified for configuration, startup, cleanup from Spring
  */
 
 package com.ait.tooling.server.core.jmx;
 
 import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.rmi.registry.LocateRegistry;
 import java.util.HashMap;
@@ -30,21 +34,55 @@ import org.apache.log4j.Logger;
 
 import com.ait.tooling.common.api.java.util.StringOps;
 
-/*
- * code example from http://blogs.oracle.com/jmxetc/entry/connecting_through_firewall_using_jmx modified for configuration, startup, cleanup from Spring
- */
-
 public class JMXAgent implements Closeable
 {
-    private static final int    DEFAULT_JMX_PORT = 3000;
+    private static final int         DEFAULT_JMX_PORT = 3000;
 
-    private static final Logger logger           = Logger.getLogger(JMXAgent.class);
+    private static final Logger      logger           = Logger.getLogger(JMXAgent.class);
 
-    private JMXConnectorServer  m_cs;
+    private final JMXConnectorServer m_cs;
 
-    private JMXAgent(String portstring, String hostname, String passfile, String rolefile)
+    public JMXAgent(final String portstring)
     {
-        logger.info("JMXAgent start()");
+        this(portstring, null, null, null);
+    }
+
+    public JMXAgent(final String portstring, final String hostname)
+    {
+        this(portstring, hostname, null, null);
+    }
+
+    public JMXAgent(final String portstring, final String hostname, final String passfile, final String rolefile)
+    {
+        logger.info("JMXAgent()");
+        
+        m_cs = make(portstring, hostname, passfile, rolefile);
+
+        start();
+    }
+
+    protected void start()
+    {
+        if (null != m_cs)
+        {
+            try
+            {
+                m_cs.start();
+            }
+            catch (IOException e)
+            {
+                logger.error("JMXAgent start() error", e);
+            }
+        }
+        else
+        {
+            logger.error("JMXAgent start() error, JMXConnectorServer is null");
+        }
+    }
+
+    protected JMXConnectorServer make(String portstring, String hostname, String passfile, String rolefile)
+    {
+        logger.info("JMXAgent make()");
 
         try
         {
@@ -74,7 +112,7 @@ public class JMXAgent implements Closeable
                     port = DEFAULT_JMX_PORT;
                 }
             }
-            String incr = System.getProperty("JMX_PORT_INCREMENT", "0");
+            final String incr = System.getProperty("JMX_PORT_INCREMENT", "0");
 
             try
             {
@@ -88,9 +126,9 @@ public class JMXAgent implements Closeable
             }
             LocateRegistry.createRegistry(port);
 
-            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+            final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 
-            HashMap<String, Object> env = new HashMap<String, Object>();
+            final HashMap<String, Object> env = new HashMap<String, Object>();
 
             rolefile = StringOps.toTrimOrNull(rolefile);
 
@@ -98,9 +136,19 @@ public class JMXAgent implements Closeable
 
             if ((null != rolefile) && (null != passfile))
             {
-                env.put("jmx.remote.x.access.file", rolefile);
+                final File role = new File(rolefile);
 
-                env.put("jmx.remote.x.password.file", passfile);
+                if ((role.exists()) && (false == role.isDirectory()) && (role.isFile()) && (role.canRead()))
+                {
+                    final File pass = new File(passfile);
+
+                    if ((pass.exists()) && (false == pass.isDirectory()) && (pass.isFile()) && (pass.canRead()))
+                    {
+                        env.put("jmx.remote.x.access.file", rolefile);
+
+                        env.put("jmx.remote.x.password.file", passfile);
+                    }
+                }
             }
             hostname = StringOps.toTrimOrNull(hostname);
 
@@ -110,24 +158,26 @@ public class JMXAgent implements Closeable
 
                 logger.error("host constructor arg invalid, defaulting to " + hostname);
             }
-            String jmxurl = "service:jmx:rmi://" + hostname + ":" + port + "/jndi/rmi://" + hostname + ":" + port + "/jmxrmi";
+            final String jmxurl = "service:jmx:rmi://" + hostname + ":" + port + "/jndi/rmi://" + hostname + ":" + port + "/jmxrmi";
 
             logger.info("Created JMX server URL [ " + jmxurl + " ]");
 
-            m_cs = JMXConnectorServerFactory.newJMXConnectorServer(new JMXServiceURL(jmxurl), env, mbs);
+            final JMXConnectorServer cs = JMXConnectorServerFactory.newJMXConnectorServer(new JMXServiceURL(jmxurl), env, mbs);
 
-            m_cs.start();
+            return cs;
         }
         catch (Exception e)
         {
-            logger.error("JMXAgent start error", e);
+            logger.error("JMXAgent make() error", e);
+
+            return null;
         }
     }
 
     @Override
     public void close()
     {
-        logger.info("JMXAgent stop()");
+        logger.info("JMXAgent close()");
 
         try
         {
@@ -138,7 +188,7 @@ public class JMXAgent implements Closeable
         }
         catch (Exception e)
         {
-            logger.error("JMXAgent stop error", e);
+            logger.error("JMXAgent close() error", e);
         }
     }
 }

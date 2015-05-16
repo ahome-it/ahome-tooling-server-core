@@ -1,17 +1,17 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+ * Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.ait.tooling.server.core.support.spring;
@@ -19,7 +19,7 @@ package com.ait.tooling.server.core.support.spring;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -35,9 +35,15 @@ import com.ait.tooling.common.api.java.util.StringOps;
 @ManagedResource(objectName = "com.ait.tooling.server.core.support.spring:name=ExecutorServiceDescriptorProvider", description = "Manage Executor Service Descriptors.")
 public class ExecutorServiceDescriptorProvider implements IExecutorServiceDescriptorProvider, BeanFactoryAware
 {
-    private static final Logger                               logger        = Logger.getLogger(ExecutorServiceDescriptorProvider.class);
+    private static final long                                       serialVersionUID = -3904263001568352317L;
 
-    private final HashMap<String, IExecutorServiceDescriptor> m_descriptors = new HashMap<String, IExecutorServiceDescriptor>();
+    private static final Logger                                     logger           = Logger.getLogger(ExecutorServiceDescriptorProvider.class);
+
+    private final LinkedHashMap<String, IExecutorServiceDescriptor> m_descriptors    = new LinkedHashMap<String, IExecutorServiceDescriptor>();
+
+    public ExecutorServiceDescriptorProvider()
+    {
+    }
 
     protected void addDescriptor(final IExecutorServiceDescriptor descriptor)
     {
@@ -71,6 +77,12 @@ public class ExecutorServiceDescriptorProvider implements IExecutorServiceDescri
     public List<String> getExecutorServiceDescriptorNames()
     {
         return Collections.unmodifiableList(new ArrayList<String>(m_descriptors.keySet()));
+    }
+
+    @Override
+    public List<IExecutorServiceDescriptor> getExecutorServiceDescriptors()
+    {
+        return Collections.unmodifiableList(new ArrayList<IExecutorServiceDescriptor>(m_descriptors.values()));
     }
 
     @Override

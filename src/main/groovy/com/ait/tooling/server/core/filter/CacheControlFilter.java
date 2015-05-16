@@ -1,17 +1,17 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+ * Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.ait.tooling.server.core.filter;
@@ -24,14 +24,22 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import com.ait.tooling.common.api.java.util.StringOps;
-import com.ait.tooling.server.core.filter.AbstractHTTPFilter;
 
 public class CacheControlFilter extends AbstractHTTPFilter
 {
-    private String m_no_cache_regex = null;
+    private static final Logger logger           = Logger.getLogger(CacheControlFilter.class);
 
-    private String m_do_cache_regex = null;
+    private String              m_no_cache_regex = null;
+
+    private String              m_do_cache_regex = null;
+
+    public CacheControlFilter()
+    {
+        logger.info("CacheControlFilter()");
+    }
 
     @Override
     public void doFilter(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain) throws IOException, ServletException
@@ -164,5 +172,14 @@ public class CacheControlFilter extends AbstractHTTPFilter
         m_no_cache_regex = StringOps.toTrimOrNull(config.getInitParameter("no-cache-regex"));
 
         m_do_cache_regex = StringOps.toTrimOrNull(config.getInitParameter("do-cache-regex"));
+
+        if (null != m_no_cache_regex)
+        {
+            logger.info("CacheControlFilter().init() no_cache_regex=[" + m_no_cache_regex + "]");
+        }
+        if (null != m_do_cache_regex)
+        {
+            logger.info("CacheControlFilter().init() do_cache_regex=[" + m_do_cache_regex + "]");
+        }
     }
 }

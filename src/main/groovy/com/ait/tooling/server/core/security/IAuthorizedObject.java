@@ -16,18 +16,9 @@
 
 package com.ait.tooling.server.core.security;
 
-import java.io.Closeable;
+import com.ait.tooling.json.JSONObject;
 
-import com.ait.tooling.common.api.hash.ISHA_512_HASH;
-import com.ait.tooling.common.api.hash.ISHA_512_HASH_SALT;
-
-public interface ICryptoProvider extends Closeable, ISHA_512_HASH_SALT, ISHA_512_HASH
+public interface IAuthorizedObject
 {
-    public String encode(String text);
-
-    public String encrypt(String text);
-
-    public String decrypt(String text);
-
-    public boolean matches(String text, String encoded);
+    public AuthorizationResult isAuthorized(JSONObject principals);
 }
