@@ -17,7 +17,6 @@
 package com.ait.tooling.server.core.support.spring;
 
 import java.io.Serializable;
-import java.util.Properties;
 
 import com.ait.tooling.json.JSONObject;
 
@@ -42,8 +41,6 @@ public interface IBuildDescriptor extends Serializable
     public String getBuildGITCommitMessage();
 
     public String getBuildModuleVersion();
-
-    public Properties getAsBuildProperties();
 
     public JSONObject getAsJSONObject();
 }

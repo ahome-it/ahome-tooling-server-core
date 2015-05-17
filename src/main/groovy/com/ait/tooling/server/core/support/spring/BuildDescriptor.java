@@ -16,8 +16,6 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import java.util.Properties;
-
 import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.json.JSONObject;
 
@@ -70,6 +68,8 @@ public final class BuildDescriptor implements IBuildDescriptor
 
         int bars = 0;
 
+        int dash = 0;
+
         for (int i = 0; i < size; i++)
         {
             final char c = name_space.charAt(i);
@@ -93,6 +93,10 @@ public final class BuildDescriptor implements IBuildDescriptor
                     {
                         throw new IllegalArgumentException("BuildDescriptor(name_space adjacent bars to dots)");
                     }
+                    if (0 != dash)
+                    {
+                        throw new IllegalArgumentException("BuildDescriptor(name_space adjacent dash to dots)");
+                    }
                     dots++;
                 }
                 else
@@ -107,7 +111,27 @@ public final class BuildDescriptor implements IBuildDescriptor
                         {
                             throw new IllegalArgumentException("BuildDescriptor(name_space adjacent dots to bars)");
                         }
+                        if (0 != dash)
+                        {
+                            throw new IllegalArgumentException("BuildDescriptor(name_space adjacent dash to bars)");
+                        }
                         bars++;
+                    }
+                    else if ('-' == c)
+                    {
+                        if (0 != dash)
+                        {
+                            throw new IllegalArgumentException("BuildDescriptor(name_space adjacent dash)");
+                        }
+                        if (0 != dots)
+                        {
+                            throw new IllegalArgumentException("BuildDescriptor(name_space adjacent dots to dash)");
+                        }
+                        if (0 != bars)
+                        {
+                            throw new IllegalArgumentException("BuildDescriptor(name_space adjacent bars to dash)");
+                        }
+                        dash++;
                     }
                     else if (false == Character.isLetter(c))
                     {
@@ -116,12 +140,14 @@ public final class BuildDescriptor implements IBuildDescriptor
                     dots = 0;
 
                     bars = 0;
+
+                    dash = 0;
                 }
             }
         }
-        if ((0 != dots) || (0 != bars))
+        if ((0 != dots) || (0 != bars) || (0 != dash))
         {
-            throw new IllegalArgumentException("BuildDescriptor(name_space must not end with dots or bars)");
+            throw new IllegalArgumentException("BuildDescriptor(name_space must not end with dots or bars or dash)");
         }
         return name_space;
     }
@@ -234,34 +260,6 @@ public final class BuildDescriptor implements IBuildDescriptor
     public void setBuildModuleVersion(final String value)
     {
         m_build_module_version = doValidatePropValue(value);
-    }
-
-    @Override
-    public Properties getAsBuildProperties()
-    {
-        final Properties prop = new Properties();
-
-        final String name_space = getNameSpace();
-
-        prop.setProperty(name_space + ".build_user", getBuildUser());
-
-        prop.setProperty(name_space + ".build_date", getBuildDate());
-
-        prop.setProperty(name_space + ".java_version", getJavaVersion());
-
-        prop.setProperty(name_space + ".build_git_commit_hash", getBuildGITCommitHash());
-
-        prop.setProperty(name_space + ".build_git_commit_user", getBuildGITCommitUser());
-
-        prop.setProperty(name_space + ".build_git_commit_message", getBuildGITCommitMessage());
-
-        prop.setProperty(name_space + ".build_server_host", getBuildServerHost());
-
-        prop.setProperty(name_space + ".build_server_build", getBuildServerBuild());
-
-        prop.setProperty(name_space + ".build_module_version", getBuildModuleVersion());
-
-        return prop;
     }
 
     @Override
