@@ -19,7 +19,8 @@ package com.ait.tooling.server.core.support.spring;
 import org.springframework.core.env.Environment;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.ait.tooling.server.core.jmx.management.IServerManager;
+import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
+import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizer;
 
@@ -35,11 +36,13 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver
 
     public Iterable<String> getPrincipalsKeys();
 
-    public IServerManager getServerManager();
+    public ICoreServerManager getCoreServerManager();
 
     public IExecutorServiceDescriptorProvider getExecutorServiceDescriptorProvider();
 
     public IBuildDescriptorProvider getBuildDescriptorProvider();
 
     public IPropertiesResolver getPropertiesResolver();
+    
+    public IPubSubDescriptorProvider getPubSubDescriptorProvider();
 }

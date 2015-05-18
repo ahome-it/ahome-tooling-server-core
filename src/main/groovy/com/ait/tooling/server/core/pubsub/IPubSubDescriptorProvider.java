@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.security;
+package com.ait.tooling.server.core.pubsub;
 
-import com.ait.tooling.common.api.types.IStringValued;
+import java.io.Closeable;
+import java.io.Serializable;
+import java.util.List;
 
-public enum AuthorizationType implements IStringValued
+public interface IPubSubDescriptorProvider extends Serializable, Closeable
 {
-    USER("USER"), ROLE("ROLE"), ANON("ANON");
+    public List<String> getPubSubDescriptorNames();
 
-    private final String m_value;
+    public List<IPubSubDescriptor<?>> getPubSubDescriptors();
 
-    private AuthorizationType(final String value)
-    {
-        m_value = value;
-    }
+    public <T extends Serializable> IPubSubDescriptor<T> getPubSubDescriptor(String name, Class<T> type, PubSubChannelType... list);
 
-    @Override
-    public String getValue()
-    {
-        return m_value;
-    }
+    public <T extends Serializable> IPubSubDescriptor<T> getPubSubDescriptor(String name, Class<T> type, List<PubSubChannelType> list);
 }

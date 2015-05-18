@@ -20,13 +20,13 @@ import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 
-@Component("ServerManager")
-@ManagedResource(objectName = "com.ait.tooling.server.core.jmx.management:name=ServerManager", description = "Manage Server Operations.")
-public class ServerManager implements IServerManager
+@Component("CoreServerManager")
+@ManagedResource(objectName = "com.ait.tooling.server.core.jmx.management:name=CoreServerManager", description = "Manage Server Operations.")
+public class CoreServerManager implements ICoreServerManager
 {
     private boolean m_running = true;
 
-    public ServerManager()
+    public CoreServerManager()
     {
     }
 

@@ -34,7 +34,7 @@ apply plugin: 'maven'
 
 sourceCompatibility = 1.7
 
-version = '1.0.44-SNAPSHOT'
+version = '1.0.45-SNAPSHOT'
 
 group = 'com.ahome-it'
 
@@ -136,7 +136,7 @@ def getBuildServerBuild() {
     {
         return name
     }
-    'unknown'
+    'Command line ' + GradleVersion.current().toString()
 }
 
 def getBuildGITCommitHash() {
@@ -168,7 +168,7 @@ dependencies {
     compile(group: 'com.google.guava', name: 'guava', version: '18.0')
     compile(group: 'commons-io', name: 'commons-io', version: '2.4')
     compile(group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.2')
-    compile(group: 'com.ahome-it', name: 'ahome-tooling-json', version: '1.0.32-SNAPSHOT')
+    compile(group: 'com.ahome-it', name: 'ahome-tooling-json', version: '1.0.33-SNAPSHOT')
     compile(group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0')
 }
 

@@ -24,7 +24,9 @@ import org.springframework.web.context.WebApplicationContext
 
 import com.ait.tooling.json.JSONObject
 import com.ait.tooling.json.schema.JSONSchema
-import com.ait.tooling.server.core.jmx.management.IServerManager
+import com.ait.tooling.server.core.jmx.management.ICoreServerManager
+import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider
+import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IExecutorServiceDescriptorProvider
@@ -40,7 +42,7 @@ public trait CoreGroovyTrait
     {
         ServerContextInstance.get()
     }
-    
+
     @Memoized
     public WebApplicationContext getApplicationContext()
     {
@@ -60,9 +62,9 @@ public trait CoreGroovyTrait
     }
 
     @Memoized
-    public IServerManager getServerManager()
+    public ICoreServerManager getCoreServerManager()
     {
-        getServerContext().getServerManager()
+        getServerContext().getCoreServerManager()
     }
 
     @Memoized
@@ -88,17 +90,28 @@ public trait CoreGroovyTrait
     {
         getServerContext().getPropertyByName(name, otherwise)
     }
-    
+
     @Memoized
     public IAuthorizationProvider getAuthorizationProvider()
     {
         getServerContext().getAuthorizationProvider()
     }
-    
+
+    public AuthorizationResult isAuthorized(Object target, JSONObject principals)
+    {
+        getServerContext().isAuthorized(target, principals)
+    }
+
     @Memoized
     public IExecutorServiceDescriptorProvider getExecutorServiceDescriptorProvider()
     {
         getServerContext().getExecutorServiceDescriptorProvider()
+    }
+
+    @Memoized
+    public IPubSubDescriptorProvider getPubSubDescriptorProvider()
+    {
+        getServerContext().getPubSubDescriptorProvider()
     }
 
     public JSONObject json()
@@ -106,17 +119,17 @@ public trait CoreGroovyTrait
         new JSONObject()
     }
 
-    public JSONObject json(final Map<String, ?> valu)
+    public JSONObject json(Map<String, ?> valu)
     {
         new JSONObject(valu)
     }
 
-    public JSONObject json(final String name, Object value)
+    public JSONObject json(String name, Object value)
     {
         new JSONObject(name, value)
     }
-    
-    public JSONObject json(final Collection<?> collection)
+
+    public JSONObject json(Collection<?> collection)
     {
         if (collection instanceof List)
         {
@@ -129,19 +142,19 @@ public trait CoreGroovyTrait
         else
         {
             final List list = []
-            
+
             list.addAll(collection)
-            
+
             return json(list)
         }
     }
 
-    public JSONObject json(final List<?> list)
+    public JSONObject json(List<?> list)
     {
         new JSONObject(list)
     }
 
-    public JSONSchema schema(final Map<String, ?> schema)
+    public JSONSchema schema(Map<String, ?> schema)
     {
         JSONSchema.cast(json(schema))
     }

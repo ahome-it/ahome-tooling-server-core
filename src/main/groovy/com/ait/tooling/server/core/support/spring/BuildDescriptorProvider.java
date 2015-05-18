@@ -32,7 +32,7 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.json.JSONArray;
 
-@ManagedResource(objectName = "com.ait.tooling.server.core.support.spring:name=BuildDescriptorProvider", description = "Manage Build Descriptors.")
+@ManagedResource(objectName = "com.ait.tooling.server.core.support.spring:name=PubSubDescriptorProvider", description = "Manage Build Descriptors.")
 public class BuildDescriptorProvider implements IBuildDescriptorProvider, BeanFactoryAware
 {
     private static final long                             serialVersionUID = -2989587698018544105L;
@@ -57,11 +57,11 @@ public class BuildDescriptorProvider implements IBuildDescriptorProvider, BeanFa
                 {
                     m_descriptors.put(name, descriptor);
 
-                    logger.info("BuildDescriptorProvider.addDescriptor(" + name + ") Registered");
+                    logger.info("PubSubDescriptorProvider.addDescriptor(" + name + ") Registered");
                 }
                 else
                 {
-                    logger.error("BuildDescriptorProvider.addDescriptor(" + name + ") Duplicate ignored");
+                    logger.error("PubSubDescriptorProvider.addDescriptor(" + name + ") Duplicate ignored");
                 }
             }
         }

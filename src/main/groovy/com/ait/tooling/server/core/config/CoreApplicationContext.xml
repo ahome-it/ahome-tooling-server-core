@@ -41,6 +41,8 @@
 
 	<bean id="BuildDescriptorProvider" class="com.ait.tooling.server.core.support.spring.BuildDescriptorProvider" destroy-method="close"/>
 
+	<bean id="PubSubDescriptorProvider" class="com.ait.tooling.server.core.pubsub.PubSubDescriptorProvider" destroy-method="close"/>
+
 	<bean id="JMXAgent" class="com.ait.tooling.server.core.jmx.JMXAgent" destroy-method="close">
 		<constructor-arg value="${jmx.port}"/>
 		<constructor-arg value="${jmx.host}"/>

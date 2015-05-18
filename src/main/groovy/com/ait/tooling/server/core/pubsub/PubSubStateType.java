@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.security;
+package com.ait.tooling.server.core.pubsub;
 
 import com.ait.tooling.common.api.types.IStringValued;
 
-public enum AuthorizationType implements IStringValued
+public enum PubSubStateType implements IStringValued
 {
-    USER("USER"), ROLE("ROLE"), ANON("ANON");
+    CONNECTING("CONNECTING"), CONNECTED("CONNECTED"), DISCONNECTED("DISCONNECTED"), RECONNECTING("RECONNECTING"), ERROR("ERROR"), CLOSED("CLOSED");
 
     private final String m_value;
 
-    private AuthorizationType(final String value)
+    private PubSubStateType(final String value)
     {
         m_value = value;
     }

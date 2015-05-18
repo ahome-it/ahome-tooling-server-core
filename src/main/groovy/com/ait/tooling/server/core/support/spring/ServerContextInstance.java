@@ -23,7 +23,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.ait.tooling.json.JSONObject;
-import com.ait.tooling.server.core.jmx.management.IServerManager;
+import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
+import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 import com.ait.tooling.server.core.security.AuthorizationResult;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
@@ -148,9 +149,9 @@ public final class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public final IServerManager getServerManager()
+    public final ICoreServerManager getCoreServerManager()
     {
-        return getBean("ServerManager", IServerManager.class);
+        return getBean("CoreServerManager", ICoreServerManager.class);
     }
 
     @Override
@@ -162,7 +163,7 @@ public final class ServerContextInstance implements IServerContext
     @Override
     public IBuildDescriptorProvider getBuildDescriptorProvider()
     {
-        return getBean("BuildDescriptorProvider", IBuildDescriptorProvider.class);
+        return getBean("PubSubDescriptorProvider", IBuildDescriptorProvider.class);
     }
 
     private final CorePropertiesResolver getCorePropertiesResolver()
@@ -174,5 +175,11 @@ public final class ServerContextInstance implements IServerContext
     public AuthorizationResult isAuthorized(Object target, JSONObject principals)
     {
         return getAuthorizationProvider().isAuthorized(target, principals);
+    }
+
+    @Override
+    public IPubSubDescriptorProvider getPubSubDescriptorProvider()
+    {
+        return getBean("PubSubDescriptorProvider", IPubSubDescriptorProvider.class);
     }
 }

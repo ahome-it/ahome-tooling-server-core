@@ -14,9 +14,24 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.jmx.management;
+package com.ait.tooling.server.core.pubsub;
 
-public interface IServerManager
+import com.ait.tooling.common.api.types.IStringValued;
+
+public enum PubSubChannelType implements IStringValued
 {
-    public boolean isRunning();
+    QUEUE("QUEUE"), TOPIC("TOPIC"), EVENT("EVENT");
+
+    private final String m_value;
+
+    private PubSubChannelType(final String value)
+    {
+        m_value = value;
+    }
+
+    @Override
+    public String getValue()
+    {
+        return m_value;
+    }
 }

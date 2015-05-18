@@ -14,24 +14,11 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.security;
+package com.ait.tooling.server.core.pubsub;
 
-import com.ait.tooling.common.api.types.IStringValued;
+import java.io.Serializable;
 
-public enum AuthorizationType implements IStringValued
+public interface IPubSubHandlerRegistration extends Serializable
 {
-    USER("USER"), ROLE("ROLE"), ANON("ANON");
-
-    private final String m_value;
-
-    private AuthorizationType(final String value)
-    {
-        m_value = value;
-    }
-
-    @Override
-    public String getValue()
-    {
-        return m_value;
-    }
+    public void removeHandler();
 }

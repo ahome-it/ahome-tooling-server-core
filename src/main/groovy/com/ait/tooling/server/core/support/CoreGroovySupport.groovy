@@ -24,7 +24,8 @@ import org.springframework.web.context.WebApplicationContext
 
 import com.ait.tooling.json.JSONObject
 import com.ait.tooling.json.schema.JSONSchema
-import com.ait.tooling.server.core.jmx.management.IServerManager
+import com.ait.tooling.server.core.jmx.management.ICoreServerManager
+import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
@@ -75,9 +76,9 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     }
 
     @Memoized
-    public IServerManager getServerManager()
+    public ICoreServerManager getCoreServerManager()
     {
-        getServerContext().getServerManager()
+        getServerContext().getCoreServerManager()
     }
 
     @Memoized
@@ -113,13 +114,19 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     @Override
     public AuthorizationResult isAuthorized(Object target, JSONObject principals)
     {
-        return getServerContext().isAuthorized(target, principals)
+        getServerContext().isAuthorized(target, principals)
     }
 
     @Memoized
     public IExecutorServiceDescriptorProvider getExecutorServiceDescriptorProvider()
     {
         getServerContext().getExecutorServiceDescriptorProvider()
+    }
+
+    @Memoized
+    public IPubSubDescriptorProvider getPubSubDescriptorProvider()
+    {
+        getServerContext().getPubSubDescriptorProvider()
     }
 
     public JSONObject json()
