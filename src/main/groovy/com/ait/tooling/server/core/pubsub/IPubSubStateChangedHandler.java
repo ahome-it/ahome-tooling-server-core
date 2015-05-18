@@ -18,5 +18,5 @@ package com.ait.tooling.server.core.pubsub;
 
 public interface IPubSubStateChangedHandler
 {
-    public void onStateChanged(IPubSubDescriptor<?> descriptor, PubSubChannelType type, PubSubStateType state);
+    public PubSubNextEventActionType onStateChanged(StateChangedEvent event);
 }

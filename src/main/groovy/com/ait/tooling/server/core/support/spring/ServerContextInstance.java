@@ -163,7 +163,7 @@ public final class ServerContextInstance implements IServerContext
     @Override
     public IBuildDescriptorProvider getBuildDescriptorProvider()
     {
-        return getBean("PubSubDescriptorProvider", IBuildDescriptorProvider.class);
+        return getBean("BuildDescriptorProvider", IBuildDescriptorProvider.class);
     }
 
     private final CorePropertiesResolver getCorePropertiesResolver()

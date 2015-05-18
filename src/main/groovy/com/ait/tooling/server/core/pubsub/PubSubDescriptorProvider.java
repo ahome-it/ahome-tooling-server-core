@@ -17,9 +17,7 @@
 package com.ait.tooling.server.core.pubsub;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,6 +28,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.ait.tooling.common.api.java.util.StringOps;
@@ -37,17 +36,17 @@ import com.ait.tooling.common.api.java.util.StringOps;
 @ManagedResource(objectName = "com.ait.tooling.server.core.pubsub:name=PubSubDescriptorProvider", description = "Manage PubSub Descriptors.")
 public class PubSubDescriptorProvider implements IPubSubDescriptorProvider, BeanFactoryAware
 {
-    private static final long                                 serialVersionUID = 4690403089220044743L;
+    private static final long                              serialVersionUID = 4690403089220044743L;
 
-    private static final Logger                               logger           = Logger.getLogger(PubSubDescriptorProvider.class);
+    private static final Logger                            logger           = Logger.getLogger(PubSubDescriptorProvider.class);
 
-    private final LinkedHashMap<String, IPubSubDescriptor<?>> m_descriptors    = new LinkedHashMap<String, IPubSubDescriptor<?>>();
+    private final LinkedHashMap<String, IPubSubDescriptor> m_descriptors    = new LinkedHashMap<String, IPubSubDescriptor>();
 
     public PubSubDescriptorProvider()
     {
     }
 
-    protected void addDescriptor(final IPubSubDescriptor<?> descriptor)
+    protected void addDescriptor(final IPubSubDescriptor descriptor)
     {
         if (null != descriptor)
         {
@@ -70,15 +69,16 @@ public class PubSubDescriptorProvider implements IPubSubDescriptorProvider, Bean
     }
 
     @Override
+    @ManagedAttribute()
     public List<String> getPubSubDescriptorNames()
     {
         return Collections.unmodifiableList(new ArrayList<String>(m_descriptors.keySet()));
     }
 
     @Override
-    public List<IPubSubDescriptor<?>> getPubSubDescriptors()
+    public List<IPubSubDescriptor> getPubSubDescriptors()
     {
-        return Collections.unmodifiableList(new ArrayList<IPubSubDescriptor<?>>(m_descriptors.values()));
+        return Collections.unmodifiableList(new ArrayList<IPubSubDescriptor>(m_descriptors.values()));
     }
 
     @Override
@@ -86,7 +86,7 @@ public class PubSubDescriptorProvider implements IPubSubDescriptorProvider, Bean
     {
         if (factory instanceof DefaultListableBeanFactory)
         {
-            for (IPubSubDescriptor<?> descriptor : ((DefaultListableBeanFactory) factory).getBeansOfType(IPubSubDescriptor.class).values())
+            for (IPubSubDescriptor descriptor : ((DefaultListableBeanFactory) factory).getBeansOfType(IPubSubDescriptor.class).values())
             {
                 addDescriptor(descriptor);
             }
@@ -96,7 +96,7 @@ public class PubSubDescriptorProvider implements IPubSubDescriptorProvider, Bean
     @Override
     public void close() throws IOException
     {
-        for (IPubSubDescriptor<?> descriptor : m_descriptors.values())
+        for (IPubSubDescriptor descriptor : m_descriptors.values())
         {
             try
             {
@@ -112,36 +112,16 @@ public class PubSubDescriptorProvider implements IPubSubDescriptorProvider, Bean
     }
 
     @Override
-    public <T extends Serializable> IPubSubDescriptor<T> getPubSubDescriptor(final String name, final Class<T> type, final PubSubChannelType... list)
+    public IPubSubDescriptor getPubSubDescriptor(final String name, final PubSubChannelType type)
     {
-        return getPubSubDescriptor(name, type, Arrays.asList(list));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T extends Serializable> IPubSubDescriptor<T> getPubSubDescriptor(final String name, final Class<T> type, final List<PubSubChannelType> list)
-    {
-        final IPubSubDescriptor<?> descriptor = m_descriptors.get(StringOps.requireTrimOrNull(name));
+        final IPubSubDescriptor descriptor = m_descriptors.get(StringOps.requireTrimOrNull(name));
 
         if (null != descriptor)
         {
-            if (false == Objects.requireNonNull(type).isAssignableFrom(Objects.requireNonNull(descriptor.getMessageType())))
+            if (Objects.requireNonNull(type) == Objects.requireNonNull(descriptor.getChannelType()))
             {
-                return null;
+                return descriptor;
             }
-            if ((null != list) && (false == list.isEmpty()))
-            {
-                final List<PubSubChannelType> have = Objects.requireNonNull(descriptor.getChannelTypes());
-
-                for (PubSubChannelType look : list)
-                {
-                    if (false == have.contains(look))
-                    {
-                        return null;
-                    }
-                }
-            }
-            return ((IPubSubDescriptor<T>) descriptor);
         }
         return null;
     }

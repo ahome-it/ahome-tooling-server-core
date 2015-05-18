@@ -18,21 +18,19 @@ package com.ait.tooling.server.core.pubsub;
 
 import java.io.Closeable;
 import java.io.Serializable;
-import java.util.List;
 
 import com.ait.tooling.common.api.types.INamed;
+import com.ait.tooling.json.JSONObject;
 
-public interface IPubSubDescriptor<T extends Serializable> extends INamed, Serializable, Closeable
+public interface IPubSubDescriptor extends INamed, Serializable, Closeable
 {
-    public Class<T> getMessageType();
-
     public PubSubStateType getState();
 
-    public List<PubSubChannelType> getChannelTypes();
-    
-    public void publish(T message, PubSubChannelType... channels);
+    public PubSubChannelType getChannelType();
+
+    public void publish(JSONObject message) throws Exception;
 
     public IPubSubHandlerRegistration addStateChangedHandler(IPubSubStateChangedHandler handler);
 
-    public IPubSubHandlerRegistration addMessageReceivedHandler(IPubSubMessageReceivedHandler<T> handler);
+    public IPubSubHandlerRegistration addMessageReceivedHandler(IPubSubMessageReceivedHandler handler);
 }

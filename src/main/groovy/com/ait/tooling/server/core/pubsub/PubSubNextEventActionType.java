@@ -16,7 +16,22 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-public interface IPubSubMessageReceivedHandler
+import com.ait.tooling.common.api.types.IStringValued;
+
+public enum PubSubNextEventActionType implements IStringValued
 {
-    public PubSubNextEventActionType onMesageReceived(MessageReceivedEvent event);
+    CONTINUE("CONTINUE"), REDISPATCH("REDISPATCH"), CANCEL("CANCEL");
+
+    private final String m_value;
+
+    private PubSubNextEventActionType(final String value)
+    {
+        m_value = value;
+    }
+
+    @Override
+    public String getValue()
+    {
+        return m_value;
+    }
 }

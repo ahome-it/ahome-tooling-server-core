@@ -24,9 +24,7 @@ public interface IPubSubDescriptorProvider extends Serializable, Closeable
 {
     public List<String> getPubSubDescriptorNames();
 
-    public List<IPubSubDescriptor<?>> getPubSubDescriptors();
+    public List<IPubSubDescriptor> getPubSubDescriptors();
 
-    public <T extends Serializable> IPubSubDescriptor<T> getPubSubDescriptor(String name, Class<T> type, PubSubChannelType... list);
-
-    public <T extends Serializable> IPubSubDescriptor<T> getPubSubDescriptor(String name, Class<T> type, List<PubSubChannelType> list);
+    public IPubSubDescriptor getPubSubDescriptor(String name, PubSubChannelType type);
 }

@@ -16,7 +16,15 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-public interface IPubSubMessageReceivedHandler
+import java.io.Serializable;
+
+import com.ait.tooling.common.api.types.IValued;
+
+public interface IPubSubEvent<T extends Serializable> extends Serializable, IValued<T>
 {
-    public PubSubNextEventActionType onMesageReceived(MessageReceivedEvent event);
+    public boolean cancel();
+
+    public boolean isCancelled();
+
+    public IPubSubDescriptor getDescriptor();
 }

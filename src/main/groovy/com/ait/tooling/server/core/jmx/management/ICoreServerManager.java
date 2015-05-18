@@ -16,7 +16,17 @@
 
 package com.ait.tooling.server.core.jmx.management;
 
+import org.apache.log4j.Level;
+
 public interface ICoreServerManager
 {
     public boolean isRunning();
+
+    public Level getLoggingLevel();
+
+    public void setLoggingLevel(Level level);
+
+    public void doIncrementOperationCount(String name);
+
+    public void doResetOperationCount(String name);
 }

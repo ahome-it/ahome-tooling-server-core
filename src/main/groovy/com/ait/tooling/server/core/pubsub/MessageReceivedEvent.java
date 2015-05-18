@@ -16,7 +16,14 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-public interface IPubSubMessageReceivedHandler
+import com.ait.tooling.json.JSONObject;
+
+public class MessageReceivedEvent extends AbstractPubSubEvent<JSONObject>
 {
-    public PubSubNextEventActionType onMesageReceived(MessageReceivedEvent event);
+    private static final long serialVersionUID = -1895272847273309384L;
+
+    public MessageReceivedEvent(final IPubSubDescriptor descriptor, final JSONObject value)
+    {
+        super(descriptor, value);
+    }
 }

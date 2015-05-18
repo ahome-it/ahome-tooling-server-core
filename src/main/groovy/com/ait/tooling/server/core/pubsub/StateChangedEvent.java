@@ -16,7 +16,12 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-public interface IPubSubMessageReceivedHandler
+public class StateChangedEvent extends AbstractPubSubEvent<PubSubStateType>
 {
-    public PubSubNextEventActionType onMesageReceived(MessageReceivedEvent event);
+    private static final long serialVersionUID = -6065986036854729518L;
+
+    public StateChangedEvent(final IPubSubDescriptor descriptor, final PubSubStateType value)
+    {
+        super(descriptor, value);
+    }
 }
