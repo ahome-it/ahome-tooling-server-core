@@ -86,8 +86,12 @@ public class PubSubDescriptorProvider implements IPubSubDescriptorProvider, Bean
     {
         if (factory instanceof DefaultListableBeanFactory)
         {
-            for (IPubSubDescriptor descriptor : ((DefaultListableBeanFactory) factory).getBeansOfType(IPubSubDescriptor.class).values())
-            {
+            for (String name : ((DefaultListableBeanFactory) factory).getBeansOfType(IPubSubDescriptor.class).keySet())
+            {                
+                final IPubSubDescriptor descriptor = factory.getBean(name, IPubSubDescriptor.class);
+                
+                descriptor.setName(name);
+                
                 addDescriptor(descriptor);
             }
         }

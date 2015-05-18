@@ -23,17 +23,21 @@ import com.ait.tooling.common.api.java.util.StringOps;
 @SuppressWarnings("serial")
 public abstract class AbstractPubSubDescriptor implements IPubSubDescriptor
 {
-    private final String            m_name;
+    private String                  m_name;
 
     private final PubSubChannelType m_type;
 
     private PubSubStateType         m_state = PubSubStateType.CLOSED;
 
-    protected AbstractPubSubDescriptor(final String name, final PubSubChannelType type)
+    protected AbstractPubSubDescriptor(final PubSubChannelType type)
+    {
+        m_type = Objects.requireNonNull(type);
+    }
+
+    @Override
+    public void setName(final String name)
     {
         m_name = StringOps.requireTrimOrNull(name);
-
-        m_type = Objects.requireNonNull(type);
     }
 
     @Override

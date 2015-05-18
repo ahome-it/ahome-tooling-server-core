@@ -16,21 +16,19 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-import java.io.Closeable;
-import java.io.Serializable;
+import java.util.Objects;
 
-import com.ait.tooling.common.api.types.INamedDefinition;
-import com.ait.tooling.json.JSONObject;
-
-public interface IPubSubDescriptor extends INamedDefinition, Serializable, Closeable
+public class PubSubException extends Exception
 {
-    public PubSubStateType getState();
+    private static final long serialVersionUID = -2943300679284968069L;
 
-    public PubSubChannelType getChannelType();
+    public PubSubException(final String reason)
+    {
+        super(Objects.requireNonNull(reason));
+    }
 
-    public void publish(JSONObject message) throws Exception;
-
-    public IPubSubHandlerRegistration addStateChangedHandler(IPubSubStateChangedHandler handler);
-
-    public IPubSubHandlerRegistration addMessageReceivedHandler(IPubSubMessageReceivedHandler handler);
+    public PubSubException(final String reason, Throwable cause)
+    {
+        super(Objects.requireNonNull(reason), cause);
+    }
 }

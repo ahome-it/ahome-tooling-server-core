@@ -62,6 +62,8 @@
 	<bean id="DefaultFixedThreadPoolExecutorServiceDescriptor" class="com.ait.tooling.server.core.support.spring.executors.FixedThreadPoolExecutorServiceDescriptor"/>
 
 	<bean id="ExecutorServiceDescriptorProvider" class="com.ait.tooling.server.core.support.spring.ExecutorServiceDescriptorProvider" destroy-method="close"/>
+	
+	<bean id="CoreServerEvents" class="com.ait.tooling.server.core.pubsub.CoreEventPubSubDescriptor" destroy-method="close"/>
 
 	<context:component-scan base-package="com.ait.tooling.server.core.jmx"/>
 

@@ -16,21 +16,12 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-import java.io.Closeable;
-import java.io.Serializable;
-
-import com.ait.tooling.common.api.types.INamedDefinition;
-import com.ait.tooling.json.JSONObject;
-
-public interface IPubSubDescriptor extends INamedDefinition, Serializable, Closeable
+public class CoreEventPubSubDescriptor extends AbstractCoreEventPubSubDescriptor
 {
-    public PubSubStateType getState();
+    private static final long serialVersionUID = 1865009395616655765L;
 
-    public PubSubChannelType getChannelType();
-
-    public void publish(JSONObject message) throws Exception;
-
-    public IPubSubHandlerRegistration addStateChangedHandler(IPubSubStateChangedHandler handler);
-
-    public IPubSubHandlerRegistration addMessageReceivedHandler(IPubSubMessageReceivedHandler handler);
+    public CoreEventPubSubDescriptor()
+    {
+        setState(PubSubStateType.CONNECTED);
+    }
 }
