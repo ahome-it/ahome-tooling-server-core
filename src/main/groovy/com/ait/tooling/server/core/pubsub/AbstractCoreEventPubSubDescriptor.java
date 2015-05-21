@@ -19,6 +19,7 @@ package com.ait.tooling.server.core.pubsub;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.ait.tooling.json.JSONObject;
@@ -46,6 +47,8 @@ public abstract class AbstractCoreEventPubSubDescriptor extends AbstractPubSubDe
         }
         final MessageReceivedEvent event = new MessageReceivedEvent(this, Objects.requireNonNull(message));
 
+        record(event);
+
         for (IPubSubMessageReceivedHandler handler : m_message_received_handlers.values())
         {
             if (PubSubStateType.CONNECTED == getState())
@@ -63,6 +66,39 @@ public abstract class AbstractCoreEventPubSubDescriptor extends AbstractPubSubDe
             }
         }
         return message;
+    }
+
+    private final void record(final MessageReceivedEvent event)
+    {
+        Objects.requireNonNull(event);
+
+        final IPubSubMessageHistoryDescriptor hist = getPubSubMessageHistoryDescriptor();
+
+        if (null == hist)
+        {
+            return;
+        }
+        if (PubSubStateType.CONNECTED != hist.getState())
+        {
+            logger().error("HistoryDescrptor(" + hist.getName() + ") is not connected [" + hist.getState().getValue() + "]");
+
+            return;
+        }
+        Executors.newSingleThreadExecutor().execute(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    hist.record(event);
+                }
+                catch (Exception e)
+                {
+                    logger().error("HistoryDescrptor(" + hist.getName() + ")", e);
+                }
+            }
+        });
     }
 
     @Override
@@ -90,7 +126,7 @@ public abstract class AbstractCoreEventPubSubDescriptor extends AbstractPubSubDe
         Objects.requireNonNull(handler);
 
         final String hkey = Long.toString(m_long.incrementAndGet());
-        
+
         m_message_received_handlers.put(hkey, handler);
 
         return new IPubSubHandlerRegistration()

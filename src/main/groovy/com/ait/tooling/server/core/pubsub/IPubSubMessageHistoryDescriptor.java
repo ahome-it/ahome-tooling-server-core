@@ -20,20 +20,26 @@ import java.io.Closeable;
 import java.io.Serializable;
 import java.util.List;
 
-import com.ait.tooling.common.api.types.INamedDefinition;
+import com.ait.tooling.common.api.types.INamed;
 import com.ait.tooling.json.JSONObject;
 
-public interface IPubSubDescriptor extends INamedDefinition, Serializable, Closeable
+public interface IPubSubMessageHistoryDescriptor extends INamed, Closeable, Serializable
 {
+    public long getMaxSize();
+
+    public void setMaxSize(long size);
+
+    public long getMaxTime();
+
+    public void setMaxTime(long time);
+
     public PubSubStateType getState();
 
-    public PubSubChannelType getChannelType();
+    public PubSubChannelType getType();
 
-    public JSONObject publish(JSONObject message) throws Exception;
+    public void setState(PubSubStateType state);
 
-    public IPubSubHandlerRegistration addStateChangedHandler(IPubSubStateChangedHandler handler);
-
-    public IPubSubHandlerRegistration addMessageReceivedHandler(IPubSubMessageReceivedHandler handler);
+    public void record(IPubSubEvent<JSONObject> event) throws Exception;
 
     public List<IPubSubMessageHistoryEntry> history();
 }

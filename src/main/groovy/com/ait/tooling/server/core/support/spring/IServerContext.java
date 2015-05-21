@@ -23,10 +23,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.ait.tooling.json.JSONObject;
+import com.ait.tooling.json.schema.JSONSchema;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
 import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration;
@@ -41,7 +42,7 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver
 {
     public IServerContext getServerContext();
 
-    public WebApplicationContext getApplicationContext();
+    public ApplicationContext getApplicationContext();
 
     public <B> B getBean(String name, Class<B> type);
 
@@ -82,4 +83,8 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver
     public JSONObject json(Collection<?> collection);
 
     public JSONObject json(List<?> list);
+
+    public JSONSchema jsonschema(Map<String, ?> schema);
+
+    public String uuid();
 }

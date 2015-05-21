@@ -16,6 +16,7 @@
 
 package com.ait.tooling.server.core.pubsub;
 
+import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.common.api.types.IStringValued;
 
 public enum PubSubChannelType implements IStringValued
@@ -33,5 +34,22 @@ public enum PubSubChannelType implements IStringValued
     public String getValue()
     {
         return m_value;
+    }
+
+    public static final PubSubChannelType fromString(final String valu)
+    {
+        final String look = StringOps.toTrimOrNull(valu);
+
+        if (null != look)
+        {
+            for (PubSubChannelType type : values())
+            {
+                if (type.getValue().equals(look))
+                {
+                    return type;
+                }
+            }
+        }
+        return null;
     }
 }

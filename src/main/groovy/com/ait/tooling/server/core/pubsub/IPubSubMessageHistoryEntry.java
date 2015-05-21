@@ -16,24 +16,17 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-import java.io.Closeable;
 import java.io.Serializable;
-import java.util.List;
 
-import com.ait.tooling.common.api.types.INamedDefinition;
+import com.ait.tooling.common.api.types.INamed;
+import com.ait.tooling.common.api.types.IValued;
 import com.ait.tooling.json.JSONObject;
 
-public interface IPubSubDescriptor extends INamedDefinition, Serializable, Closeable
+public interface IPubSubMessageHistoryEntry extends INamed, IValued<JSONObject>, Serializable
 {
-    public PubSubStateType getState();
+    public long getTime();
 
     public PubSubChannelType getChannelType();
 
-    public JSONObject publish(JSONObject message) throws Exception;
-
-    public IPubSubHandlerRegistration addStateChangedHandler(IPubSubStateChangedHandler handler);
-
-    public IPubSubHandlerRegistration addMessageReceivedHandler(IPubSubMessageReceivedHandler handler);
-
-    public List<IPubSubMessageHistoryEntry> history();
+    public JSONObject toJSONObject();
 }

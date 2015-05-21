@@ -20,8 +20,8 @@ import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 
 import org.apache.log4j.Logger
+import org.springframework.context.ApplicationContext
 import org.springframework.core.env.Environment
-import org.springframework.web.context.WebApplicationContext
 
 import com.ait.tooling.json.JSONObject
 import com.ait.tooling.json.schema.JSONSchema
@@ -59,6 +59,12 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     {
     }
 
+    @Override
+    public Logger logger()
+    {
+        m_logger
+    }
+
     @Memoized
     public IServerContext getServerContext()
     {
@@ -66,7 +72,7 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     }
 
     @Memoized
-    public WebApplicationContext getApplicationContext()
+    public ApplicationContext getApplicationContext()
     {
         getServerContext().getApplicationContext()
     }
@@ -144,12 +150,6 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     }
 
     @Override
-    public Logger logger()
-    {
-        m_logger
-    }
-
-    @Override
     public JSONObject publish(String name, PubSubChannelType type, JSONObject message) throws Exception
     {
         getServerContext().publish(name, type, message)
@@ -182,55 +182,47 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     @Override
     public JSONObject json()
     {
-        new JSONObject()
+        getServerContext().json()
     }
 
     @Override
     public JSONObject json(Map<String, ?> valu)
     {
-        new JSONObject(valu)
+        getServerContext().json(valu)
     }
 
     @Override
     public JSONObject json(String name, Object value)
     {
-        new JSONObject(name, value)
+        getServerContext().json(name, value)
     }
 
     @Override
     public JSONObject json(Collection<?> collection)
     {
-        if (collection instanceof List)
-        {
-            return json((List<?>) collection)
-        }
-        else if(collection instanceof Map)
-        {
-            return json((Map<String, ?>) collection)
-        }
-        else
-        {
-            final List list = []
-
-            list.addAll(collection)
-
-            return json(list)
-        }
+        getServerContext().json(collection)
     }
 
     @Override
     public JSONObject json(List<?> list)
     {
-        new JSONObject(list)
+        getServerContext().json(list)
     }
 
-    public JSONSchema schema(Map<String, ?> schema)
+    @Override
+    public JSONSchema jsonschema(Map<String, ?> schema)
     {
-        JSONSchema.cast(json(schema))
+        getServerContext().jsonschema(schema)
     }
 
     @Override
     public void close() throws IOException
     {
+    }
+
+    @Override
+    public String uuid()
+    {
+        getServerContext().uuid()
     }
 }

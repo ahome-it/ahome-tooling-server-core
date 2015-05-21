@@ -26,10 +26,12 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
-import org.springframework.web.context.WebApplicationContext;
 
+import com.ait.tooling.common.api.java.util.UUID;
 import com.ait.tooling.json.JSONObject;
+import com.ait.tooling.json.schema.JSONSchema;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptor;
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
@@ -60,7 +62,7 @@ public final class ServerContextInstance implements IServerContext
 
     private final static ConcurrentHashMap<String, IPubSubDescriptor> PUBSUB_MAP       = new ConcurrentHashMap<String, IPubSubDescriptor>();
 
-    private WebApplicationContext                                     m_context;
+    private ApplicationContext                                        m_context;
 
     @Override
     public final IServerContext getServerContext()
@@ -77,13 +79,13 @@ public final class ServerContextInstance implements IServerContext
     {
     }
 
-    public final void setApplicationContext(final WebApplicationContext context)
+    public final void setApplicationContext(final ApplicationContext context)
     {
         m_context = Objects.requireNonNull(context);
     }
 
     @Override
-    public final WebApplicationContext getApplicationContext()
+    public final ApplicationContext getApplicationContext()
     {
         return m_context;
     }
@@ -206,7 +208,11 @@ public final class ServerContextInstance implements IServerContext
     @Override
     public JSONObject publish(String name, PubSubChannelType type, JSONObject message) throws Exception
     {
-        IPubSubDescriptor desc = PUBSUB_MAP.get(name);
+        type = Objects.requireNonNull(type);
+
+        message = Objects.requireNonNull(message);
+
+        IPubSubDescriptor desc = PUBSUB_MAP.get(Objects.requireNonNull(name));
 
         if (null != desc)
         {
@@ -216,7 +222,7 @@ public final class ServerContextInstance implements IServerContext
             }
             else
             {
-                throw new PubSubException("IPubSubDescriptor ${name} wrong type " + type.getValue());
+                throw new PubSubException("IPubSubDescriptor " + name + " wrong type " + type.getValue());
             }
         }
         else
@@ -231,7 +237,7 @@ public final class ServerContextInstance implements IServerContext
             }
             else
             {
-                throw new PubSubException("IPubSubDescriptor ${name} type " + type.getValue() + " not found");
+                throw new PubSubException("IPubSubDescriptor " + name + " type " + type.getValue() + " not found");
             }
         }
         return message;
@@ -240,13 +246,17 @@ public final class ServerContextInstance implements IServerContext
     @Override
     public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, Closure<JSONObject> handler) throws Exception
     {
-        return addMessageReceivedHandler(name, type, new OnMessage(handler));
+        return addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(type), new OnMessage(Objects.requireNonNull(handler)));
     }
 
     @Override
     public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IPubSubMessageReceivedHandler handler) throws Exception
     {
-        IPubSubDescriptor desc = PUBSUB_MAP.get(name);
+        type = Objects.requireNonNull(type);
+
+        handler = Objects.requireNonNull(handler);
+
+        IPubSubDescriptor desc = PUBSUB_MAP.get(Objects.requireNonNull(name));
 
         if (null != desc)
         {
@@ -256,7 +266,7 @@ public final class ServerContextInstance implements IServerContext
             }
             else
             {
-                throw new PubSubException("IPubSubDescriptor ${name} wrong type " + type.getValue());
+                throw new PubSubException("IPubSubDescriptor " + name + " wrong type " + type.getValue());
             }
         }
         else
@@ -271,7 +281,7 @@ public final class ServerContextInstance implements IServerContext
             }
             else
             {
-                throw new PubSubException("IPubSubDescriptor ${name} type " + type.getValue() + " not found");
+                throw new PubSubException("IPubSubDescriptor " + name + " type " + type.getValue() + " not found");
             }
         }
     }
@@ -279,7 +289,11 @@ public final class ServerContextInstance implements IServerContext
     @Override
     public IPubSubHandlerRegistration addStateChangedHandler(String name, PubSubChannelType type, IPubSubStateChangedHandler handler) throws Exception
     {
-        IPubSubDescriptor desc = PUBSUB_MAP.get(name);
+        type = Objects.requireNonNull(type);
+
+        handler = Objects.requireNonNull(handler);
+
+        IPubSubDescriptor desc = PUBSUB_MAP.get(Objects.requireNonNull(name));
 
         if (null != desc)
         {
@@ -289,7 +303,7 @@ public final class ServerContextInstance implements IServerContext
             }
             else
             {
-                throw new PubSubException("IPubSubDescriptor ${name} wrong type " + type.getValue());
+                throw new PubSubException("IPubSubDescriptor " + name + " wrong type " + type.getValue());
             }
         }
         else
@@ -304,7 +318,7 @@ public final class ServerContextInstance implements IServerContext
             }
             else
             {
-                throw new PubSubException("IPubSubDescriptor ${name} type " + type.getValue() + " not found");
+                throw new PubSubException("IPubSubDescriptor " + name + " type " + type.getValue() + " not found");
             }
         }
     }
@@ -312,7 +326,7 @@ public final class ServerContextInstance implements IServerContext
     @Override
     public IPubSubHandlerRegistration addStateChangedHandler(String name, PubSubChannelType type, Closure<PubSubStateType> handler) throws Exception
     {
-        return addStateChangedHandler(name, type, new OnStateChanged(handler));
+        return addStateChangedHandler(Objects.requireNonNull(name), Objects.requireNonNull(type), new OnStateChanged(Objects.requireNonNull(handler)));
     }
 
     private static final class OnMessage implements IPubSubMessageReceivedHandler
@@ -321,13 +335,13 @@ public final class ServerContextInstance implements IServerContext
 
         public OnMessage(final Closure<JSONObject> clos)
         {
-            m_clos = clos;
+            m_clos = Objects.requireNonNull(clos);
         }
 
         @Override
         public PubSubNextEventActionType onMesageReceived(final MessageReceivedEvent event)
         {
-            m_clos.call(event.getValue());
+            m_clos.call(Objects.requireNonNull(Objects.requireNonNull(event).getValue()));
 
             return PubSubNextEventActionType.CONTINUE;
         }
@@ -339,24 +353,16 @@ public final class ServerContextInstance implements IServerContext
 
         public OnStateChanged(final Closure<PubSubStateType> clos)
         {
-            m_clos = clos;
-
-            Objects.requireNonNull(m_clos);
+            m_clos = Objects.requireNonNull(clos);
         }
 
         @Override
         public PubSubNextEventActionType onStateChanged(final StateChangedEvent event)
         {
-            m_clos.call(event.getValue());
+            m_clos.call(Objects.requireNonNull(Objects.requireNonNull(event).getValue()));
 
             return PubSubNextEventActionType.CONTINUE;
         }
-    }
-
-    @Override
-    public Logger logger()
-    {
-        return logger;
     }
 
     @Override
@@ -366,21 +372,23 @@ public final class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public JSONObject json(Map<String, ?> valu)
+    public JSONObject json(final Map<String, ?> valu)
     {
-        return new JSONObject(valu);
+        return new JSONObject(Objects.requireNonNull(valu));
     }
 
     @Override
-    public JSONObject json(String name, Object value)
+    public JSONObject json(final String name, final Object value)
     {
-        return new JSONObject(name, value);
+        return new JSONObject(Objects.requireNonNull(name), value);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public JSONObject json(Collection<?> collection)
     {
+        collection = Objects.requireNonNull(collection);
+
         if (collection instanceof List)
         {
             return json((List<?>) collection);
@@ -396,8 +404,26 @@ public final class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public JSONObject json(List<?> list)
+    public JSONObject json(final List<?> list)
     {
-        return new JSONObject(list);
+        return new JSONObject(Objects.requireNonNull(list));
+    }
+
+    @Override
+    public String uuid()
+    {
+        return UUID.uuid();
+    }
+
+    @Override
+    public JSONSchema jsonschema(final Map<String, ?> schema)
+    {
+        return JSONSchema.cast(json(schema));
+    }
+
+    @Override
+    public Logger logger()
+    {
+        return logger;
     }
 }
