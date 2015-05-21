@@ -27,6 +27,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
@@ -74,6 +75,7 @@ public class ExecutorServiceDescriptorProvider implements IExecutorServiceDescri
     }
 
     @Override
+    @ManagedAttribute(description = "Get ExecutorServiceDescriptor names.")
     public List<String> getExecutorServiceDescriptorNames()
     {
         return Collections.unmodifiableList(new ArrayList<String>(m_descriptors.keySet()));

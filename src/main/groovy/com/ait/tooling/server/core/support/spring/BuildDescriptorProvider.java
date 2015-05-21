@@ -27,6 +27,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.ait.tooling.common.api.java.util.StringOps;
@@ -74,6 +75,7 @@ public class BuildDescriptorProvider implements IBuildDescriptorProvider, BeanFa
     }
 
     @Override
+    @ManagedAttribute(description = "Get BuildDescriptor names.")
     public List<String> getBuildDescriptorNames()
     {
         return Collections.unmodifiableList(new ArrayList<String>(m_descriptors.keySet()));
@@ -95,6 +97,12 @@ public class BuildDescriptorProvider implements IBuildDescriptorProvider, BeanFa
             list.add(descriptor.getAsJSONObject());
         }
         return list;
+    }
+    
+    @ManagedAttribute(description = "Get BuildDescriptor as JSONArray String.")
+    public String getBuildDescriptorsAsJSONArrayString()
+    {
+        return getBuildDescriptorsAsJSONArray().toJSONString();
     }
 
     @Override
