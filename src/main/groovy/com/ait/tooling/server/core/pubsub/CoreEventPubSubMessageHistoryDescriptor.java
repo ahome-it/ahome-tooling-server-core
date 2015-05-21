@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.json.JSONObject;
 
 public class CoreEventPubSubMessageHistoryDescriptor implements IPubSubMessageHistoryDescriptor
@@ -41,9 +40,9 @@ public class CoreEventPubSubMessageHistoryDescriptor implements IPubSubMessageHi
 
     private final List<IPubSubMessageHistoryEntry> m_list           = Collections.synchronizedList(new ArrayList<IPubSubMessageHistoryEntry>());
 
-    public CoreEventPubSubMessageHistoryDescriptor(final String name)
+    public CoreEventPubSubMessageHistoryDescriptor()
     {
-        m_name = StringOps.requireTrimOrNull(name);
+        m_name = "CoreServerEvents";
 
         setState(PubSubStateType.CONNECTED);
     }
