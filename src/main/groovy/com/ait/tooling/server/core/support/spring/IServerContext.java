@@ -16,11 +16,24 @@
 
 package com.ait.tooling.server.core.support.spring;
 
+import groovy.lang.Closure;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
 import org.springframework.core.env.Environment;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
+import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration;
+import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler;
+import com.ait.tooling.server.core.pubsub.IPubSubStateChangedHandler;
+import com.ait.tooling.server.core.pubsub.PubSubChannelType;
+import com.ait.tooling.server.core.pubsub.PubSubStateType;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizer;
 
@@ -29,6 +42,8 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver
     public IServerContext getServerContext();
 
     public WebApplicationContext getApplicationContext();
+
+    public <B> B getBean(String name, Class<B> type);
 
     public Environment getEnvironment();
 
@@ -43,6 +58,28 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver
     public IBuildDescriptorProvider getBuildDescriptorProvider();
 
     public IPropertiesResolver getPropertiesResolver();
-    
+
     public IPubSubDescriptorProvider getPubSubDescriptorProvider();
+
+    public JSONObject publish(String name, PubSubChannelType type, JSONObject message) throws Exception;
+
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, Closure<JSONObject> handler) throws Exception;
+
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IPubSubMessageReceivedHandler handler) throws Exception;
+
+    public IPubSubHandlerRegistration addStateChangedHandler(String name, PubSubChannelType type, Closure<PubSubStateType> handler) throws Exception;
+
+    public IPubSubHandlerRegistration addStateChangedHandler(String name, PubSubChannelType type, IPubSubStateChangedHandler handler) throws Exception;
+
+    public Logger logger();
+
+    public JSONObject json();
+
+    public JSONObject json(Map<String, ?> valu);
+
+    public JSONObject json(String name, Object value);
+
+    public JSONObject json(Collection<?> collection);
+
+    public JSONObject json(List<?> list);
 }

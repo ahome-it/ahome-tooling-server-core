@@ -38,7 +38,7 @@ public abstract class AbstractCoreEventPubSubDescriptor extends AbstractPubSubDe
     }
 
     @Override
-    public void publish(final JSONObject message) throws Exception
+    public JSONObject publish(final JSONObject message) throws Exception
     {
         if (PubSubStateType.CONNECTED != getState())
         {
@@ -58,10 +58,11 @@ public abstract class AbstractCoreEventPubSubDescriptor extends AbstractPubSubDe
                 }
                 if (event.isCancelled())
                 {
-                    return;
+                    break;
                 }
             }
         }
+        return message;
     }
 
     @Override
@@ -69,7 +70,7 @@ public abstract class AbstractCoreEventPubSubDescriptor extends AbstractPubSubDe
     {
         Objects.requireNonNull(handler);
 
-        final String hkey = Long.toString(m_long.addAndGet(1));
+        final String hkey = Long.toString(m_long.incrementAndGet());
 
         m_state_changed_handlers.put(hkey, handler);
 
@@ -88,8 +89,8 @@ public abstract class AbstractCoreEventPubSubDescriptor extends AbstractPubSubDe
     {
         Objects.requireNonNull(handler);
 
-        final String hkey = Long.toString(m_long.addAndGet(1));
-
+        final String hkey = Long.toString(m_long.incrementAndGet());
+        
         m_message_received_handlers.put(hkey, handler);
 
         return new IPubSubHandlerRegistration()

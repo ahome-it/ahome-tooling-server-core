@@ -16,7 +16,14 @@
 
 package com.ait.tooling.server.core.support.spring;
 
+import groovy.lang.Closure;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
 import org.springframework.core.env.Environment;
@@ -24,24 +31,36 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
+import com.ait.tooling.server.core.pubsub.IPubSubDescriptor;
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
+import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration;
+import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler;
+import com.ait.tooling.server.core.pubsub.IPubSubStateChangedHandler;
+import com.ait.tooling.server.core.pubsub.MessageReceivedEvent;
+import com.ait.tooling.server.core.pubsub.PubSubChannelType;
+import com.ait.tooling.server.core.pubsub.PubSubException;
+import com.ait.tooling.server.core.pubsub.PubSubNextEventActionType;
+import com.ait.tooling.server.core.pubsub.PubSubStateType;
+import com.ait.tooling.server.core.pubsub.StateChangedEvent;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 import com.ait.tooling.server.core.security.AuthorizationResult;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 
 public final class ServerContextInstance implements IServerContext
 {
-    private static final long                          serialVersionUID = 8451400323005323866L;
+    private static final long                                         serialVersionUID = 8451400323005323866L;
 
-    private static final Logger                        logger           = Logger.getLogger(ServerContextInstance.class);
+    private static final Logger                                       logger           = Logger.getLogger(ServerContextInstance.class);
 
-    private final static AnonOnlyAuthorizationProvider DEFAULT_AUTH     = new AnonOnlyAuthorizationProvider();
+    private final static AnonOnlyAuthorizationProvider                DEFAULT_AUTH     = new AnonOnlyAuthorizationProvider();
 
-    private final static DefaultPrincipalsKeysProvider DEFAULT_KEYS     = new DefaultPrincipalsKeysProvider();
+    private final static DefaultPrincipalsKeysProvider                DEFAULT_KEYS     = new DefaultPrincipalsKeysProvider();
 
-    private final static ServerContextInstance         INSTANCE         = new ServerContextInstance();
+    private final static ServerContextInstance                        INSTANCE         = new ServerContextInstance();
 
-    private WebApplicationContext                      m_context;
+    private final static ConcurrentHashMap<String, IPubSubDescriptor> PUBSUB_MAP       = new ConcurrentHashMap<String, IPubSubDescriptor>();
+
+    private WebApplicationContext                                     m_context;
 
     @Override
     public final IServerContext getServerContext()
@@ -75,7 +94,8 @@ public final class ServerContextInstance implements IServerContext
         return m_context.getEnvironment();
     }
 
-    public final <T> T getBean(final String name, final Class<T> type)
+    @Override
+    public final <B> B getBean(final String name, final Class<B> type)
     {
         return m_context.getBean(Objects.requireNonNull(name), Objects.requireNonNull(type));
     }
@@ -181,5 +201,203 @@ public final class ServerContextInstance implements IServerContext
     public IPubSubDescriptorProvider getPubSubDescriptorProvider()
     {
         return getBean("PubSubDescriptorProvider", IPubSubDescriptorProvider.class);
+    }
+
+    @Override
+    public JSONObject publish(String name, PubSubChannelType type, JSONObject message) throws Exception
+    {
+        IPubSubDescriptor desc = PUBSUB_MAP.get(name);
+
+        if (null != desc)
+        {
+            if (type == desc.getChannelType())
+            {
+                desc.publish(message);
+            }
+            else
+            {
+                throw new PubSubException("IPubSubDescriptor ${name} wrong type " + type.getValue());
+            }
+        }
+        else
+        {
+            desc = getServerContext().getPubSubDescriptorProvider().getPubSubDescriptor(name, type);
+
+            if (null != desc)
+            {
+                PUBSUB_MAP.put(name, desc);
+
+                desc.publish(message);
+            }
+            else
+            {
+                throw new PubSubException("IPubSubDescriptor ${name} type " + type.getValue() + " not found");
+            }
+        }
+        return message;
+    }
+
+    @Override
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, Closure<JSONObject> handler) throws Exception
+    {
+        return addMessageReceivedHandler(name, type, new OnMessage(handler));
+    }
+
+    @Override
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IPubSubMessageReceivedHandler handler) throws Exception
+    {
+        IPubSubDescriptor desc = PUBSUB_MAP.get(name);
+
+        if (null != desc)
+        {
+            if (type == desc.getChannelType())
+            {
+                return desc.addMessageReceivedHandler(handler);
+            }
+            else
+            {
+                throw new PubSubException("IPubSubDescriptor ${name} wrong type " + type.getValue());
+            }
+        }
+        else
+        {
+            desc = getServerContext().getPubSubDescriptorProvider().getPubSubDescriptor(name, type);
+
+            if (null != desc)
+            {
+                PUBSUB_MAP.put(name, desc);
+
+                return desc.addMessageReceivedHandler(handler);
+            }
+            else
+            {
+                throw new PubSubException("IPubSubDescriptor ${name} type " + type.getValue() + " not found");
+            }
+        }
+    }
+
+    @Override
+    public IPubSubHandlerRegistration addStateChangedHandler(String name, PubSubChannelType type, IPubSubStateChangedHandler handler) throws Exception
+    {
+        IPubSubDescriptor desc = PUBSUB_MAP.get(name);
+
+        if (null != desc)
+        {
+            if (type == desc.getChannelType())
+            {
+                return desc.addStateChangedHandler(handler);
+            }
+            else
+            {
+                throw new PubSubException("IPubSubDescriptor ${name} wrong type " + type.getValue());
+            }
+        }
+        else
+        {
+            desc = getServerContext().getPubSubDescriptorProvider().getPubSubDescriptor(name, type);
+
+            if (null != desc)
+            {
+                PUBSUB_MAP.put(name, desc);
+
+                return desc.addStateChangedHandler(handler);
+            }
+            else
+            {
+                throw new PubSubException("IPubSubDescriptor ${name} type " + type.getValue() + " not found");
+            }
+        }
+    }
+
+    @Override
+    public IPubSubHandlerRegistration addStateChangedHandler(String name, PubSubChannelType type, Closure<PubSubStateType> handler) throws Exception
+    {
+        return addStateChangedHandler(name, type, new OnStateChanged(handler));
+    }
+
+    private static final class OnMessage implements IPubSubMessageReceivedHandler
+    {
+        private final Closure<JSONObject> m_clos;
+
+        public OnMessage(final Closure<JSONObject> clos)
+        {
+            m_clos = clos;
+        }
+
+        @Override
+        public PubSubNextEventActionType onMesageReceived(final MessageReceivedEvent event)
+        {
+            m_clos.call(event.getValue());
+
+            return PubSubNextEventActionType.CONTINUE;
+        }
+    }
+
+    private static final class OnStateChanged implements IPubSubStateChangedHandler
+    {
+        private final Closure<PubSubStateType> m_clos;
+
+        public OnStateChanged(final Closure<PubSubStateType> clos)
+        {
+            m_clos = clos;
+
+            Objects.requireNonNull(m_clos);
+        }
+
+        @Override
+        public PubSubNextEventActionType onStateChanged(final StateChangedEvent event)
+        {
+            m_clos.call(event.getValue());
+
+            return PubSubNextEventActionType.CONTINUE;
+        }
+    }
+
+    @Override
+    public Logger logger()
+    {
+        return logger;
+    }
+
+    @Override
+    public JSONObject json()
+    {
+        return new JSONObject();
+    }
+
+    @Override
+    public JSONObject json(Map<String, ?> valu)
+    {
+        return new JSONObject(valu);
+    }
+
+    @Override
+    public JSONObject json(String name, Object value)
+    {
+        return new JSONObject(name, value);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public JSONObject json(Collection<?> collection)
+    {
+        if (collection instanceof List)
+        {
+            return json((List<?>) collection);
+        }
+        else if (collection instanceof Map)
+        {
+            return json((Map<String, ?>) collection);
+        }
+        else
+        {
+            return json(new ArrayList<Object>(collection));
+        }
+    }
+
+    @Override
+    public JSONObject json(List<?> list)
+    {
+        return new JSONObject(list);
     }
 }

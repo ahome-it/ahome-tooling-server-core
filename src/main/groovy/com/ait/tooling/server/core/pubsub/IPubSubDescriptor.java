@@ -28,7 +28,7 @@ public interface IPubSubDescriptor extends INamedDefinition, Serializable, Close
 
     public PubSubChannelType getChannelType();
 
-    public void publish(JSONObject message) throws Exception;
+    public JSONObject publish(JSONObject message) throws Exception;
 
     public IPubSubHandlerRegistration addStateChangedHandler(IPubSubStateChangedHandler handler);
 
