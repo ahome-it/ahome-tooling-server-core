@@ -16,6 +16,7 @@
 
 package com.ait.tooling.server.core.pubsub;
 
+import java.util.Date;
 import java.util.Objects;
 
 import com.ait.tooling.json.JSONObject;
@@ -72,7 +73,7 @@ public class CorePubSubMessageHistoryEntry implements IPubSubMessageHistoryEntry
     {
         final JSONObject json = new JSONObject();
 
-        json.put("time", getTime());
+        json.put("time", new Date(getTime()).toString());
 
         json.put("name", getName());
 
