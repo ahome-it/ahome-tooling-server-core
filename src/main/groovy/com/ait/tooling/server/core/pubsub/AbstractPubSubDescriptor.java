@@ -20,27 +20,33 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationContext;
 
 import com.ait.tooling.common.api.java.util.StringOps;
-import com.ait.tooling.server.core.support.spring.ServerContextInstance;
 
 @SuppressWarnings("serial")
 public abstract class AbstractPubSubDescriptor implements IPubSubDescriptor
 {
-    private String                                        m_name;
+    private String                                                         m_name;
 
-    private final PubSubChannelType                       m_type;
+    private final PubSubChannelType                                        m_type;
 
-    private PubSubStateType                               m_state    = PubSubStateType.CLOSED;
+    private IPubSubMessageHistoryDescriptor                                m_hist;
 
-    private IPubSubMessageHistoryDescriptor               m_hist;
+    private ExecutorService                                                m_exec                      = Executors.newFixedThreadPool(4);
 
-    private final Logger                                  m_logger   = Logger.getLogger(getClass());
+    private final Logger                                                   m_logger                    = Logger.getLogger(getClass());
 
-    private static final List<IPubSubMessageHistoryEntry> NO_HISTORY = Collections.unmodifiableList(new ArrayList<IPubSubMessageHistoryEntry>(0));
+    private final AtomicLong                                               m_long                      = new AtomicLong();
+
+    private final ConcurrentHashMap<String, IPubSubMessageReceivedHandler> m_message_received_handlers = new ConcurrentHashMap<String, IPubSubMessageReceivedHandler>();
+
+    private static final List<IPubSubMessageHistoryEntry>                  NO_HISTORY                  = Collections.unmodifiableList(new ArrayList<IPubSubMessageHistoryEntry>(0));
 
     protected AbstractPubSubDescriptor(final PubSubChannelType type)
     {
@@ -57,17 +63,6 @@ public abstract class AbstractPubSubDescriptor implements IPubSubDescriptor
     public String getName()
     {
         return m_name;
-    }
-
-    protected void setState(final PubSubStateType state)
-    {
-        m_state = Objects.requireNonNull(state);
-    }
-
-    @Override
-    public PubSubStateType getState()
-    {
-        return m_state;
     }
 
     @Override
@@ -91,40 +86,6 @@ public abstract class AbstractPubSubDescriptor implements IPubSubDescriptor
         return m_logger;
     }
 
-    public void setMessageHistoryDescriptorName(final String name)
-    {
-        if ((null == name) || (name.isEmpty()))
-        {
-            return;
-        }
-        final ApplicationContext ctxt = ServerContextInstance.get().getApplicationContext();
-
-        if (ctxt.containsBean(name))
-        {
-            try
-            {
-                final IPubSubMessageHistoryDescriptor hist = ctxt.getBean(name, IPubSubMessageHistoryDescriptor.class);
-
-                if (null != hist)
-                {
-                    setMessageHistoryDescriptor(hist);
-                }
-                else
-                {
-                    logger().error("IPubSubMessageHistoryDescriptor(" + name + ") was null");
-                }
-            }
-            catch (Exception e)
-            {
-                logger().error("Can't find IPubSubMessageHistoryDescriptor(" + name + ")", e);
-            }
-        }
-        else
-        {
-            logger().error("Can't find IPubSubMessageHistoryDescriptor(" + name + ")");
-        }
-    }
-
     public void setMessageHistoryDescriptor(final IPubSubMessageHistoryDescriptor hist)
     {
         m_hist = hist;
@@ -133,5 +94,72 @@ public abstract class AbstractPubSubDescriptor implements IPubSubDescriptor
     protected IPubSubMessageHistoryDescriptor getPubSubMessageHistoryDescriptor()
     {
         return m_hist;
+    }
+
+    protected void dispatch(final MessageReceivedEvent event) throws Exception
+    {
+        Objects.requireNonNull(event);
+
+        record(event);
+
+        for (IPubSubMessageReceivedHandler handler : m_message_received_handlers.values())
+        {
+            final PubSubNextEventActionType next = handler.onMesageReceived(event);
+
+            if (PubSubNextEventActionType.CANCEL == next)
+            {
+                event.cancel();
+            }
+            if (event.isCancelled())
+            {
+                break;
+            }
+        }
+    }
+
+    protected void record(final MessageReceivedEvent event)
+    {
+        Objects.requireNonNull(event);
+
+        final IPubSubMessageHistoryDescriptor hist = getPubSubMessageHistoryDescriptor();
+
+        if (null == hist)
+        {
+            return;
+        }
+        m_exec.execute(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    hist.record(event);
+                }
+                catch (Exception e)
+                {
+                    logger().error("HistoryDescrptor(" + hist.getName() + ")", e);
+                }
+            }
+        });
+    }
+
+    @Override
+    public IPubSubHandlerRegistration addMessageReceivedHandler(final IPubSubMessageReceivedHandler handler)
+    {
+        Objects.requireNonNull(handler);
+
+        final String hkey = Long.toString(m_long.incrementAndGet());
+
+        m_message_received_handlers.put(hkey, handler);
+
+        return new IPubSubHandlerRegistration()
+        {
+            @Override
+            public void removeHandler()
+            {
+                m_message_received_handlers.remove(hkey);
+            }
+        };
     }
 }

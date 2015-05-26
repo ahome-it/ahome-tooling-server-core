@@ -25,13 +25,9 @@ import com.ait.tooling.json.JSONObject;
 
 public interface IPubSubDescriptor extends INamedDefinition, Serializable, Closeable
 {
-    public PubSubStateType getState();
-
     public PubSubChannelType getChannelType();
 
     public JSONObject publish(JSONObject message) throws Exception;
-
-    public IPubSubHandlerRegistration addStateChangedHandler(IPubSubStateChangedHandler handler);
 
     public IPubSubHandlerRegistration addMessageReceivedHandler(IPubSubMessageReceivedHandler handler);
 

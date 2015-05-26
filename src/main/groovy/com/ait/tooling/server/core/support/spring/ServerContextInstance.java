@@ -37,13 +37,10 @@ import com.ait.tooling.server.core.pubsub.IPubSubDescriptor;
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
 import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration;
 import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler;
-import com.ait.tooling.server.core.pubsub.IPubSubStateChangedHandler;
 import com.ait.tooling.server.core.pubsub.MessageReceivedEvent;
 import com.ait.tooling.server.core.pubsub.PubSubChannelType;
 import com.ait.tooling.server.core.pubsub.PubSubException;
 import com.ait.tooling.server.core.pubsub.PubSubNextEventActionType;
-import com.ait.tooling.server.core.pubsub.PubSubStateType;
-import com.ait.tooling.server.core.pubsub.StateChangedEvent;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 import com.ait.tooling.server.core.security.AuthorizationResult;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
@@ -286,49 +283,6 @@ public final class ServerContextInstance implements IServerContext
         }
     }
 
-    @Override
-    public IPubSubHandlerRegistration addStateChangedHandler(String name, PubSubChannelType type, IPubSubStateChangedHandler handler) throws Exception
-    {
-        type = Objects.requireNonNull(type);
-
-        handler = Objects.requireNonNull(handler);
-
-        IPubSubDescriptor desc = PUBSUB_MAP.get(Objects.requireNonNull(name));
-
-        if (null != desc)
-        {
-            if (type == desc.getChannelType())
-            {
-                return desc.addStateChangedHandler(handler);
-            }
-            else
-            {
-                throw new PubSubException("IPubSubDescriptor " + name + " wrong type " + type.getValue());
-            }
-        }
-        else
-        {
-            desc = getServerContext().getPubSubDescriptorProvider().getPubSubDescriptor(name, type);
-
-            if (null != desc)
-            {
-                PUBSUB_MAP.put(name, desc);
-
-                return desc.addStateChangedHandler(handler);
-            }
-            else
-            {
-                throw new PubSubException("IPubSubDescriptor " + name + " type " + type.getValue() + " not found");
-            }
-        }
-    }
-
-    @Override
-    public IPubSubHandlerRegistration addStateChangedHandler(String name, PubSubChannelType type, Closure<PubSubStateType> handler) throws Exception
-    {
-        return addStateChangedHandler(Objects.requireNonNull(name), Objects.requireNonNull(type), new OnStateChanged(Objects.requireNonNull(handler)));
-    }
-
     private static final class OnMessage implements IPubSubMessageReceivedHandler
     {
         private final Closure<JSONObject> m_clos;
@@ -340,24 +294,6 @@ public final class ServerContextInstance implements IServerContext
 
         @Override
         public PubSubNextEventActionType onMesageReceived(final MessageReceivedEvent event)
-        {
-            m_clos.call(Objects.requireNonNull(Objects.requireNonNull(event).getValue()));
-
-            return PubSubNextEventActionType.CONTINUE;
-        }
-    }
-
-    private static final class OnStateChanged implements IPubSubStateChangedHandler
-    {
-        private final Closure<PubSubStateType> m_clos;
-
-        public OnStateChanged(final Closure<PubSubStateType> clos)
-        {
-            m_clos = Objects.requireNonNull(clos);
-        }
-
-        @Override
-        public PubSubNextEventActionType onStateChanged(final StateChangedEvent event)
         {
             m_clos.call(Objects.requireNonNull(Objects.requireNonNull(event).getValue()));
 

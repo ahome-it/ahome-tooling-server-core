@@ -29,9 +29,7 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider
 import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration
 import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler
-import com.ait.tooling.server.core.pubsub.IPubSubStateChangedHandler
 import com.ait.tooling.server.core.pubsub.PubSubChannelType
-import com.ait.tooling.server.core.pubsub.PubSubStateType
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
@@ -165,18 +163,6 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IPubSubMessageReceivedHandler handler) throws Exception
     {
         getServerContext().addMessageReceivedHandler(name, type, handler)
-    }
-
-    @Override
-    public IPubSubHandlerRegistration addStateChangedHandler(String name, PubSubChannelType type, IPubSubStateChangedHandler handler) throws Exception
-    {
-        getServerContext().addStateChangedHandler(name, type, handler)
-    }
-
-    @Override
-    public IPubSubHandlerRegistration addStateChangedHandler(String name, PubSubChannelType type, Closure<PubSubStateType> handler) throws Exception
-    {
-        getServerContext().addStateChangedHandler(name, type, handler)
     }
 
     @Override

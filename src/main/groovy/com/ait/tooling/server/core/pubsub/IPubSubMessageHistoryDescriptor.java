@@ -33,12 +33,6 @@ public interface IPubSubMessageHistoryDescriptor extends INamed, Closeable, Seri
 
     public void setMaxTime(long time);
 
-    public PubSubStateType getState();
-
-    public PubSubChannelType getType();
-
-    public void setState(PubSubStateType state);
-
     public void record(IPubSubEvent<JSONObject> event) throws Exception;
 
     public List<IPubSubMessageHistoryEntry> history();

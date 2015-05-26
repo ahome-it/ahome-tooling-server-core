@@ -16,13 +16,17 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-public class CoreEventPubSubDescriptor extends AbstractCoreEventPubSubDescriptor
+public class CoreEventPubSubDescriptor extends AbstractEventPubSubDescriptor
 {
     private static final long serialVersionUID = 1865009395616655765L;
 
+    public CoreEventPubSubDescriptor()
+    {
+    }
+
     public CoreEventPubSubDescriptor(final IPubSubMessageHistoryDescriptor hist)
     {
-        setState(PubSubStateType.CONNECTED);
+        this();
 
         setMessageHistoryDescriptor(hist);
     }

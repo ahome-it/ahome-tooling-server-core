@@ -34,17 +34,12 @@ public class CoreEventPubSubMessageHistoryDescriptor implements IPubSubMessageHi
 
     private final String                           m_name;
 
-    private PubSubStateType                        m_open           = PubSubStateType.CLOSED;
-
-    private final PubSubChannelType                m_type           = PubSubChannelType.EVENT;
-
     private final List<IPubSubMessageHistoryEntry> m_list           = Collections.synchronizedList(new ArrayList<IPubSubMessageHistoryEntry>());
 
     public CoreEventPubSubMessageHistoryDescriptor()
     {
         m_name = "CoreServerEvents";
 
-        setState(PubSubStateType.CONNECTED);
     }
 
     @Override
@@ -56,7 +51,6 @@ public class CoreEventPubSubMessageHistoryDescriptor implements IPubSubMessageHi
     @Override
     public void close() throws IOException
     {
-        setState(PubSubStateType.CLOSED);
     }
 
     @Override
@@ -84,12 +78,6 @@ public class CoreEventPubSubMessageHistoryDescriptor implements IPubSubMessageHi
     }
 
     @Override
-    public PubSubStateType getState()
-    {
-        return m_open;
-    }
-
-    @Override
     public void record(final IPubSubEvent<JSONObject> event) throws Exception
     {
         Objects.requireNonNull(event);
@@ -101,17 +89,5 @@ public class CoreEventPubSubMessageHistoryDescriptor implements IPubSubMessageHi
     public List<IPubSubMessageHistoryEntry> history()
     {
         return Collections.unmodifiableList(new ArrayList<IPubSubMessageHistoryEntry>(m_list));
-    }
-
-    @Override
-    public void setState(final PubSubStateType state)
-    {
-        m_open = Objects.requireNonNull(state);
-    }
-
-    @Override
-    public PubSubChannelType getType()
-    {
-        return m_type;
     }
 }

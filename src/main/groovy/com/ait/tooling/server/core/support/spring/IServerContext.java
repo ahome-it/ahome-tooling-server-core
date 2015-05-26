@@ -32,9 +32,7 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
 import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration;
 import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler;
-import com.ait.tooling.server.core.pubsub.IPubSubStateChangedHandler;
 import com.ait.tooling.server.core.pubsub.PubSubChannelType;
-import com.ait.tooling.server.core.pubsub.PubSubStateType;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizer;
 
@@ -67,10 +65,6 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver
     public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, Closure<JSONObject> handler) throws Exception;
 
     public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IPubSubMessageReceivedHandler handler) throws Exception;
-
-    public IPubSubHandlerRegistration addStateChangedHandler(String name, PubSubChannelType type, Closure<PubSubStateType> handler) throws Exception;
-
-    public IPubSubHandlerRegistration addStateChangedHandler(String name, PubSubChannelType type, IPubSubStateChangedHandler handler) throws Exception;
 
     public Logger logger();
 

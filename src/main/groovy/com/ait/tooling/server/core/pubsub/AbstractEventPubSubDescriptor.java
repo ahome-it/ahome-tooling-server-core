@@ -16,12 +16,29 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-public class StateChangedEvent extends AbstractPubSubEvent<PubSubStateType>
-{
-    private static final long serialVersionUID = -6065986036854729518L;
+import java.io.IOException;
+import java.util.Objects;
 
-    public StateChangedEvent(final IPubSubDescriptor descriptor, final PubSubStateType value)
+import com.ait.tooling.json.JSONObject;
+
+@SuppressWarnings("serial")
+public abstract class AbstractEventPubSubDescriptor extends AbstractPubSubDescriptor
+{
+    protected AbstractEventPubSubDescriptor()
     {
-        super(descriptor, value);
+        super(PubSubChannelType.EVENT);
+    }
+
+    @Override
+    public JSONObject publish(final JSONObject message) throws Exception
+    {
+        dispatch(new MessageReceivedEvent(this, Objects.requireNonNull(message)));
+
+        return message;
+    }
+
+    @Override
+    public void close() throws IOException
+    {
     }
 }
