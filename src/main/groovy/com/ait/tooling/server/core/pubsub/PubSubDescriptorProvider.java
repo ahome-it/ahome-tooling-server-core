@@ -17,10 +17,7 @@
 package com.ait.tooling.server.core.pubsub;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Objects;
 
 import org.apache.log4j.Logger;
@@ -28,25 +25,24 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.jmx.export.annotation.ManagedAttribute;
-import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.ait.tooling.common.api.java.util.StringOps;
 
-@ManagedResource(objectName = "com.ait.tooling.server.core.pubsub:name=PubSubDescriptorProvider", description = "Manage PubSub Descriptors.")
 public class PubSubDescriptorProvider implements IPubSubDescriptorProvider, BeanFactoryAware
 {
-    private static final long                              serialVersionUID = 4690403089220044743L;
+    private static final long                                 serialVersionUID  = 4690403089220044743L;
 
-    private static final Logger                            logger           = Logger.getLogger(PubSubDescriptorProvider.class);
+    private static final Logger                               logger            = Logger.getLogger(PubSubDescriptorProvider.class);
 
-    private final LinkedHashMap<String, IPubSubDescriptor> m_descriptors    = new LinkedHashMap<String, IPubSubDescriptor>();
+    private final LinkedHashMap<String, IPublishDescriptor>   m_pub_descriptors = new LinkedHashMap<String, IPublishDescriptor>();
+
+    private final LinkedHashMap<String, ISubscribeDescriptor> m_sub_descriptors = new LinkedHashMap<String, ISubscribeDescriptor>();
 
     public PubSubDescriptorProvider()
     {
     }
 
-    protected void addDescriptor(final IPubSubDescriptor descriptor)
+    private void addSubscribeDescriptor(final ISubscribeDescriptor descriptor)
     {
         if (null != descriptor)
         {
@@ -54,31 +50,40 @@ public class PubSubDescriptorProvider implements IPubSubDescriptorProvider, Bean
 
             if (null != name)
             {
-                if (null == m_descriptors.get(name))
+                if (null == m_sub_descriptors.get(name))
                 {
-                    m_descriptors.put(name, descriptor);
+                    m_sub_descriptors.put(name, descriptor);
 
-                    logger.info("PubSubDescriptorProvider.addDescriptor(" + name + ") Registered");
+                    logger.info("PubSubDescriptorProvider.addSubscribeDescriptor(" + name + ") Registered");
                 }
                 else
                 {
-                    logger.error("PubSubDescriptorProvider.addDescriptor(" + name + ") Duplicate ignored");
+                    logger.error("PubSubDescriptorProvider.addSubscribeDescriptor(" + name + ") Duplicate ignored");
                 }
             }
         }
     }
 
-    @Override
-    @ManagedAttribute()
-    public List<String> getPubSubDescriptorNames()
+    private void addPublishDescriptor(final IPublishDescriptor descriptor)
     {
-        return Collections.unmodifiableList(new ArrayList<String>(m_descriptors.keySet()));
-    }
+        if (null != descriptor)
+        {
+            final String name = StringOps.toTrimOrNull(descriptor.getName());
 
-    @Override
-    public List<IPubSubDescriptor> getPubSubDescriptors()
-    {
-        return Collections.unmodifiableList(new ArrayList<IPubSubDescriptor>(m_descriptors.values()));
+            if (null != name)
+            {
+                if (null == m_pub_descriptors.get(name))
+                {
+                    m_pub_descriptors.put(name, descriptor);
+
+                    logger.info("PubSubDescriptorProvider.addPublishDescriptor(" + name + ") Registered");
+                }
+                else
+                {
+                    logger.error("PubSubDescriptorProvider.addPublishDescriptor(" + name + ") Duplicate ignored");
+                }
+            }
+        }
     }
 
     @Override
@@ -86,13 +91,13 @@ public class PubSubDescriptorProvider implements IPubSubDescriptorProvider, Bean
     {
         if (factory instanceof DefaultListableBeanFactory)
         {
-            for (String name : ((DefaultListableBeanFactory) factory).getBeansOfType(IPubSubDescriptor.class).keySet())
-            {                
-                final IPubSubDescriptor descriptor = factory.getBean(name, IPubSubDescriptor.class);
-                
-                descriptor.setName(name);
-                
-                addDescriptor(descriptor);
+            for (IPublishDescriptor descriptor : ((DefaultListableBeanFactory) factory).getBeansOfType(IPublishDescriptor.class).values())
+            {
+                addPublishDescriptor(descriptor);
+            }
+            for (ISubscribeDescriptor descriptor : ((DefaultListableBeanFactory) factory).getBeansOfType(ISubscribeDescriptor.class).values())
+            {
+                addSubscribeDescriptor(descriptor);
             }
         }
     }
@@ -100,25 +105,53 @@ public class PubSubDescriptorProvider implements IPubSubDescriptorProvider, Bean
     @Override
     public void close() throws IOException
     {
-        for (IPubSubDescriptor descriptor : m_descriptors.values())
+        for (IPublishDescriptor descriptor : m_pub_descriptors.values())
         {
             try
             {
-                logger.info("PubSubDescriptorProvider.close(" + descriptor.getName() + ")");
+                logger.info("PubSubDescriptorProvider.IPublishDescriptor.close(" + descriptor.getName() + ")");
 
                 descriptor.close();
             }
             catch (Exception e)
             {
-                logger.error("PubSubDescriptorProvider.close(" + descriptor.getName() + ") ERROR ", e);
+                logger.error("PubSubDescriptorProvider.IPublishDescriptor.close(" + descriptor.getName() + ") ERROR ", e);
+            }
+        }
+        for (ISubscribeDescriptor descriptor : m_sub_descriptors.values())
+        {
+            try
+            {
+                logger.info("PubSubDescriptorProvider.ISubscribeDescriptor.close(" + descriptor.getName() + ")");
+
+                descriptor.close();
+            }
+            catch (Exception e)
+            {
+                logger.error("PubSubDescriptorProvider.ISubscribeDescriptor.close(" + descriptor.getName() + ") ERROR ", e);
             }
         }
     }
 
     @Override
-    public IPubSubDescriptor getPubSubDescriptor(final String name, final PubSubChannelType type)
+    public ISubscribeDescriptor getSubscribeDescriptor(String name, PubSubChannelType type)
     {
-        final IPubSubDescriptor descriptor = m_descriptors.get(StringOps.requireTrimOrNull(name));
+        final ISubscribeDescriptor descriptor = m_sub_descriptors.get(StringOps.requireTrimOrNull(name));
+
+        if (null != descriptor)
+        {
+            if (Objects.requireNonNull(type) == Objects.requireNonNull(descriptor.getChannelType()))
+            {
+                return descriptor;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public IPublishDescriptor getPublishDescriptor(String name, PubSubChannelType type)
+    {
+        final IPublishDescriptor descriptor = m_pub_descriptors.get(StringOps.requireTrimOrNull(name));
 
         if (null != descriptor)
         {

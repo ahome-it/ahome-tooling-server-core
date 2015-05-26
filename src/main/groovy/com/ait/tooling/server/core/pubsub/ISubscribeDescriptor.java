@@ -16,17 +16,7 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-import java.io.Serializable;
-
-import com.ait.tooling.common.api.types.INamed;
-import com.ait.tooling.common.api.types.IValued;
-import com.ait.tooling.json.JSONObject;
-
-public interface IPubSubMessageHistoryEntry extends INamed, IValued<JSONObject>, Serializable
+public interface ISubscribeDescriptor extends IPubSubDescriptor
 {
-    public long getTime();
-
-    public PubSubChannelType getChannelType();
-
-    public JSONObject toJSONObject();
+    public IPubSubHandlerRegistration addMessageReceivedHandler(IPubSubMessageReceivedHandler handler);
 }

@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -33,10 +32,11 @@ import com.ait.tooling.common.api.java.util.UUID;
 import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.json.schema.JSONSchema;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
-import com.ait.tooling.server.core.pubsub.IPubSubDescriptor;
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
 import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration;
 import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler;
+import com.ait.tooling.server.core.pubsub.IPublishDescriptor;
+import com.ait.tooling.server.core.pubsub.ISubscribeDescriptor;
 import com.ait.tooling.server.core.pubsub.MessageReceivedEvent;
 import com.ait.tooling.server.core.pubsub.PubSubChannelType;
 import com.ait.tooling.server.core.pubsub.PubSubException;
@@ -47,19 +47,17 @@ import com.ait.tooling.server.core.security.IAuthorizationProvider;
 
 public final class ServerContextInstance implements IServerContext
 {
-    private static final long                                         serialVersionUID = 8451400323005323866L;
+    private static final long                          serialVersionUID = 8451400323005323866L;
 
-    private static final Logger                                       logger           = Logger.getLogger(ServerContextInstance.class);
+    private static final Logger                        logger           = Logger.getLogger(ServerContextInstance.class);
 
-    private final static AnonOnlyAuthorizationProvider                DEFAULT_AUTH     = new AnonOnlyAuthorizationProvider();
+    private final static AnonOnlyAuthorizationProvider DEFAULT_AUTH     = new AnonOnlyAuthorizationProvider();
 
-    private final static DefaultPrincipalsKeysProvider                DEFAULT_KEYS     = new DefaultPrincipalsKeysProvider();
+    private final static DefaultPrincipalsKeysProvider DEFAULT_KEYS     = new DefaultPrincipalsKeysProvider();
 
-    private final static ServerContextInstance                        INSTANCE         = new ServerContextInstance();
+    private final static ServerContextInstance         INSTANCE         = new ServerContextInstance();
 
-    private final static ConcurrentHashMap<String, IPubSubDescriptor> PUBSUB_MAP       = new ConcurrentHashMap<String, IPubSubDescriptor>();
-
-    private ApplicationContext                                        m_context;
+    private ApplicationContext                         m_context;
 
     @Override
     public final IServerContext getServerContext()
@@ -209,33 +207,15 @@ public final class ServerContextInstance implements IServerContext
 
         message = Objects.requireNonNull(message);
 
-        IPubSubDescriptor desc = PUBSUB_MAP.get(Objects.requireNonNull(name));
+        final IPublishDescriptor desc = getServerContext().getPubSubDescriptorProvider().getPublishDescriptor(name, type);
 
         if (null != desc)
         {
-            if (type == desc.getChannelType())
-            {
-                desc.publish(message);
-            }
-            else
-            {
-                throw new PubSubException("IPubSubDescriptor " + name + " wrong type " + type.getValue());
-            }
+            desc.publish(message);
         }
         else
         {
-            desc = getServerContext().getPubSubDescriptorProvider().getPubSubDescriptor(name, type);
-
-            if (null != desc)
-            {
-                PUBSUB_MAP.put(name, desc);
-
-                desc.publish(message);
-            }
-            else
-            {
-                throw new PubSubException("IPubSubDescriptor " + name + " type " + type.getValue() + " not found");
-            }
+            throw new PubSubException("IPublishDescriptor " + name + " type " + type.getValue() + " not found");
         }
         return message;
     }
@@ -253,34 +233,17 @@ public final class ServerContextInstance implements IServerContext
 
         handler = Objects.requireNonNull(handler);
 
-        IPubSubDescriptor desc = PUBSUB_MAP.get(Objects.requireNonNull(name));
+        final ISubscribeDescriptor desc = getServerContext().getPubSubDescriptorProvider().getSubscribeDescriptor(name, type);
 
         if (null != desc)
         {
-            if (type == desc.getChannelType())
-            {
-                return desc.addMessageReceivedHandler(handler);
-            }
-            else
-            {
-                throw new PubSubException("IPubSubDescriptor " + name + " wrong type " + type.getValue());
-            }
+            return desc.addMessageReceivedHandler(handler);
         }
         else
         {
-            desc = getServerContext().getPubSubDescriptorProvider().getPubSubDescriptor(name, type);
-
-            if (null != desc)
-            {
-                PUBSUB_MAP.put(name, desc);
-
-                return desc.addMessageReceivedHandler(handler);
-            }
-            else
-            {
-                throw new PubSubException("IPubSubDescriptor " + name + " type " + type.getValue() + " not found");
-            }
+            throw new PubSubException("ISubscribeDescriptor " + name + " type " + type.getValue() + " not found");
         }
+
     }
 
     private static final class OnMessage implements IPubSubMessageReceivedHandler

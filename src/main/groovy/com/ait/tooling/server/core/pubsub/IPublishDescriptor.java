@@ -16,24 +16,9 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-import java.io.Closeable;
-import java.io.Serializable;
-import java.util.List;
-
-import com.ait.tooling.common.api.types.INamed;
 import com.ait.tooling.json.JSONObject;
 
-public interface IPubSubMessageHistoryDescriptor extends INamed, Closeable, Serializable
+public interface IPublishDescriptor extends IPubSubDescriptor
 {
-    public long getMaxSize();
-
-    public void setMaxSize(long size);
-
-    public long getMaxTime();
-
-    public void setMaxTime(long time);
-
-    public void record(IPubSubEvent<JSONObject> event) throws Exception;
-
-    public List<IPubSubMessageHistoryEntry> history();
+    public JSONObject publish(JSONObject message) throws Exception;
 }

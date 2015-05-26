@@ -61,10 +61,8 @@
 
 	<bean id="ExecutorServiceDescriptorProvider" class="com.ait.tooling.server.core.support.spring.ExecutorServiceDescriptorProvider" destroy-method="close"/>
 
-	<bean id="CoreServerEventsHistory" class="com.ait.tooling.server.core.pubsub.CoreEventPubSubMessageHistoryDescriptor"/>
-
-	<bean id="CoreServerEvents" class="com.ait.tooling.server.core.pubsub.CoreEventPubSubDescriptor" destroy-method="close">
-		<constructor-arg ref="CoreServerEventsHistory"/>
+	<bean id="CoreServerEventsDescriptor" class="com.ait.tooling.server.core.pubsub.CoreServerEventsDescriptor" destroy-method="close">
+		<constructor-arg value="CoreServerEvents"/>
 	</bean>
 
 	<bean id="PubSubDescriptorProvider" class="com.ait.tooling.server.core.pubsub.PubSubDescriptorProvider" destroy-method="close"/>
