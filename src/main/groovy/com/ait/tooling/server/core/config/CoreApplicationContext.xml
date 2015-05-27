@@ -61,7 +61,7 @@
 
 	<bean id="ExecutorServiceDescriptorProvider" class="com.ait.tooling.server.core.support.spring.ExecutorServiceDescriptorProvider" destroy-method="close"/>
 
-	<bean id="CoreServerEventsDescriptor" class="com.ait.tooling.server.core.pubsub.CoreServerEventsDescriptor" destroy-method="close">
+	<bean id="CoreServerEventsDescriptor" class="com.ait.tooling.server.core.pubsub.CoreServerEventsDescriptor">
 		<constructor-arg value="CoreServerEvents"/>
 	</bean>
 

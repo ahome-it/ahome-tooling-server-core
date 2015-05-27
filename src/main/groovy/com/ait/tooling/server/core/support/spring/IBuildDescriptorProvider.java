@@ -20,15 +20,11 @@ import java.io.Closeable;
 import java.io.Serializable;
 import java.util.List;
 
-import com.ait.tooling.json.JSONArray;
-
 public interface IBuildDescriptorProvider extends Closeable, Serializable
 {
     public List<String> getBuildDescriptorNames();
 
     public List<IBuildDescriptor> getBuildDescriptors();
-
-    public JSONArray getBuildDescriptorsAsJSONArray();
 
     public IBuildDescriptor getBuildDescriptor(String name);
 }

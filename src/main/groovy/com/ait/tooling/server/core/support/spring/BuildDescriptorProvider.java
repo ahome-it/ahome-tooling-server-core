@@ -31,7 +31,6 @@ import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.ait.tooling.common.api.java.util.StringOps;
-import com.ait.tooling.json.JSONArray;
 
 @ManagedResource(objectName = "com.ait.tooling.server.core.support.spring:name=BuildDescriptorProvider", description = "Manage Build Descriptors.")
 public class BuildDescriptorProvider implements IBuildDescriptorProvider, BeanFactoryAware
@@ -85,24 +84,6 @@ public class BuildDescriptorProvider implements IBuildDescriptorProvider, BeanFa
     public List<IBuildDescriptor> getBuildDescriptors()
     {
         return Collections.unmodifiableList(new ArrayList<IBuildDescriptor>(m_descriptors.values()));
-    }
-
-    @Override
-    public JSONArray getBuildDescriptorsAsJSONArray()
-    {
-        final JSONArray list = new JSONArray(m_descriptors.size());
-
-        for (IBuildDescriptor descriptor : m_descriptors.values())
-        {
-            list.add(descriptor.getAsJSONObject());
-        }
-        return list;
-    }
-    
-    @ManagedAttribute(description = "Get BuildDescriptor as JSONArray String.")
-    public String getBuildDescriptorsAsJSONArrayString()
-    {
-        return getBuildDescriptorsAsJSONArray().toJSONString();
     }
 
     @Override
