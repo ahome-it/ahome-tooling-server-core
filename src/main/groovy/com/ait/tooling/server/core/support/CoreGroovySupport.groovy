@@ -16,6 +16,8 @@
 
 package com.ait.tooling.server.core.support
 
+import java.io.Reader;
+
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 
@@ -210,5 +212,17 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     public String uuid()
     {
         getServerContext().uuid()
+    }
+
+    @Override
+    public JSONObject parseJSON(String string) throws Exception
+    {
+        getServerContext().parseJSON(string)
+    }
+
+    @Override
+    public JSONObject parseJSON(Reader reader) throws Exception
+    {
+        getServerContext().parseJSON(reader)
     }
 }

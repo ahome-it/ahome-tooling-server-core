@@ -42,5 +42,5 @@ public interface IBuildDescriptor extends Serializable
 
     public String getBuildModuleVersion();
 
-    public JSONObject getAsJSONObject();
+    public JSONObject toJSONObject();
 }

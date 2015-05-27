@@ -18,6 +18,7 @@ package com.ait.tooling.server.core.support.spring;
 
 import groovy.lang.Closure;
 
+import java.io.Reader;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -81,4 +82,8 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver
     public JSONSchema jsonschema(Map<String, ?> schema);
 
     public String uuid();
+    
+    public JSONObject parseJSON(String string) throws Exception;
+    
+    public JSONObject parseJSON(Reader reader) throws Exception;
 }

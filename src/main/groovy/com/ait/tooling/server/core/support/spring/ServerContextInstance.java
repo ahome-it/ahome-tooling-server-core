@@ -18,6 +18,7 @@ package com.ait.tooling.server.core.support.spring;
 
 import groovy.lang.Closure;
 
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.springframework.core.env.Environment;
 
 import com.ait.tooling.common.api.java.util.UUID;
 import com.ait.tooling.json.JSONObject;
+import com.ait.tooling.json.parser.JSONParser;
 import com.ait.tooling.json.schema.JSONSchema;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
@@ -324,5 +326,29 @@ public final class ServerContextInstance implements IServerContext
     public Logger logger()
     {
         return logger;
+    }
+
+    @Override
+    public JSONObject parseJSON(String string) throws Exception
+    {
+        final Object result = new JSONParser().parse(string);
+
+        if ((null != result) && (result instanceof JSONObject))
+        {
+            return ((JSONObject) result);
+        }
+        return null;
+    }
+
+    @Override
+    public JSONObject parseJSON(Reader reader) throws Exception
+    {
+        final Object result = new JSONParser().parse(reader);
+
+        if ((null != result) && (result instanceof JSONObject))
+        {
+            return ((JSONObject) result);
+        }
+        return null;
     }
 }

@@ -263,7 +263,7 @@ public final class BuildDescriptor implements IBuildDescriptor
     }
 
     @Override
-    public JSONObject getAsJSONObject()
+    public JSONObject toJSONObject()
     {
         final JSONObject json = new JSONObject();
 
