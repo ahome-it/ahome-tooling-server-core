@@ -17,6 +17,8 @@
 package com.ait.tooling.server.core.pubsub;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.jms.JMSException;
@@ -33,13 +35,15 @@ import com.ait.tooling.json.parser.JSONParserException;
 @SuppressWarnings("serial")
 public abstract class AbstractJmsSubscribeDescriptor implements MessageListener, ISubscribeDescriptor
 {
-    private final String                     m_name;
+    private final String                        m_name;
 
-    private final PubSubChannelType          m_type;
+    private final PubSubChannelType             m_type;
 
-    private final SubscribeDescriptorSupport m_supp   = new SubscribeDescriptorSupport();
+    private final SubscribeDescriptorSupport    m_supp   = new SubscribeDescriptorSupport();
 
-    private final Logger                     m_logger = Logger.getLogger(getClass());
+    private final ArrayList<ISubscribeListener> m_list   = new ArrayList<ISubscribeListener>();
+
+    private final Logger                        m_logger = Logger.getLogger(getClass());
 
     protected AbstractJmsSubscribeDescriptor(final String name, final PubSubChannelType type)
     {
@@ -70,8 +74,13 @@ public abstract class AbstractJmsSubscribeDescriptor implements MessageListener,
                 {
                     final JSONObject object = ((JSONObject) result);
 
-                    logger().info("Got message and dispatch " + object.toJSONString());
-
+                    for (ISubscribeListener listener : m_list)
+                    {
+                        if (listener.onMessageReceived(object) == PubSubNextEventActionType.CANCEL)
+                        {
+                            return;
+                        }
+                    }
                     m_supp.dispatch(new MessageReceivedEvent(this, object));
                 }
                 else
@@ -134,5 +143,18 @@ public abstract class AbstractJmsSubscribeDescriptor implements MessageListener,
     public final Logger logger()
     {
         return m_logger;
+    }
+
+    public void setSubscribeListener(final ISubscribeListener listener)
+    {
+        m_list.add(Objects.requireNonNull(listener));
+    }
+
+    public void setSubscribeListeners(final List<ISubscribeListener> listeners)
+    {
+        for (ISubscribeListener listener : Objects.requireNonNull(listeners))
+        {
+            m_list.add(Objects.requireNonNull(listener));
+        }
     }
 }

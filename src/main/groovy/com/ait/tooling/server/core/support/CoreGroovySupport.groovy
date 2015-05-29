@@ -33,7 +33,7 @@ import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler
 import com.ait.tooling.server.core.pubsub.PubSubChannelType
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
-import com.ait.tooling.server.core.security.ICryptoProvider;
+import com.ait.tooling.server.core.security.ICryptoProvider
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IExecutorServiceDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IPropertiesResolver
@@ -142,7 +142,7 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     {
         getServerContext().getPubSubDescriptorProvider()
     }
-    
+
     @Memoized
     public ICryptoProvider getCryptoProvider()
     {
@@ -165,7 +165,7 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, Closure<JSONObject> handler) throws Exception
     {
         Objects.requireNonNull(handler)
-        
+
         getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(type), handler)
     }
 
@@ -232,5 +232,45 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     public JSONObject jsonParse(Reader reader) throws IOException, JSONParserException
     {
         getServerContext().jsonParse(Objects.requireNonNull(reader))
+    }
+
+    @Override
+    public JSONObject publish(String name, JSONObject message) throws Exception
+    {
+        getServerContext().publish(Objects.requireNonNull(name), Objects.requireNonNull(message))
+    }
+
+    @Override
+    public JSONObject publish(String name, List<PubSubChannelType> list, JSONObject message) throws Exception
+    {
+        getServerContext().publish(Objects.requireNonNull(name), Objects.requireNonNull(list),  Objects.requireNonNull(message))
+    }
+
+    @Override
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, Closure<JSONObject> handler) throws Exception
+    {
+        Objects.requireNonNull(handler)
+
+        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), handler)
+    }
+
+    @Override
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, Closure<JSONObject> handler) throws Exception
+    {
+        Objects.requireNonNull(handler)
+
+        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(list), handler)
+    }
+
+    @Override
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, IPubSubMessageReceivedHandler handler) throws Exception
+    {
+        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(handler))
+    }
+
+    @Override
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, IPubSubMessageReceivedHandler handler) throws Exception
+    {
+        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(list), Objects.requireNonNull(handler))
     }
 }

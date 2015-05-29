@@ -191,4 +191,38 @@ public trait CoreGroovyTrait
     {
         getServerContext().jsonParse(Objects.requireNonNull(reader))
     }
+
+    public JSONObject publish(String name, JSONObject message) throws Exception
+    {
+        getServerContext().publish(Objects.requireNonNull(name), Objects.requireNonNull(message))
+    }
+
+    public JSONObject publish(String name, List<PubSubChannelType> list, JSONObject message) throws Exception
+    {
+        getServerContext().publish(Objects.requireNonNull(name), Objects.requireNonNull(list),  Objects.requireNonNull(message))
+    }
+
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, Closure<JSONObject> handler) throws Exception
+    {
+        Objects.requireNonNull(handler)
+
+        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), handler)
+    }
+
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, Closure<JSONObject> handler) throws Exception
+    {
+        Objects.requireNonNull(handler)
+
+        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(list), handler)
+    }
+
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, IPubSubMessageReceivedHandler handler) throws Exception
+    {
+        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(handler))
+    }
+
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, IPubSubMessageReceivedHandler handler) throws Exception
+    {
+        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(list), Objects.requireNonNull(handler))
+    }
 }

@@ -18,15 +18,11 @@ package com.ait.tooling.server.core.jmx.management;
 
 import java.io.Serializable;
 
-import org.apache.log4j.Level;
+import com.ait.tooling.server.core.logging.ICoreLoggingOperations;
 
-public interface ICoreServerManager extends Serializable
+public interface ICoreServerManager extends ICoreLoggingOperations, Serializable
 {
     public boolean isRunning();
-
-    public Level getLoggingLevel();
-
-    public void setLoggingLevel(Level level);
 
     public void doIncrementOperationCount(String name);
 

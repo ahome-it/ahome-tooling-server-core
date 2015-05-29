@@ -39,7 +39,7 @@ public class SubscribeDescriptorSupport implements Serializable
 
         for (IPubSubMessageReceivedHandler handler : m_message_received_handlers.values())
         {
-            final PubSubNextEventActionType next = handler.onMesageReceived(event);
+            final PubSubNextEventActionType next = handler.onMessageReceived(event);
 
             if (PubSubNextEventActionType.CANCEL == next)
             {

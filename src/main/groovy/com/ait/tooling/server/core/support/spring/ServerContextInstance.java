@@ -214,6 +214,26 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
+    public final JSONObject publish(String name, JSONObject message) throws Exception
+    {
+        name = Objects.requireNonNull(name);
+
+        message = Objects.requireNonNull(message);
+
+        final IPublishDescriptor desc = getPubSubDescriptorProvider().getPublishDescriptor(name);
+
+        if (null != desc)
+        {
+            desc.publish(message);
+        }
+        else
+        {
+            throw new PubSubException("IPublishDescriptor " + name + " not found");
+        }
+        return message;
+    }
+
+    @Override
     public final JSONObject publish(String name, PubSubChannelType type, JSONObject message) throws Exception
     {
         name = Objects.requireNonNull(name);
@@ -236,9 +256,76 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
+    public final JSONObject publish(String name, List<PubSubChannelType> list, JSONObject message) throws Exception
+    {
+        name = Objects.requireNonNull(name);
+
+        list = Objects.requireNonNull(list);
+
+        message = Objects.requireNonNull(message);
+
+        final IPublishDescriptor desc = getPubSubDescriptorProvider().getPublishDescriptor(name, list);
+
+        if (null != desc)
+        {
+            desc.publish(message);
+        }
+        else
+        {
+            StringBuilder builder = new StringBuilder();
+
+            for (PubSubChannelType type : list)
+            {
+                builder.append(type.getValue());
+
+                builder.append(",");
+            }
+            final int last = builder.lastIndexOf(",");
+
+            if (last > 0)
+            {
+                builder.deleteCharAt(last);
+            }
+            throw new PubSubException("IPublishDescriptor " + name + " of types [" + builder.toString() + "] not found");
+        }
+        return message;
+    }
+
+    @Override
+    public final IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final Closure<JSONObject> handler) throws Exception
+    {
+        return addMessageReceivedHandler(Objects.requireNonNull(name), new OnMessage(Objects.requireNonNull(handler)));
+    }
+
+    @Override
     public final IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final PubSubChannelType type, final Closure<JSONObject> handler) throws Exception
     {
         return addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(type), new OnMessage(Objects.requireNonNull(handler)));
+    }
+
+    @Override
+    public final IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final List<PubSubChannelType> list, final Closure<JSONObject> handler) throws Exception
+    {
+        return addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(list), new OnMessage(Objects.requireNonNull(handler)));
+    }
+
+    @Override
+    public final IPubSubHandlerRegistration addMessageReceivedHandler(String name, IPubSubMessageReceivedHandler handler) throws Exception
+    {
+        name = Objects.requireNonNull(name);
+
+        handler = Objects.requireNonNull(handler);
+
+        final ISubscribeDescriptor desc = getPubSubDescriptorProvider().getSubscribeDescriptor(name);
+
+        if (null != desc)
+        {
+            return desc.addMessageReceivedHandler(handler);
+        }
+        else
+        {
+            throw new PubSubException("ISubscribeDescriptor " + name + " not found");
+        }
     }
 
     @Override
@@ -262,6 +349,41 @@ public class ServerContextInstance implements IServerContext
         }
     }
 
+    @Override
+    public final IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, IPubSubMessageReceivedHandler handler) throws Exception
+    {
+        name = Objects.requireNonNull(name);
+
+        list = Objects.requireNonNull(list);
+
+        handler = Objects.requireNonNull(handler);
+
+        final ISubscribeDescriptor desc = getPubSubDescriptorProvider().getSubscribeDescriptor(name, list);
+
+        if (null != desc)
+        {
+            return desc.addMessageReceivedHandler(handler);
+        }
+        else
+        {
+            StringBuilder builder = new StringBuilder();
+
+            for (PubSubChannelType type : list)
+            {
+                builder.append(type.getValue());
+
+                builder.append(",");
+            }
+            final int last = builder.lastIndexOf(",");
+
+            if (last > 0)
+            {
+                builder.deleteCharAt(last);
+            }
+            throw new PubSubException("ISubscribeDescriptor " + name + " of types [" + builder.toString() + "] not found");
+        }
+    }
+
     private static final class OnMessage implements IPubSubMessageReceivedHandler
     {
         private final Closure<JSONObject> m_clos;
@@ -272,7 +394,7 @@ public class ServerContextInstance implements IServerContext
         }
 
         @Override
-        public PubSubNextEventActionType onMesageReceived(final MessageReceivedEvent event)
+        public PubSubNextEventActionType onMessageReceived(final MessageReceivedEvent event)
         {
             m_clos.call(Objects.requireNonNull(Objects.requireNonNull(event).getValue()));
 

@@ -67,18 +67,20 @@ public class CoreServerManager implements ICoreServerManager
         }
         else
         {
-            logger.error("ERROR: CoreServerManager setting logging level to null, level is " + getLoggingLevelByString());
+            logger.error("ERROR: CoreServerManager setting logging level to null, level is " + getLoggingLevelAsString());
         }
     }
 
+    @Override
     @ManagedAttribute(description = "Get global Log4j Level.")
-    public final String getLoggingLevelByString()
+    public final String getLoggingLevelAsString()
     {
         return getLoggingLevel().toString();
     }
 
+    @Override
     @ManagedAttribute(description = "Set global Log4j Level.")
-    public final void setLoggingLevelByString(final String level)
+    public final void setLoggingLevelAsString(final String level)
     {
         setLoggingLevel(Level.toLevel(StringOps.toTrimOrNull(level)));
     }

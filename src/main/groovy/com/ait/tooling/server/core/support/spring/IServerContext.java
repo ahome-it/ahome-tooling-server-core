@@ -67,11 +67,23 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serial
 
     public IPubSubDescriptorProvider getPubSubDescriptorProvider();
 
+    public JSONObject publish(String name, JSONObject message) throws Exception;
+
     public JSONObject publish(String name, PubSubChannelType type, JSONObject message) throws Exception;
+
+    public JSONObject publish(String name, List<PubSubChannelType> list, JSONObject message) throws Exception;
+
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, Closure<JSONObject> handler) throws Exception;
 
     public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, Closure<JSONObject> handler) throws Exception;
 
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, Closure<JSONObject> handler) throws Exception;
+
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, IPubSubMessageReceivedHandler handler) throws Exception;
+
     public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IPubSubMessageReceivedHandler handler) throws Exception;
+
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, IPubSubMessageReceivedHandler handler) throws Exception;
 
     public Logger logger();
 

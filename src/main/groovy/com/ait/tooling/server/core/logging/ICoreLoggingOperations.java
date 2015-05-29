@@ -14,9 +14,17 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.pubsub;
+package com.ait.tooling.server.core.logging;
 
-public interface IPubSubMessageReceivedHandler
+import org.apache.log4j.Level;
+
+public interface ICoreLoggingOperations
 {
-    public PubSubNextEventActionType onMessageReceived(MessageReceivedEvent event);
+    public Level getLoggingLevel();
+
+    public void setLoggingLevel(Level level);
+
+    public String getLoggingLevelAsString();
+
+    public void setLoggingLevelAsString(String level);
 }
