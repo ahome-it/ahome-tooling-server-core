@@ -77,7 +77,7 @@ public class ServerContextInstance implements IServerContext
         return INSTANCE;
     }
 
-    private ServerContextInstance()
+    protected ServerContextInstance()
     {
     }
 
