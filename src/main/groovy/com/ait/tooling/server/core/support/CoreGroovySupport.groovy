@@ -68,7 +68,7 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     @Memoized
     public IServerContext getServerContext()
     {
-        ServerContextInstance.get()
+        ServerContextInstance.getServerContextInstance().getServerContext()
     }
 
     @Memoized

@@ -72,7 +72,7 @@ public class ServerContextInstance implements IServerContext
         return this;
     }
 
-    public static final ServerContextInstance get()
+    public static final ServerContextInstance getServerContextInstance()
     {
         return INSTANCE;
     }
@@ -105,7 +105,7 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public IPropertiesResolver getPropertiesResolver()
+    public final IPropertiesResolver getPropertiesResolver()
     {
         return this;
     }
@@ -179,19 +179,19 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public IExecutorServiceDescriptorProvider getExecutorServiceDescriptorProvider()
+    public final IExecutorServiceDescriptorProvider getExecutorServiceDescriptorProvider()
     {
         return Objects.requireNonNull(getBean("ExecutorServiceDescriptorProvider", IExecutorServiceDescriptorProvider.class), "ExecutorServiceDescriptorProvider is null, initialization error.");
     }
 
     @Override
-    public IBuildDescriptorProvider getBuildDescriptorProvider()
+    public final IBuildDescriptorProvider getBuildDescriptorProvider()
     {
         return Objects.requireNonNull(getBean("BuildDescriptorProvider", IBuildDescriptorProvider.class), "BuildDescriptorProvider is null, initialization error.");
     }
-    
+
     @Override
-    public ICryptoProvider getCryptoProvider()
+    public final ICryptoProvider getCryptoProvider()
     {
         return Objects.requireNonNull(getBean("CryptoProvider", ICryptoProvider.class), "CryptoProvider is null, initialization error.");
     }
@@ -202,19 +202,19 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public AuthorizationResult isAuthorized(final Object target, final JSONObject principals)
+    public final AuthorizationResult isAuthorized(final Object target, final JSONObject principals)
     {
         return getAuthorizationProvider().isAuthorized(target, principals);
     }
 
     @Override
-    public IPubSubDescriptorProvider getPubSubDescriptorProvider()
+    public final IPubSubDescriptorProvider getPubSubDescriptorProvider()
     {
         return Objects.requireNonNull(getBean("PubSubDescriptorProvider", IPubSubDescriptorProvider.class), "PubSubDescriptorProvider is null, initialization error.");
     }
 
     @Override
-    public JSONObject publish(String name, PubSubChannelType type, JSONObject message) throws Exception
+    public final JSONObject publish(String name, PubSubChannelType type, JSONObject message) throws Exception
     {
         name = Objects.requireNonNull(name);
 
@@ -236,13 +236,13 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final PubSubChannelType type, final Closure<JSONObject> handler) throws Exception
+    public final IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final PubSubChannelType type, final Closure<JSONObject> handler) throws Exception
     {
         return addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(type), new OnMessage(Objects.requireNonNull(handler)));
     }
 
     @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IPubSubMessageReceivedHandler handler) throws Exception
+    public final IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IPubSubMessageReceivedHandler handler) throws Exception
     {
         name = Objects.requireNonNull(name);
 
@@ -260,7 +260,6 @@ public class ServerContextInstance implements IServerContext
         {
             throw new PubSubException("ISubscribeDescriptor " + name + " type " + type.getValue() + " not found");
         }
-
     }
 
     private static final class OnMessage implements IPubSubMessageReceivedHandler
@@ -282,26 +281,26 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public JSONObject json()
+    public final JSONObject json()
     {
         return new JSONObject();
     }
 
     @Override
-    public JSONObject json(final Map<String, ?> valu)
+    public final JSONObject json(final Map<String, ?> valu)
     {
         return new JSONObject(Objects.requireNonNull(valu));
     }
 
     @Override
-    public JSONObject json(final String name, final Object value)
+    public final JSONObject json(final String name, final Object value)
     {
         return new JSONObject(Objects.requireNonNull(name), value);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public JSONObject json(final Collection<?> collection)
+    public final JSONObject json(final Collection<?> collection)
     {
         Objects.requireNonNull(collection);
 
@@ -320,19 +319,19 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public JSONObject json(final List<?> list)
+    public final JSONObject json(final List<?> list)
     {
         return new JSONObject(Objects.requireNonNull(list));
     }
 
     @Override
-    public String uuid()
+    public final String uuid()
     {
         return UUID.uuid();
     }
 
     @Override
-    public JSONSchema jsonSchema(final Map<String, ?> schema)
+    public final JSONSchema jsonSchema(final Map<String, ?> schema)
     {
         return JSONSchema.cast(json(Objects.requireNonNull(schema)));
     }
@@ -344,7 +343,7 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public JSONObject jsonParse(final String string) throws JSONParserException
+    public final JSONObject jsonParse(final String string) throws JSONParserException
     {
         Objects.requireNonNull(string);
 
@@ -358,7 +357,7 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public JSONObject jsonParse(final Reader reader) throws IOException, JSONParserException
+    public final JSONObject jsonParse(final Reader reader) throws IOException, JSONParserException
     {
         Objects.requireNonNull(reader);
 

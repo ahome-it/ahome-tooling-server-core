@@ -68,7 +68,7 @@ public abstract class HTTPServletBase extends HttpServlet implements IHTTPConsta
 
     protected final static IServerContext getServerContext()
     {
-        return ServerContextInstance.get();
+        return ServerContextInstance.getServerContextInstance().getServerContext();
     }
 
     @Override

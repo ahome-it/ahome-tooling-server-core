@@ -45,7 +45,7 @@ public trait CoreGroovyTrait
     @Memoized
     public IServerContext getServerContext()
     {
-        ServerContextInstance.get()
+        ServerContextInstance.getServerContextInstance().getServerContext()
     }
 
     @Memoized
