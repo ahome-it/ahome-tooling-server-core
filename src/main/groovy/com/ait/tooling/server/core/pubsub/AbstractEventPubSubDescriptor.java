@@ -22,7 +22,7 @@ import java.util.Objects;
 import com.ait.tooling.json.JSONObject;
 
 @SuppressWarnings("serial")
-public class AbstractEventPubSubDescriptor implements IPublishDescriptor, ISubscribeDescriptor
+public abstract class AbstractEventPubSubDescriptor implements IPublishDescriptor, ISubscribeDescriptor
 {
     private final String                     m_name;
 

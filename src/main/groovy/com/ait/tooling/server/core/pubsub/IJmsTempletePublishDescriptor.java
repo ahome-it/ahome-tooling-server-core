@@ -23,4 +23,6 @@ public interface IJmsTempletePublishDescriptor extends IPublishDescriptor
     public void setJmsTemplate(JmsTemplate template);
 
     public JmsTemplate getJmsTemplate();
+    
+    public <T extends JmsTemplate> T getJmsTemplate(Class<T> type);
 }

@@ -30,7 +30,7 @@ import org.springframework.jms.core.MessageCreator;
 import com.ait.tooling.json.JSONObject;
 
 @SuppressWarnings("serial")
-public class AbstractJmsTemplatePublishDescriptor implements IJmsTempletePublishDescriptor
+public abstract class AbstractJmsTemplatePublishDescriptor implements IJmsTempletePublishDescriptor
 {
     private final String            m_name;
 
@@ -58,6 +58,23 @@ public class AbstractJmsTemplatePublishDescriptor implements IJmsTempletePublish
     public JmsTemplate getJmsTemplate()
     {
         return m_template;
+    }
+
+    @Override
+    public <T extends JmsTemplate> T getJmsTemplate(final Class<T> type)
+    {
+        if (null != m_template)
+        {
+            if (Objects.requireNonNull(type).isAssignableFrom(m_template.getClass()))
+            {
+                return type.cast(m_template);
+            }
+            else
+            {
+                logger().error("Attempt to cast type [" + m_template.getClass().getName() + "] to type [" + type.getName() + "], returning null");
+            }
+        }
+        return null;
     }
 
     @Override

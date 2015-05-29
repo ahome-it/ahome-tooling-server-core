@@ -24,11 +24,11 @@ import com.ait.tooling.common.api.hash.ISHA_512_HASH_SALT;
 
 public interface ICryptoProvider extends Closeable, Serializable, ISHA_512_HASH_SALT, ISHA_512_HASH
 {
-    public String encode(String text);
+    public String encodeBCrypt(String text);
 
     public String encrypt(String text);
 
     public String decrypt(String text);
 
-    public boolean matches(String text, String encoded);
+    public boolean matchesBCrypt(String text, String encoded);
 }

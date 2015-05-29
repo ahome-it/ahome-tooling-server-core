@@ -31,7 +31,7 @@ import com.ait.tooling.json.parser.JSONParser;
 import com.ait.tooling.json.parser.JSONParserException;
 
 @SuppressWarnings("serial")
-public class AbstractJmsSubscribeDescriptor implements MessageListener, ISubscribeDescriptor
+public abstract class AbstractJmsSubscribeDescriptor implements MessageListener, ISubscribeDescriptor
 {
     private final String                     m_name;
 

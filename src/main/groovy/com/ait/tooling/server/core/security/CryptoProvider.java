@@ -19,6 +19,7 @@ package com.ait.tooling.server.core.security;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.log4j.Logger;
@@ -51,27 +52,27 @@ public final class CryptoProvider implements ICryptoProvider
     }
 
     @Override
-    public final synchronized String encode(String password)
+    public final synchronized String encodeBCrypt(String text)
     {
-        return m_bcrypt.encode(password);
+        return m_bcrypt.encode(Objects.requireNonNull(text));
     }
 
     @Override
-    public final synchronized String encrypt(String password)
+    public final synchronized String encrypt(final String text)
     {
-        return m_pcrypt.encrypt(password);
+        return m_pcrypt.encrypt(Objects.requireNonNull(text));
     }
 
     @Override
-    public final synchronized String decrypt(String password)
+    public final synchronized String decrypt(final String text)
     {
-        return m_pcrypt.decrypt(password);
+        return m_pcrypt.decrypt(Objects.requireNonNull(text));
     }
 
     @Override
-    public final synchronized boolean matches(String password, String encoded)
+    public final synchronized boolean matchesBCrypt(final String text, final String encoded)
     {
-        return m_bcrypt.matches(password, encoded);
+        return m_bcrypt.matches(Objects.requireNonNull(text), Objects.requireNonNull(encoded));
     }
 
     @Override
@@ -80,20 +81,22 @@ public final class CryptoProvider implements ICryptoProvider
     }
 
     @Override
-    public String SHA512(String text, String salt)
+    public String SHA512(final String text, final String salt)
     {
-        return m_hasher.SHA512(text, salt);
+        return m_hasher.SHA512(Objects.requireNonNull(text), Objects.requireNonNull(salt));
     }
 
     @Override
-    public String SHA512(String text, String salt, int iter)
+    public String SHA512(final String text, final String salt, final int iter)
     {
-        return m_hasher.SHA512(text, salt, iter);
+        return m_hasher.SHA512(Objects.requireNonNull(text), Objects.requireNonNull(salt), iter);
     }
 
     @Override
     public String SHA512(String string)
     {
+        string = Objects.requireNonNull(string);
+
         MessageDigest md;
 
         try
