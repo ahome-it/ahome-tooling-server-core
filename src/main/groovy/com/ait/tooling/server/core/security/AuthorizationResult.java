@@ -16,17 +16,21 @@
 
 package com.ait.tooling.server.core.security;
 
+import java.io.Serializable;
+
 import com.ait.tooling.common.api.java.util.StringOps;
 
-public class AuthorizationResult
+public class AuthorizationResult implements Serializable
 {
-    private final boolean m_authd;
+    private static final long serialVersionUID = -104898921685425235L;
 
-    private final boolean m_admin;
+    private final boolean     m_authd;
 
-    private final int     m_ecode;
+    private final boolean     m_admin;
 
-    private final String  m_etext;
+    private final int         m_ecode;
+
+    private final String      m_etext;
 
     public AuthorizationResult(final boolean authd, final boolean admin, final int ecode, final String etext)
     {

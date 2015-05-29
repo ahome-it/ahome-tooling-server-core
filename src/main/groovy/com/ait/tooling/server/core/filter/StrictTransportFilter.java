@@ -31,6 +31,8 @@ import com.ait.tooling.server.core.filter.AbstractHTTPFilter;
 
 public class StrictTransportFilter extends AbstractHTTPFilter
 {
+    private static final long   serialVersionUID         = -4578897779521715272L;
+
     private static final Logger logger                   = Logger.getLogger(StrictTransportFilter.class);
 
     private boolean             m_force_strict_transport = false;

@@ -31,7 +31,9 @@ import com.ait.tooling.common.api.java.util.IHTTPConstants;
 
 public final class CryptoProvider implements ICryptoProvider
 {
-    private static final Logger         logger = Logger.getLogger(CryptoProvider.class);
+    private static final long           serialVersionUID = -685446946283005169L;
+
+    private static final Logger         logger           = Logger.getLogger(CryptoProvider.class);
 
     private final TextEncryptor         m_pcrypt;
 

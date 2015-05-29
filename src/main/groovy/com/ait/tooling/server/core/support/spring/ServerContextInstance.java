@@ -18,6 +18,7 @@ package com.ait.tooling.server.core.support.spring;
 
 import groovy.lang.Closure;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +33,7 @@ import org.springframework.core.env.Environment;
 import com.ait.tooling.common.api.java.util.UUID;
 import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.json.parser.JSONParser;
+import com.ait.tooling.json.parser.JSONParserException;
 import com.ait.tooling.json.schema.JSONSchema;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
@@ -46,8 +48,9 @@ import com.ait.tooling.server.core.pubsub.PubSubNextEventActionType;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 import com.ait.tooling.server.core.security.AuthorizationResult;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
+import com.ait.tooling.server.core.security.ICryptoProvider;
 
-public final class ServerContextInstance implements IServerContext
+public class ServerContextInstance implements IServerContext
 {
     private static final long                          serialVersionUID = 8451400323005323866L;
 
@@ -58,6 +61,8 @@ public final class ServerContextInstance implements IServerContext
     private final static DefaultPrincipalsKeysProvider DEFAULT_KEYS     = new DefaultPrincipalsKeysProvider();
 
     private final static ServerContextInstance         INSTANCE         = new ServerContextInstance();
+
+    private final Logger                               m_logger         = Logger.getLogger(getClass());
 
     private ApplicationContext                         m_context;
 
@@ -72,7 +77,7 @@ public final class ServerContextInstance implements IServerContext
         return INSTANCE;
     }
 
-    private ServerContextInstance()
+    protected ServerContextInstance()
     {
     }
 
@@ -84,19 +89,19 @@ public final class ServerContextInstance implements IServerContext
     @Override
     public final ApplicationContext getApplicationContext()
     {
-        return m_context;
+        return Objects.requireNonNull(m_context, "ApplicationContext is null, initialization error.");
     }
 
     @Override
     public final Environment getEnvironment()
     {
-        return m_context.getEnvironment();
+        return Objects.requireNonNull(getApplicationContext().getEnvironment(), "Environment is null, initialization error.");
     }
 
     @Override
     public final <B> B getBean(final String name, final Class<B> type)
     {
-        return m_context.getBean(Objects.requireNonNull(name), Objects.requireNonNull(type));
+        return getApplicationContext().getBean(Objects.requireNonNull(name), Objects.requireNonNull(type));
     }
 
     @Override
@@ -132,7 +137,7 @@ public final class ServerContextInstance implements IServerContext
     @Override
     public final IAuthorizationProvider getAuthorizationProvider()
     {
-        if (m_context.containsBean("AuthorizationProvider"))
+        if (getApplicationContext().containsBean("AuthorizationProvider"))
         {
             try
             {
@@ -151,7 +156,7 @@ public final class ServerContextInstance implements IServerContext
     @Override
     public final Iterable<String> getPrincipalsKeys()
     {
-        if (m_context.containsBean("PrincipalsKeysProvider"))
+        if (getApplicationContext().containsBean("PrincipalsKeysProvider"))
         {
             try
             {
@@ -170,28 +175,34 @@ public final class ServerContextInstance implements IServerContext
     @Override
     public final ICoreServerManager getCoreServerManager()
     {
-        return getBean("CoreServerManager", ICoreServerManager.class);
+        return Objects.requireNonNull(getBean("CoreServerManager", ICoreServerManager.class), "CoreServerManager is null, initialization error.");
     }
 
     @Override
     public IExecutorServiceDescriptorProvider getExecutorServiceDescriptorProvider()
     {
-        return getBean("ExecutorServiceDescriptorProvider", IExecutorServiceDescriptorProvider.class);
+        return Objects.requireNonNull(getBean("ExecutorServiceDescriptorProvider", IExecutorServiceDescriptorProvider.class), "ExecutorServiceDescriptorProvider is null, initialization error.");
     }
 
     @Override
     public IBuildDescriptorProvider getBuildDescriptorProvider()
     {
-        return getBean("BuildDescriptorProvider", IBuildDescriptorProvider.class);
+        return Objects.requireNonNull(getBean("BuildDescriptorProvider", IBuildDescriptorProvider.class), "BuildDescriptorProvider is null, initialization error.");
+    }
+    
+    @Override
+    public ICryptoProvider getCryptoProvider()
+    {
+        return Objects.requireNonNull(getBean("CryptoProvider", ICryptoProvider.class), "CryptoProvider is null, initialization error.");
     }
 
     private final CorePropertiesResolver getCorePropertiesResolver()
     {
-        return getBean("CorePropertiesResolver", CorePropertiesResolver.class);
+        return Objects.requireNonNull(getBean("CorePropertiesResolver", CorePropertiesResolver.class), "CorePropertiesResolver is null, initialization error.");
     }
 
     @Override
-    public AuthorizationResult isAuthorized(Object target, JSONObject principals)
+    public AuthorizationResult isAuthorized(final Object target, final JSONObject principals)
     {
         return getAuthorizationProvider().isAuthorized(target, principals);
     }
@@ -199,17 +210,19 @@ public final class ServerContextInstance implements IServerContext
     @Override
     public IPubSubDescriptorProvider getPubSubDescriptorProvider()
     {
-        return getBean("PubSubDescriptorProvider", IPubSubDescriptorProvider.class);
+        return Objects.requireNonNull(getBean("PubSubDescriptorProvider", IPubSubDescriptorProvider.class), "PubSubDescriptorProvider is null, initialization error.");
     }
 
     @Override
     public JSONObject publish(String name, PubSubChannelType type, JSONObject message) throws Exception
     {
+        name = Objects.requireNonNull(name);
+
         type = Objects.requireNonNull(type);
 
         message = Objects.requireNonNull(message);
 
-        final IPublishDescriptor desc = getServerContext().getPubSubDescriptorProvider().getPublishDescriptor(name, type);
+        final IPublishDescriptor desc = getPubSubDescriptorProvider().getPublishDescriptor(name, type);
 
         if (null != desc)
         {
@@ -223,7 +236,7 @@ public final class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, Closure<JSONObject> handler) throws Exception
+    public IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final PubSubChannelType type, final Closure<JSONObject> handler) throws Exception
     {
         return addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(type), new OnMessage(Objects.requireNonNull(handler)));
     }
@@ -231,11 +244,13 @@ public final class ServerContextInstance implements IServerContext
     @Override
     public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IPubSubMessageReceivedHandler handler) throws Exception
     {
+        name = Objects.requireNonNull(name);
+
         type = Objects.requireNonNull(type);
 
         handler = Objects.requireNonNull(handler);
 
-        final ISubscribeDescriptor desc = getServerContext().getPubSubDescriptorProvider().getSubscribeDescriptor(name, type);
+        final ISubscribeDescriptor desc = getPubSubDescriptorProvider().getSubscribeDescriptor(name, type);
 
         if (null != desc)
         {
@@ -284,11 +299,11 @@ public final class ServerContextInstance implements IServerContext
         return new JSONObject(Objects.requireNonNull(name), value);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public JSONObject json(Collection<?> collection)
+    @SuppressWarnings("unchecked")
+    public JSONObject json(final Collection<?> collection)
     {
-        collection = Objects.requireNonNull(collection);
+        Objects.requireNonNull(collection);
 
         if (collection instanceof List)
         {
@@ -317,20 +332,22 @@ public final class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public JSONSchema jsonschema(final Map<String, ?> schema)
+    public JSONSchema jsonSchema(final Map<String, ?> schema)
     {
-        return JSONSchema.cast(json(schema));
+        return JSONSchema.cast(json(Objects.requireNonNull(schema)));
     }
 
     @Override
     public Logger logger()
     {
-        return logger;
+        return m_logger;
     }
 
     @Override
-    public JSONObject parseJSON(String string) throws Exception
+    public JSONObject jsonParse(final String string) throws JSONParserException
     {
+        Objects.requireNonNull(string);
+
         final Object result = new JSONParser().parse(string);
 
         if ((null != result) && (result instanceof JSONObject))
@@ -341,8 +358,10 @@ public final class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public JSONObject parseJSON(Reader reader) throws Exception
+    public JSONObject jsonParse(final Reader reader) throws IOException, JSONParserException
     {
+        Objects.requireNonNull(reader);
+
         final Object result = new JSONParser().parse(reader);
 
         if ((null != result) && (result instanceof JSONObject))

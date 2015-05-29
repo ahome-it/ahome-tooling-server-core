@@ -30,7 +30,7 @@ import org.springframework.jms.core.MessageCreator;
 import com.ait.tooling.json.JSONObject;
 
 @SuppressWarnings("serial")
-public class AbstractJmsTemplatePublishDescriptor implements IPublishDescriptor
+public class AbstractJmsTemplatePublishDescriptor implements IJmsTempletePublishDescriptor
 {
     private final String            m_name;
 
@@ -54,11 +54,13 @@ public class AbstractJmsTemplatePublishDescriptor implements IPublishDescriptor
         }
     }
 
+    @Override
     public JmsTemplate getJmsTemplate()
     {
         return m_template;
     }
 
+    @Override
     public void setJmsTemplate(final JmsTemplate template)
     {
         m_template = Objects.requireNonNull(template);
@@ -79,6 +81,8 @@ public class AbstractJmsTemplatePublishDescriptor implements IPublishDescriptor
     @Override
     public JSONObject publish(final JSONObject message) throws Exception
     {
+        Objects.requireNonNull(message);
+
         getJmsTemplate().send(new MessageCreator()
         {
             public Message createMessage(final Session session) throws JMSException

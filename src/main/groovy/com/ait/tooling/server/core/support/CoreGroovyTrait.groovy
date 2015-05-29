@@ -19,7 +19,6 @@ package com.ait.tooling.server.core.support
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 
-import org.apache.log4j.Logger
 import org.springframework.context.ApplicationContext
 import org.springframework.core.env.Environment
 
@@ -33,7 +32,7 @@ import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler
 import com.ait.tooling.server.core.pubsub.PubSubChannelType
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
-import com.ait.tooling.server.core.security.ICryptoProvider;
+import com.ait.tooling.server.core.security.ICryptoProvider
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IExecutorServiceDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IPropertiesResolver
@@ -41,30 +40,8 @@ import com.ait.tooling.server.core.support.spring.IServerContext
 import com.ait.tooling.server.core.support.spring.ServerContextInstance
 
 @CompileStatic
-public class CoreGroovySupport implements IServerContext, Closeable, Serializable
+public trait CoreGroovyTrait
 {
-    private static final CoreGroovySupport INSTANCE = new CoreGroovySupport()
-
-    private static final long serialVersionUID = 6853938976110096947L
-
-    private final Logger    m_logger = Logger.getLogger(getClass())
-
-    @Memoized
-    public static final CoreGroovySupport getCoreGroovySupport()
-    {
-        INSTANCE
-    }
-
-    public CoreGroovySupport()
-    {
-    }
-
-    @Override
-    public Logger logger()
-    {
-        m_logger
-    }
-
     @Memoized
     public IServerContext getServerContext()
     {
@@ -125,7 +102,6 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
         getServerContext().getAuthorizationProvider()
     }
 
-    @Override
     public AuthorizationResult isAuthorized(Object target, JSONObject principals)
     {
         getServerContext().isAuthorized(target, principals)
@@ -142,93 +118,75 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     {
         getServerContext().getPubSubDescriptorProvider()
     }
-    
+
     @Memoized
     public ICryptoProvider getCryptoProvider()
     {
         getServerContext().getCryptoProvider()
     }
 
-    @Override
     public <B> B getBean(String name, Class<B> type)
     {
         getApplicationContext().getBean(Objects.requireNonNull(name), Objects.requireNonNull(type))
     }
 
-    @Override
     public JSONObject publish(String name, PubSubChannelType type, JSONObject message) throws Exception
     {
         getServerContext().publish(Objects.requireNonNull(name), Objects.requireNonNull(type), Objects.requireNonNull(message))
     }
 
-    @Override
     public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, Closure<JSONObject> handler) throws Exception
     {
         Objects.requireNonNull(handler)
-        
+
         getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(type), handler)
     }
 
-    @Override
     public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IPubSubMessageReceivedHandler handler) throws Exception
     {
         getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(type), Objects.requireNonNull(handler))
     }
 
-    @Override
     public JSONObject json()
     {
         getServerContext().json()
     }
 
-    @Override
     public JSONObject json(Map<String, ?> map)
     {
         getServerContext().json(Objects.requireNonNull(map))
     }
 
-    @Override
     public JSONObject json(String name, Object value)
     {
         getServerContext().json(Objects.requireNonNull(name), value)
     }
 
-    @Override
     public JSONObject json(Collection<?> collection)
     {
         getServerContext().json(Objects.requireNonNull(collection))
     }
 
-    @Override
     public JSONObject json(List<?> list)
     {
         getServerContext().json(Objects.requireNonNull(list))
     }
 
-    @Override
     public JSONSchema jsonSchema(Map<String, ?> schema)
     {
         getServerContext().jsonSchema(Objects.requireNonNull(schema))
     }
 
-    @Override
-    public void close() throws IOException
-    {
-    }
-
-    @Override
     public String uuid()
     {
         getServerContext().uuid()
     }
 
-    @Override
     public JSONObject jsonParse(String string) throws JSONParserException
     {
         getServerContext().jsonParse(Objects.requireNonNull(string))
     }
 
-    @Override
     public JSONObject jsonParse(Reader reader) throws IOException, JSONParserException
     {
         getServerContext().jsonParse(Objects.requireNonNull(reader))

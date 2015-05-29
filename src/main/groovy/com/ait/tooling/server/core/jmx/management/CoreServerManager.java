@@ -32,6 +32,8 @@ import com.ait.tooling.common.api.java.util.StringOps;
 @ManagedResource(objectName = "com.ait.tooling.server.core.jmx.management:name=CoreServerManager", description = "Manage Server Operations.")
 public class CoreServerManager implements ICoreServerManager
 {
+    private static final long                     serialVersionUID   = -6550533604236621679L;
+
     private static final Logger                   logger             = Logger.getLogger(CoreServerManager.class);
 
     private boolean                               m_running          = true;

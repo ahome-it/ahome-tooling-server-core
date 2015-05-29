@@ -18,12 +18,12 @@ package com.ait.tooling.server.core.pubsub;
 
 import java.util.Objects;
 
-public class DefaultJmsTemplateQueuePublishDescriptor extends AbstractJmsTemplateQueuePublishDescriptor
+public class DefaultJmsTopicSubscribeDescriptor extends AbstractJmsSubscribeDescriptor
 {
-    private static final long serialVersionUID = 2975176571634166115L;
+    private static final long serialVersionUID = 8939437268766785825L;
 
-    public DefaultJmsTemplateQueuePublishDescriptor(final String name)
+    public DefaultJmsTopicSubscribeDescriptor(final String name)
     {
-        super(Objects.requireNonNull(name));
+        super(Objects.requireNonNull(name), PubSubChannelType.TOPIC);
     }
 }

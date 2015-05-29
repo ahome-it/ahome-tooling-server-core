@@ -17,6 +17,7 @@
 package com.ait.tooling.server.core.filter;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -29,7 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ait.tooling.common.api.java.util.IHTTPConstants;
 
-public abstract class AbstractHTTPFilter implements Filter, IHTTPConstants
+@SuppressWarnings("serial")
+public abstract class AbstractHTTPFilter implements Filter, IHTTPConstants, Serializable
 {
     protected static final long WEEK_IN_SECONDS      = 604800L;
 
@@ -44,7 +46,7 @@ public abstract class AbstractHTTPFilter implements Filter, IHTTPConstants
     public AbstractHTTPFilter()
     {
     }
-    
+
     @Override
     public void destroy()
     {

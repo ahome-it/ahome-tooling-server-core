@@ -17,11 +17,12 @@
 package com.ait.tooling.server.core.security;
 
 import java.io.Closeable;
+import java.io.Serializable;
 
 import com.ait.tooling.common.api.hash.ISHA_512_HASH;
 import com.ait.tooling.common.api.hash.ISHA_512_HASH_SALT;
 
-public interface ICryptoProvider extends Closeable, ISHA_512_HASH_SALT, ISHA_512_HASH
+public interface ICryptoProvider extends Closeable, Serializable, ISHA_512_HASH_SALT, ISHA_512_HASH
 {
     public String encode(String text);
 

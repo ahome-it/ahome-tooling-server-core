@@ -16,14 +16,13 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-import java.util.Objects;
+import javax.jms.Topic;
 
-public class DefaultJmsTemplateQueuePublishDescriptor extends AbstractJmsTemplateQueuePublishDescriptor
+public interface IJmsTempleteTopicPublishDescriptor extends IJmsTempletePublishDescriptor
 {
-    private static final long serialVersionUID = 2975176571634166115L;
+    public void setTopic(Topic topic);
 
-    public DefaultJmsTemplateQueuePublishDescriptor(final String name)
-    {
-        super(Objects.requireNonNull(name));
-    }
+    public Topic getTopic();
+
+    public <T extends Topic> T getTopic(Class<T> type);
 }

@@ -18,7 +18,9 @@ package com.ait.tooling.server.core.support.spring;
 
 import groovy.lang.Closure;
 
+import java.io.IOException;
 import java.io.Reader;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +30,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 
 import com.ait.tooling.json.JSONObject;
+import com.ait.tooling.json.parser.JSONParserException;
 import com.ait.tooling.json.schema.JSONSchema;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
@@ -36,8 +39,9 @@ import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler;
 import com.ait.tooling.server.core.pubsub.PubSubChannelType;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizer;
+import com.ait.tooling.server.core.security.ICryptoProvider;
 
-public interface IServerContext extends IAuthorizer, IPropertiesResolver
+public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serializable
 {
     public IServerContext getServerContext();
 
@@ -59,6 +63,8 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver
 
     public IPropertiesResolver getPropertiesResolver();
 
+    public ICryptoProvider getCryptoProvider();
+
     public IPubSubDescriptorProvider getPubSubDescriptorProvider();
 
     public JSONObject publish(String name, PubSubChannelType type, JSONObject message) throws Exception;
@@ -79,11 +85,11 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver
 
     public JSONObject json(List<?> list);
 
-    public JSONSchema jsonschema(Map<String, ?> schema);
+    public JSONSchema jsonSchema(Map<String, ?> schema);
+
+    public JSONObject jsonParse(String string) throws JSONParserException;
+
+    public JSONObject jsonParse(Reader reader) throws IOException, JSONParserException;
 
     public String uuid();
-    
-    public JSONObject parseJSON(String string) throws Exception;
-    
-    public JSONObject parseJSON(Reader reader) throws Exception;
 }

@@ -16,14 +16,11 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-import java.util.Objects;
+import org.springframework.jms.core.JmsTemplate;
 
-public class DefaultJmsTemplateQueuePublishDescriptor extends AbstractJmsTemplateQueuePublishDescriptor
+public interface IJmsTempletePublishDescriptor extends IPublishDescriptor
 {
-    private static final long serialVersionUID = 2975176571634166115L;
+    public void setJmsTemplate(JmsTemplate template);
 
-    public DefaultJmsTemplateQueuePublishDescriptor(final String name)
-    {
-        super(Objects.requireNonNull(name));
-    }
+    public JmsTemplate getJmsTemplate();
 }

@@ -30,6 +30,8 @@ import com.ait.tooling.common.api.java.util.StringOps;
 
 public class CacheControlFilter extends AbstractHTTPFilter
 {
+    private static final long   serialVersionUID = -3522876567429582625L;
+
     private static final Logger logger           = Logger.getLogger(CacheControlFilter.class);
 
     private String              m_no_cache_regex = null;

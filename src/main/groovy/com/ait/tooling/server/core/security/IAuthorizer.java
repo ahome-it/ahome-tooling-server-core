@@ -16,9 +16,11 @@
 
 package com.ait.tooling.server.core.security;
 
+import java.io.Serializable;
+
 import com.ait.tooling.json.JSONObject;
 
-public interface IAuthorizer
+public interface IAuthorizer extends Serializable
 {
     public static final int E_IS_VALIDATED = 0;
 

@@ -58,6 +58,8 @@ public class AbstractJmsSubscribeDescriptor implements MessageListener, ISubscri
     @Override
     public void onMessage(final Message message)
     {
+        Objects.requireNonNull(message);
+
         if (message instanceof TextMessage)
         {
             try

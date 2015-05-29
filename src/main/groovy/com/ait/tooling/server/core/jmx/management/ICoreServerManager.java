@@ -16,9 +16,11 @@
 
 package com.ait.tooling.server.core.jmx.management;
 
+import java.io.Serializable;
+
 import org.apache.log4j.Level;
 
-public interface ICoreServerManager
+public interface ICoreServerManager extends Serializable
 {
     public boolean isRunning();
 
