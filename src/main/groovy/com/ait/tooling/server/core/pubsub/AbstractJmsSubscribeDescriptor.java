@@ -68,7 +68,11 @@ public class AbstractJmsSubscribeDescriptor implements MessageListener, ISubscri
 
                 if (result instanceof JSONObject)
                 {
-                    m_supp.dispatch(new MessageReceivedEvent(this, (JSONObject) result));
+                    final JSONObject object = ((JSONObject) result);
+
+                    logger().info("Got message and dispatch " + object.toJSONString());
+
+                    m_supp.dispatch(new MessageReceivedEvent(this, object));
                 }
                 else
                 {

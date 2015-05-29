@@ -52,19 +52,19 @@ import com.ait.tooling.server.core.security.ICryptoProvider;
 
 public class ServerContextInstance implements IServerContext
 {
-    private static final long                          serialVersionUID = 8451400323005323866L;
+    private static final long                          serialVersionUID    = 8451400323005323866L;
 
-    private static final Logger                        logger           = Logger.getLogger(ServerContextInstance.class);
+    private static ApplicationContext                  APPLICATION_CONTEXT = null;
 
-    private final static AnonOnlyAuthorizationProvider DEFAULT_AUTH     = new AnonOnlyAuthorizationProvider();
+    private static final Logger                        logger              = Logger.getLogger(ServerContextInstance.class);
 
-    private final static DefaultPrincipalsKeysProvider DEFAULT_KEYS     = new DefaultPrincipalsKeysProvider();
+    private final static AnonOnlyAuthorizationProvider DEFAULT_AUTH        = new AnonOnlyAuthorizationProvider();
 
-    private final static ServerContextInstance         INSTANCE         = new ServerContextInstance();
+    private final static DefaultPrincipalsKeysProvider DEFAULT_KEYS        = new DefaultPrincipalsKeysProvider();
 
-    private final Logger                               m_logger         = Logger.getLogger(getClass());
+    private final static ServerContextInstance         INSTANCE            = new ServerContextInstance();
 
-    private ApplicationContext                         m_context;
+    private final Logger                               m_logger            = Logger.getLogger(getClass());
 
     @Override
     public final IServerContext getServerContext()
@@ -77,19 +77,19 @@ public class ServerContextInstance implements IServerContext
         return INSTANCE;
     }
 
-    protected ServerContextInstance()
+    private ServerContextInstance()
     {
     }
 
     public final void setApplicationContext(final ApplicationContext context)
     {
-        m_context = Objects.requireNonNull(context);
+        APPLICATION_CONTEXT = Objects.requireNonNull(context);
     }
 
     @Override
     public final ApplicationContext getApplicationContext()
     {
-        return Objects.requireNonNull(m_context, "ApplicationContext is null, initialization error.");
+        return Objects.requireNonNull(APPLICATION_CONTEXT, "ApplicationContext is null, initialization error.");
     }
 
     @Override
