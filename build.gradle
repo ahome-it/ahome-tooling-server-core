@@ -143,7 +143,11 @@ dependencies {
     springSecurityPackages().each { String name ->
         compile(group: 'org.springframework.security', name: name, version: '4.0.1.RELEASE')
     }
-    compile(group: 'org.springframework.integration', name: 'spring-integration-core', version: '4.1.4.RELEASE')
+    springIntegrationPackages().each { String name ->
+        compile(group: 'org.springframework.integration', name: name, version: '4.1.4.RELEASE')
+    }
+    compile(group: 'org.springframework.integration', name: 'spring-integration-flow', version: '1.0.0.RELEASE')
+    compile(group: 'org.springframework.integration', name: 'spring-integration-java-dsl', version: '1.0.1.RELEASE')
     compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.3', classifier: 'indy')
     compile(group: 'org.codehaus.gpars', name: 'gpars', version: '1.2.1')
     compile(group: 'org.jdeferred', name: 'jdeferred-core', version: '1.2.4')
@@ -202,5 +206,19 @@ def List<String> springSecurityPackages() {
         'spring-security-config',
         'spring-security-aspects',
         'spring-security-remoting'
+    ]
+}
+
+def List<String> springIntegrationPackages() {
+    return [
+        'spring-integration-core',
+        'spring-integration-scripting',
+        'spring-integration-groovy',
+        'spring-integration-jms',
+        'spring-integration-xml',
+        'spring-integration-feed',
+        'spring-integration-event',
+        'spring-integration-file',
+        'spring-integration-security'
     ]
 }
