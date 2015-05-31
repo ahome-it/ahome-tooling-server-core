@@ -30,9 +30,7 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider
 import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration
 import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler
-import com.ait.tooling.server.core.pubsub.MessageReceivedEvent
 import com.ait.tooling.server.core.pubsub.PubSubChannelType
-import com.ait.tooling.server.core.pubsub.PubSubNextEventActionType;
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.security.ICryptoProvider
@@ -175,29 +173,6 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
         getServerContext().publish(Objects.requireNonNull(name), Objects.requireNonNull(type), Objects.requireNonNull(message))
     }
 
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, Closure closure) throws Exception
-    {
-        Objects.requireNonNull(closure)
-
-        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(type), new IPubSubMessageReceivedHandler()
-        {
-            @Override
-            public PubSubNextEventActionType onMessageReceived(MessageReceivedEvent event)
-            {
-                def valu = closure(event)
-
-                if ((valu) && (valu instanceof PubSubNextEventActionType))
-                {
-                    ((PubSubNextEventActionType) valu)
-                }
-                else
-                {
-                    PubSubNextEventActionType.CONTINUE
-                }
-            }
-        });
-    }
-
     @Override
     public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IPubSubMessageReceivedHandler handler) throws Exception
     {
@@ -273,52 +248,6 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     public JSONObject publish(String name, List<PubSubChannelType> list, JSONObject message) throws Exception
     {
         getServerContext().publish(Objects.requireNonNull(name), Objects.requireNonNull(list),  Objects.requireNonNull(message))
-    }
-
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, Closure closure) throws Exception
-    {
-        Objects.requireNonNull(closure)
-
-        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), new IPubSubMessageReceivedHandler()
-        {
-            @Override
-            public PubSubNextEventActionType onMessageReceived(MessageReceivedEvent event)
-            {
-                def valu = closure(event)
-
-                if ((valu) && (valu instanceof PubSubNextEventActionType))
-                {
-                    ((PubSubNextEventActionType) valu)
-                }
-                else
-                {
-                    PubSubNextEventActionType.CONTINUE
-                }
-            }
-        });
-    }
-
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, Closure closure) throws Exception
-    {
-        Objects.requireNonNull(closure)
-
-        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(list), new IPubSubMessageReceivedHandler()
-        {
-            @Override
-            public PubSubNextEventActionType onMessageReceived(MessageReceivedEvent event)
-            {
-                def valu = closure(event)
-
-                if ((valu) && (valu instanceof PubSubNextEventActionType))
-                {
-                    ((PubSubNextEventActionType) valu)
-                }
-                else
-                {
-                    PubSubNextEventActionType.CONTINUE
-                }
-            }
-        });
     }
 
     @Override

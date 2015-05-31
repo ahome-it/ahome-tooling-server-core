@@ -466,7 +466,7 @@ public class ServerContextInstance implements IServerContext
     @Override
     public final String uuid()
     {
-        return UUID.randomUUID().toString();
+        return UUID.randomUUID().toString().toUpperCase();
     }
 
     @Override
