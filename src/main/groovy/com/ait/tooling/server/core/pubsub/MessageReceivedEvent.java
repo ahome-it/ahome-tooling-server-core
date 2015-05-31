@@ -16,14 +16,34 @@
 
 package com.ait.tooling.server.core.pubsub;
 
+import java.util.Map;
+import java.util.Objects;
+
+import org.springframework.messaging.MessageHeaders;
+
 import com.ait.tooling.json.JSONObject;
 
-public class MessageReceivedEvent extends AbstractPubSubEvent<JSONObject>
+public class MessageReceivedEvent extends AbstractPubSubEvent
 {
     private static final long serialVersionUID = -1895272847273309384L;
 
-    public MessageReceivedEvent(final IPubSubDescriptor descriptor, final JSONObject value)
+    public MessageReceivedEvent(final IPubSubDescriptor descriptor, final JSONObject payload)
     {
-        super(descriptor, value);
+        super(Objects.requireNonNull(descriptor), Objects.requireNonNull(payload));
+    }
+    
+    public MessageReceivedEvent(final IPubSubDescriptor descriptor, final JSONObject payload, final MessageHeaders headers)
+    {
+        super(Objects.requireNonNull(descriptor), Objects.requireNonNull(payload), Objects.requireNonNull(headers));
+    }
+    
+    public MessageReceivedEvent(final IPubSubDescriptor descriptor, final JSONObject payload, final Map<String, ?> headers)
+    {
+        super(Objects.requireNonNull(descriptor), Objects.requireNonNull(payload), Objects.requireNonNull(headers));
+    }
+    
+    public MessageReceivedEvent(final IPubSubDescriptor descriptor, final JSONObject payload, final JSONObject headers)
+    {
+        super(Objects.requireNonNull(descriptor), Objects.requireNonNull(payload), Objects.requireNonNull(headers));
     }
 }

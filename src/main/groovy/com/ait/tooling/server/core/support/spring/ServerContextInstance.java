@@ -25,12 +25,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 
-import com.ait.tooling.common.api.java.util.UUID;
 import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.json.parser.JSONParser;
 import com.ait.tooling.json.parser.JSONParserException;
@@ -99,9 +99,66 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public final <B> B getBean(final String name, final Class<B> type)
+    public boolean containsBean(final String name)
+    {
+        return getApplicationContext().containsBean(Objects.requireNonNull(name));
+    }
+
+    @Override
+    public final <B> B getBean(final String name, final Class<B> type) throws Exception
     {
         return getApplicationContext().getBean(Objects.requireNonNull(name), Objects.requireNonNull(type));
+    }
+
+    @Override
+    public final <B> B getBeanSafely(final String name, final Class<B> type)
+    {
+        Objects.requireNonNull(name);
+
+        Objects.requireNonNull(type);
+
+        B bean = null;
+
+        try
+        {
+            final ApplicationContext ctxt = getApplicationContext();
+
+            if (ctxt.containsBean(name))
+            {
+                try
+                {
+                    bean = ctxt.getBean(name, type);
+                }
+                catch (Exception e)
+                {
+                    logger().error("getBeanSafely(" + name + "," + type.getName() + ") error.", e);
+                }
+                if (null == bean)
+                {
+                    try
+                    {
+                        final Object look = ctxt.getBean(name);
+
+                        if (null != look)
+                        {
+                            if (type.isAssignableFrom(look.getClass()))
+                            {
+                                bean = type.cast(look);
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        logger().error("getBeanSafely(" + name + "," + type.getName() + ") error.", e);
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            logger().error("getBeanSafely(" + name + "," + type.getName() + ") error.", e);
+        }
+        return bean;
     }
 
     @Override
@@ -175,30 +232,30 @@ public class ServerContextInstance implements IServerContext
     @Override
     public final ICoreServerManager getCoreServerManager()
     {
-        return Objects.requireNonNull(getBean("CoreServerManager", ICoreServerManager.class), "CoreServerManager is null, initialization error.");
+        return Objects.requireNonNull(getBeanSafely("CoreServerManager", ICoreServerManager.class), "CoreServerManager is null, initialization error.");
     }
 
     @Override
     public final IExecutorServiceDescriptorProvider getExecutorServiceDescriptorProvider()
     {
-        return Objects.requireNonNull(getBean("ExecutorServiceDescriptorProvider", IExecutorServiceDescriptorProvider.class), "ExecutorServiceDescriptorProvider is null, initialization error.");
+        return Objects.requireNonNull(getBeanSafely("ExecutorServiceDescriptorProvider", IExecutorServiceDescriptorProvider.class), "ExecutorServiceDescriptorProvider is null, initialization error.");
     }
 
     @Override
     public final IBuildDescriptorProvider getBuildDescriptorProvider()
     {
-        return Objects.requireNonNull(getBean("BuildDescriptorProvider", IBuildDescriptorProvider.class), "BuildDescriptorProvider is null, initialization error.");
+        return Objects.requireNonNull(getBeanSafely("BuildDescriptorProvider", IBuildDescriptorProvider.class), "BuildDescriptorProvider is null, initialization error.");
     }
 
     @Override
     public final ICryptoProvider getCryptoProvider()
     {
-        return Objects.requireNonNull(getBean("CryptoProvider", ICryptoProvider.class), "CryptoProvider is null, initialization error.");
+        return Objects.requireNonNull(getBeanSafely("CryptoProvider", ICryptoProvider.class), "CryptoProvider is null, initialization error.");
     }
 
     private final CorePropertiesResolver getCorePropertiesResolver()
     {
-        return Objects.requireNonNull(getBean("CorePropertiesResolver", CorePropertiesResolver.class), "CorePropertiesResolver is null, initialization error.");
+        return Objects.requireNonNull(getBeanSafely("CorePropertiesResolver", CorePropertiesResolver.class), "CorePropertiesResolver is null, initialization error.");
     }
 
     @Override
@@ -210,7 +267,7 @@ public class ServerContextInstance implements IServerContext
     @Override
     public final IPubSubDescriptorProvider getPubSubDescriptorProvider()
     {
-        return Objects.requireNonNull(getBean("PubSubDescriptorProvider", IPubSubDescriptorProvider.class), "PubSubDescriptorProvider is null, initialization error.");
+        return Objects.requireNonNull(getBeanSafely("PubSubDescriptorProvider", IPubSubDescriptorProvider.class), "PubSubDescriptorProvider is null, initialization error.");
     }
 
     @Override
@@ -292,21 +349,21 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public final IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final Closure<JSONObject> handler) throws Exception
+    public final IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final Closure<MessageReceivedEvent> handler) throws Exception
     {
-        return addMessageReceivedHandler(Objects.requireNonNull(name), new OnMessage(Objects.requireNonNull(handler)));
+        return addMessageReceivedHandler(Objects.requireNonNull(name), new OnMessageRecievedClosureProxy(Objects.requireNonNull(handler)));
     }
 
     @Override
-    public final IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final PubSubChannelType type, final Closure<JSONObject> handler) throws Exception
+    public final IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final PubSubChannelType type, final Closure<MessageReceivedEvent> handler) throws Exception
     {
-        return addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(type), new OnMessage(Objects.requireNonNull(handler)));
+        return addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(type), new OnMessageRecievedClosureProxy(Objects.requireNonNull(handler)));
     }
 
     @Override
-    public final IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final List<PubSubChannelType> list, final Closure<JSONObject> handler) throws Exception
+    public final IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final List<PubSubChannelType> list, final Closure<MessageReceivedEvent> handler) throws Exception
     {
-        return addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(list), new OnMessage(Objects.requireNonNull(handler)));
+        return addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(list), new OnMessageRecievedClosureProxy(Objects.requireNonNull(handler)));
     }
 
     @Override
@@ -384,11 +441,11 @@ public class ServerContextInstance implements IServerContext
         }
     }
 
-    private static final class OnMessage implements IPubSubMessageReceivedHandler
+    private static final class OnMessageRecievedClosureProxy implements IPubSubMessageReceivedHandler
     {
-        private final Closure<JSONObject> m_clos;
+        private final Closure<MessageReceivedEvent> m_clos;
 
-        public OnMessage(final Closure<JSONObject> clos)
+        public OnMessageRecievedClosureProxy(final Closure<MessageReceivedEvent> clos)
         {
             m_clos = Objects.requireNonNull(clos);
         }
@@ -396,7 +453,7 @@ public class ServerContextInstance implements IServerContext
         @Override
         public PubSubNextEventActionType onMessageReceived(final MessageReceivedEvent event)
         {
-            m_clos.call(Objects.requireNonNull(Objects.requireNonNull(event).getValue()));
+            m_clos.call(Objects.requireNonNull(Objects.requireNonNull(event)));
 
             return PubSubNextEventActionType.CONTINUE;
         }
@@ -449,7 +506,7 @@ public class ServerContextInstance implements IServerContext
     @Override
     public final String uuid()
     {
-        return UUID.uuid();
+        return UUID.randomUUID().toString();
     }
 
     @Override

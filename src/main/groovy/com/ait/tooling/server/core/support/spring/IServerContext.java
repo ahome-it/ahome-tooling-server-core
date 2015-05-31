@@ -36,6 +36,7 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
 import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration;
 import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler;
+import com.ait.tooling.server.core.pubsub.MessageReceivedEvent;
 import com.ait.tooling.server.core.pubsub.PubSubChannelType;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizer;
@@ -47,7 +48,11 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serial
 
     public ApplicationContext getApplicationContext();
 
-    public <B> B getBean(String name, Class<B> type);
+    public boolean containsBean(String name);
+    
+    public <B> B getBean(String name, Class<B> type) throws Exception;
+    
+    public <B> B getBeanSafely(String name, Class<B> type);
 
     public Environment getEnvironment();
 
@@ -73,11 +78,11 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serial
 
     public JSONObject publish(String name, List<PubSubChannelType> list, JSONObject message) throws Exception;
 
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, Closure<JSONObject> handler) throws Exception;
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, Closure<MessageReceivedEvent> handler) throws Exception;
 
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, Closure<JSONObject> handler) throws Exception;
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, Closure<MessageReceivedEvent> handler) throws Exception;
 
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, Closure<JSONObject> handler) throws Exception;
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, Closure<MessageReceivedEvent> handler) throws Exception;
 
     public IPubSubHandlerRegistration addMessageReceivedHandler(String name, IPubSubMessageReceivedHandler handler) throws Exception;
 

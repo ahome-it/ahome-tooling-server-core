@@ -16,29 +16,47 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-import java.io.Serializable;
+import java.util.Map;
 import java.util.Objects;
 
-@SuppressWarnings("serial")
-public abstract class AbstractPubSubEvent<T extends Serializable> implements IPubSubEvent<T>
-{
-    private final T                 m_value;
+import org.springframework.integration.event.core.MessagingEvent;
+import org.springframework.messaging.MessageHeaders;
 
+import com.ait.tooling.json.JSONObject;
+
+@SuppressWarnings("serial")
+public abstract class AbstractPubSubEvent extends MessagingEvent implements IPubSubEvent
+{
     private final IPubSubDescriptor m_descriptor;
 
     private boolean                 m_cancelled = false;
 
-    protected AbstractPubSubEvent(final IPubSubDescriptor descriptor, final T value)
+    protected AbstractPubSubEvent(final IPubSubDescriptor descriptor, final JSONObject payload)
     {
-        m_value = Objects.requireNonNull(value);
+        super(new JSONMessage(Objects.requireNonNull(payload)));
 
         m_descriptor = Objects.requireNonNull(descriptor);
     }
 
-    @Override
-    public final T getValue()
+    protected AbstractPubSubEvent(final IPubSubDescriptor descriptor, final JSONObject payload, final MessageHeaders headers)
     {
-        return m_value;
+        super(new JSONMessage(Objects.requireNonNull(payload), Objects.requireNonNull(headers)));
+
+        m_descriptor = Objects.requireNonNull(descriptor);
+    }
+
+    protected AbstractPubSubEvent(final IPubSubDescriptor descriptor, final JSONObject payload, final Map<String, ?> headers)
+    {
+        super(new JSONMessage(Objects.requireNonNull(payload), Objects.requireNonNull(headers)));
+
+        m_descriptor = Objects.requireNonNull(descriptor);
+    }
+
+    protected AbstractPubSubEvent(final IPubSubDescriptor descriptor, final JSONObject payload, final JSONObject headers)
+    {
+        super(new JSONMessage(Objects.requireNonNull(payload), Objects.requireNonNull(headers)));
+
+        m_descriptor = Objects.requireNonNull(descriptor);
     }
 
     @Override
@@ -54,6 +72,12 @@ public abstract class AbstractPubSubEvent<T extends Serializable> implements IPu
     }
 
     @Override
+    public JSONMessage getMessage()
+    {
+        return ((JSONMessage) super.getMessage());
+    }
+
+    @Override
     public final boolean isCancelled()
     {
         return m_cancelled;
@@ -63,5 +87,11 @@ public abstract class AbstractPubSubEvent<T extends Serializable> implements IPu
     public final IPubSubDescriptor getDescriptor()
     {
         return m_descriptor;
+    }
+
+    @Override
+    public MessageHeaders getHeaders()
+    {
+        return getMessage().getHeaders();
     }
 }

@@ -18,13 +18,17 @@ package com.ait.tooling.server.core.pubsub;
 
 import java.io.Serializable;
 
-import com.ait.tooling.common.api.types.IValued;
+import org.springframework.messaging.MessageHeaders;
 
-public interface IPubSubEvent<T extends Serializable> extends Serializable, IValued<T>
+public interface IPubSubEvent extends Serializable
 {
     public boolean cancel();
 
     public boolean isCancelled();
 
     public IPubSubDescriptor getDescriptor();
+    
+    public MessageHeaders getHeaders();
+    
+    public JSONMessage getMessage();
 }

@@ -19,9 +19,10 @@ package com.ait.tooling.server.core.pubsub;
 import java.io.Closeable;
 import java.io.Serializable;
 
+import com.ait.tooling.common.api.types.IActivatable;
 import com.ait.tooling.common.api.types.INamed;
 
-public interface IPubSubDescriptor extends INamed, Serializable, Closeable
+public interface IPubSubDescriptor extends INamed, IActivatable, Serializable, Closeable
 {
     public PubSubChannelType getChannelType();
 }

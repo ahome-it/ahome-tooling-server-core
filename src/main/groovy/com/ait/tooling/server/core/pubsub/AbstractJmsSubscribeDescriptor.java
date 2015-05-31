@@ -16,9 +16,6 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import javax.jms.JMSException;
@@ -26,32 +23,18 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-import org.apache.log4j.Logger;
-
 import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.json.parser.JSONParser;
 import com.ait.tooling.json.parser.JSONParserException;
 
 @SuppressWarnings("serial")
-public abstract class AbstractJmsSubscribeDescriptor implements MessageListener, ISubscribeDescriptor
+public abstract class AbstractJmsSubscribeDescriptor extends AbstractSubscribeDescriptor implements MessageListener
 {
-    private final String                        m_name;
-
-    private final PubSubChannelType             m_type;
-
-    private final SubscribeDescriptorSupport    m_supp   = new SubscribeDescriptorSupport();
-
-    private final ArrayList<ISubscribeListener> m_list   = new ArrayList<ISubscribeListener>();
-
-    private final Logger                        m_logger = Logger.getLogger(getClass());
-
     protected AbstractJmsSubscribeDescriptor(final String name, final PubSubChannelType type)
     {
-        m_name = Objects.requireNonNull(name);
+        super(Objects.requireNonNull(name), Objects.requireNonNull(type));
 
-        m_type = Objects.requireNonNull(type);
-
-        if ((m_type != PubSubChannelType.QUEUE) && (m_type != PubSubChannelType.TOPIC))
+        if ((type != PubSubChannelType.QUEUE) && (type != PubSubChannelType.TOPIC))
         {
             logger().error("Invalid PubSubChannelType for JMS " + type.getValue());
 
@@ -72,16 +55,43 @@ public abstract class AbstractJmsSubscribeDescriptor implements MessageListener,
 
                 if (result instanceof JSONObject)
                 {
-                    final JSONObject object = ((JSONObject) result);
+                    final MessageReceivedEvent event = new MessageReceivedEvent(this, ((JSONObject) result));
 
-                    for (ISubscribeListener listener : m_list)
+                    for (IPubSubMessageReceivedHandler listener : getMessageReceivedHandlers())
                     {
-                        if (listener.onMessageReceived(object) == PubSubNextEventActionType.CANCEL)
+                        final PubSubNextEventActionType next = listener.onMessageReceived(event);
+
+                        if (PubSubNextEventActionType.CANCEL == next)
+                        {
+                            event.cancel();
+                        }
+                        else if (PubSubNextEventActionType.REDISPATCH == next)
+                        {
+                            final IPublishDescriptor pubs = getPublishDescriptor();
+
+                            if (null != pubs)
+                            {
+                                try
+                                {
+                                    pubs.publish(event.getMessage().getPayload());
+                                }
+                                catch (Exception e)
+                                {
+                                    logger().error("REDISPATCH threw Exception, cancelling event.", e);
+                                }
+                            }
+                            else
+                            {
+                                logger().error("REDISPATCH didnt find IPublishDescriptor, cancelling event.");
+                            }
+                            event.cancel();
+                        }
+                        if (event.isCancelled())
                         {
                             return;
                         }
                     }
-                    m_supp.dispatch(new MessageReceivedEvent(this, object));
+                    getSubscribeDescriptorSupport().dispatch(event, this);
                 }
                 else
                 {
@@ -114,47 +124,6 @@ public abstract class AbstractJmsSubscribeDescriptor implements MessageListener,
             logger().error("Message must be of type TextMessage");
 
             throw new IllegalArgumentException("Message must be of type TextMessage");
-        }
-    }
-
-    @Override
-    public PubSubChannelType getChannelType()
-    {
-        return m_type;
-    }
-
-    @Override
-    public String getName()
-    {
-        return m_name;
-    }
-
-    @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(final IPubSubMessageReceivedHandler handler)
-    {
-        return m_supp.addMessageReceivedHandler(Objects.requireNonNull(handler));
-    }
-
-    @Override
-    public void close() throws IOException
-    {
-    }
-
-    public final Logger logger()
-    {
-        return m_logger;
-    }
-
-    public void setSubscribeListener(final ISubscribeListener listener)
-    {
-        m_list.add(Objects.requireNonNull(listener));
-    }
-
-    public void setSubscribeListeners(final List<ISubscribeListener> listeners)
-    {
-        for (ISubscribeListener listener : Objects.requireNonNull(listeners))
-        {
-            m_list.add(Objects.requireNonNull(listener));
         }
     }
 }

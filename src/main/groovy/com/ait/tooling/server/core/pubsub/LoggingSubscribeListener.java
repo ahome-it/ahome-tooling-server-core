@@ -16,14 +16,15 @@
 
 package com.ait.tooling.server.core.pubsub;
 
+import java.io.Serializable;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.server.core.logging.ICoreLoggingOperations;
 
-public class LoggingSubscribeListener implements ISubscribeListener, ICoreLoggingOperations
+public class LoggingSubscribeListener implements IPubSubMessageReceivedHandler, ICoreLoggingOperations, Serializable
 {
     private static final long serialVersionUID = 5154374919398530876L;
 
@@ -35,9 +36,9 @@ public class LoggingSubscribeListener implements ISubscribeListener, ICoreLoggin
     }
 
     @Override
-    public PubSubNextEventActionType onMessageReceived(final JSONObject message)
+    public PubSubNextEventActionType onMessageReceived(final MessageReceivedEvent event)
     {
-        if (null != message)
+        if (null != event)
         {
             final Level level = getLoggingLevel();
 
@@ -48,7 +49,7 @@ public class LoggingSubscribeListener implements ISubscribeListener, ICoreLoggin
 
             if ((null != level) && (LogManager.getRootLogger().isEnabledFor(level)))
             {
-                m_logger.log(level, message.toJSONString());
+                m_logger.log(level, event.getMessage().toJSONString());
             }
         }
         return PubSubNextEventActionType.CONTINUE;

@@ -30,6 +30,7 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider
 import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration
 import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler
+import com.ait.tooling.server.core.pubsub.MessageReceivedEvent
 import com.ait.tooling.server.core.pubsub.PubSubChannelType
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
@@ -150,9 +151,21 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     }
 
     @Override
-    public <B> B getBean(String name, Class<B> type)
+    public boolean containsBean(String name)
     {
-        getApplicationContext().getBean(Objects.requireNonNull(name), Objects.requireNonNull(type))
+        getServerContext().containsBean(Objects.requireNonNull(name))
+    }
+
+    @Override
+    public <B> B getBean(String name, Class<B> type) throws Exception
+    {
+        getServerContext().getBean(Objects.requireNonNull(name), Objects.requireNonNull(type))
+    }
+
+    @Override
+    public <B> B getBeanSafely(String name, Class<B> type)
+    {
+        getServerContext().getBeanSafely(Objects.requireNonNull(name), Objects.requireNonNull(type))
     }
 
     @Override
@@ -162,7 +175,7 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     }
 
     @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, Closure<JSONObject> handler) throws Exception
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, Closure<MessageReceivedEvent> handler) throws Exception
     {
         Objects.requireNonNull(handler)
 
@@ -247,7 +260,7 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     }
 
     @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, Closure<JSONObject> handler) throws Exception
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, Closure<MessageReceivedEvent> handler) throws Exception
     {
         Objects.requireNonNull(handler)
 
@@ -255,7 +268,7 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     }
 
     @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, Closure<JSONObject> handler) throws Exception
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, Closure<MessageReceivedEvent> handler) throws Exception
     {
         Objects.requireNonNull(handler)
 

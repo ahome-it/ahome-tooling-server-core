@@ -16,51 +16,23 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-import java.io.IOException;
 import java.util.Objects;
 
 import com.ait.tooling.json.JSONObject;
 
 @SuppressWarnings("serial")
-public abstract class AbstractEventPubSubDescriptor implements IPublishDescriptor, ISubscribeDescriptor
+public abstract class AbstractEventPubSubDescriptor extends AbstractSubscribeDescriptor implements IPublishDescriptor, ISubscribeDescriptor
 {
-    private final String                     m_name;
-
-    private final SubscribeDescriptorSupport m_supp = new SubscribeDescriptorSupport();
-
     protected AbstractEventPubSubDescriptor(final String name)
     {
-        m_name = Objects.requireNonNull(name);
-    }
-
-    @Override
-    public PubSubChannelType getChannelType()
-    {
-        return PubSubChannelType.EVENT;
-    }
-
-    @Override
-    public String getName()
-    {
-        return m_name;
+        super(Objects.requireNonNull(name), PubSubChannelType.EVENT);
     }
 
     @Override
     public JSONObject publish(final JSONObject message) throws Exception
     {
-        m_supp.dispatch(new MessageReceivedEvent(this, Objects.requireNonNull(message)));
+        getSubscribeDescriptorSupport().dispatch(new MessageReceivedEvent(this, Objects.requireNonNull(message)), this);
 
         return message;
-    }
-
-    @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(final IPubSubMessageReceivedHandler handler)
-    {
-        return m_supp.addMessageReceivedHandler(Objects.requireNonNull(handler));
-    }
-
-    @Override
-    public void close() throws IOException
-    {
     }
 }

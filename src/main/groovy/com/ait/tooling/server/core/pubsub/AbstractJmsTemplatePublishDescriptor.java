@@ -27,10 +27,11 @@ import org.apache.log4j.Logger;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 
+import com.ait.tooling.common.api.types.Activatible;
 import com.ait.tooling.json.JSONObject;
 
 @SuppressWarnings("serial")
-public abstract class AbstractJmsTemplatePublishDescriptor implements IJmsTempletePublishDescriptor
+public abstract class AbstractJmsTemplatePublishDescriptor extends Activatible implements IJmsTempletePublishDescriptor
 {
     private final String            m_name;
 
@@ -113,6 +114,7 @@ public abstract class AbstractJmsTemplatePublishDescriptor implements IJmsTemple
     @Override
     public void close() throws IOException
     {
+        setActive(false);
     }
 
     public final Logger logger()

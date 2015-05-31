@@ -21,9 +21,13 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.log4j.Logger;
+
 public class SubscribeDescriptorSupport implements Serializable
 {
     private static final long                                              serialVersionUID            = -5741025269936370062L;
+
+    private static final Logger                                            logger                      = Logger.getLogger(SubscribeDescriptorSupport.class);
 
     private final AtomicLong                                               m_hkey                      = new AtomicLong();
 
@@ -33,9 +37,11 @@ public class SubscribeDescriptorSupport implements Serializable
     {
     }
 
-    public void dispatch(final MessageReceivedEvent event) throws Exception
+    public void dispatch(final MessageReceivedEvent event, final ISubscribeDescriptor isubs) throws Exception
     {
         Objects.requireNonNull(event);
+
+        Objects.requireNonNull(isubs);
 
         for (IPubSubMessageReceivedHandler handler : m_message_received_handlers.values())
         {
@@ -45,9 +51,30 @@ public class SubscribeDescriptorSupport implements Serializable
             {
                 event.cancel();
             }
+            else if (PubSubNextEventActionType.REDISPATCH == next)
+            {
+                final IPublishDescriptor pubs = isubs.getPublishDescriptor();
+
+                if (null != pubs)
+                {
+                    try
+                    {
+                        pubs.publish(event.getMessage().getPayload());
+                    }
+                    catch (Exception e)
+                    {
+                        logger.error("REDISPATCH threw Exception, cancelling event.", e);
+                    }
+                }
+                else
+                {
+                    logger.error("REDISPATCH didnt find IPublishDescriptor, cancelling event.");
+                }
+                event.cancel();
+            }
             if (event.isCancelled())
             {
-                break;
+                return;
             }
         }
     }

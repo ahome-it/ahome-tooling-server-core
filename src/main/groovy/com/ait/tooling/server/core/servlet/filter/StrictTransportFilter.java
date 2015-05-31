@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.filter;
+package com.ait.tooling.server.core.servlet.filter;
 
 import java.io.IOException;
 
@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.ait.tooling.common.api.java.util.StringOps;
-import com.ait.tooling.server.core.filter.AbstractHTTPFilter;
+import com.ait.tooling.server.core.servlet.filter.AbstractHTTPFilter;
 
 public class StrictTransportFilter extends AbstractHTTPFilter
 {

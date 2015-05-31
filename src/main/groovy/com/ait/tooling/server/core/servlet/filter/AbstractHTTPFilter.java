@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.filter;
+package com.ait.tooling.server.core.servlet.filter;
 
 import java.io.IOException;
 import java.io.Serializable;
