@@ -32,6 +32,7 @@ import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration
 import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler
 import com.ait.tooling.server.core.pubsub.MessageReceivedEvent
 import com.ait.tooling.server.core.pubsub.PubSubChannelType
+import com.ait.tooling.server.core.pubsub.PubSubNextEventActionType;
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.security.ICryptoProvider
@@ -174,12 +175,27 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
         getServerContext().publish(Objects.requireNonNull(name), Objects.requireNonNull(type), Objects.requireNonNull(message))
     }
 
-    @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, Closure<MessageReceivedEvent> handler) throws Exception
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, Closure closure) throws Exception
     {
-        Objects.requireNonNull(handler)
+        Objects.requireNonNull(closure)
 
-        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(type), handler)
+        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(type), new IPubSubMessageReceivedHandler()
+        {
+            @Override
+            public PubSubNextEventActionType onMessageReceived(MessageReceivedEvent event)
+            {
+                def valu = closure(event)
+
+                if ((valu) && (valu instanceof PubSubNextEventActionType))
+                {
+                    ((PubSubNextEventActionType) valu)
+                }
+                else
+                {
+                    PubSubNextEventActionType.CONTINUE
+                }
+            }
+        });
     }
 
     @Override
@@ -259,20 +275,50 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
         getServerContext().publish(Objects.requireNonNull(name), Objects.requireNonNull(list),  Objects.requireNonNull(message))
     }
 
-    @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, Closure<MessageReceivedEvent> handler) throws Exception
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, Closure closure) throws Exception
     {
-        Objects.requireNonNull(handler)
+        Objects.requireNonNull(closure)
 
-        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), handler)
+        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), new IPubSubMessageReceivedHandler()
+        {
+            @Override
+            public PubSubNextEventActionType onMessageReceived(MessageReceivedEvent event)
+            {
+                def valu = closure(event)
+
+                if ((valu) && (valu instanceof PubSubNextEventActionType))
+                {
+                    ((PubSubNextEventActionType) valu)
+                }
+                else
+                {
+                    PubSubNextEventActionType.CONTINUE
+                }
+            }
+        });
     }
 
-    @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, Closure<MessageReceivedEvent> handler) throws Exception
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, Closure closure) throws Exception
     {
-        Objects.requireNonNull(handler)
+        Objects.requireNonNull(closure)
 
-        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(list), handler)
+        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(list), new IPubSubMessageReceivedHandler()
+        {
+            @Override
+            public PubSubNextEventActionType onMessageReceived(MessageReceivedEvent event)
+            {
+                def valu = closure(event)
+
+                if ((valu) && (valu instanceof PubSubNextEventActionType))
+                {
+                    ((PubSubNextEventActionType) valu)
+                }
+                else
+                {
+                    PubSubNextEventActionType.CONTINUE
+                }
+            }
+        });
     }
 
     @Override

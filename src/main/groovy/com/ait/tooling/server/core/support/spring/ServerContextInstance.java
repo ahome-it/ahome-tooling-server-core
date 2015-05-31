@@ -16,8 +16,6 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import groovy.lang.Closure;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -41,10 +39,8 @@ import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration;
 import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler;
 import com.ait.tooling.server.core.pubsub.IPublishDescriptor;
 import com.ait.tooling.server.core.pubsub.ISubscribeDescriptor;
-import com.ait.tooling.server.core.pubsub.MessageReceivedEvent;
 import com.ait.tooling.server.core.pubsub.PubSubChannelType;
 import com.ait.tooling.server.core.pubsub.PubSubException;
-import com.ait.tooling.server.core.pubsub.PubSubNextEventActionType;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 import com.ait.tooling.server.core.security.AuthorizationResult;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
@@ -349,24 +345,6 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public final IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final Closure<MessageReceivedEvent> handler) throws Exception
-    {
-        return addMessageReceivedHandler(Objects.requireNonNull(name), new OnMessageRecievedClosureProxy(Objects.requireNonNull(handler)));
-    }
-
-    @Override
-    public final IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final PubSubChannelType type, final Closure<MessageReceivedEvent> handler) throws Exception
-    {
-        return addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(type), new OnMessageRecievedClosureProxy(Objects.requireNonNull(handler)));
-    }
-
-    @Override
-    public final IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final List<PubSubChannelType> list, final Closure<MessageReceivedEvent> handler) throws Exception
-    {
-        return addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(list), new OnMessageRecievedClosureProxy(Objects.requireNonNull(handler)));
-    }
-
-    @Override
     public final IPubSubHandlerRegistration addMessageReceivedHandler(String name, IPubSubMessageReceivedHandler handler) throws Exception
     {
         name = Objects.requireNonNull(name);
@@ -438,24 +416,6 @@ public class ServerContextInstance implements IServerContext
                 builder.deleteCharAt(last);
             }
             throw new PubSubException("ISubscribeDescriptor " + name + " of types [" + builder.toString() + "] not found");
-        }
-    }
-
-    private static final class OnMessageRecievedClosureProxy implements IPubSubMessageReceivedHandler
-    {
-        private final Closure<MessageReceivedEvent> m_clos;
-
-        public OnMessageRecievedClosureProxy(final Closure<MessageReceivedEvent> clos)
-        {
-            m_clos = Objects.requireNonNull(clos);
-        }
-
-        @Override
-        public PubSubNextEventActionType onMessageReceived(final MessageReceivedEvent event)
-        {
-            m_clos.call(Objects.requireNonNull(Objects.requireNonNull(event)));
-
-            return PubSubNextEventActionType.CONTINUE;
         }
     }
 

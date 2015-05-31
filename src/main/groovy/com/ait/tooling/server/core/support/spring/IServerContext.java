@@ -16,8 +16,6 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import groovy.lang.Closure;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
@@ -36,7 +34,6 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
 import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration;
 import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler;
-import com.ait.tooling.server.core.pubsub.MessageReceivedEvent;
 import com.ait.tooling.server.core.pubsub.PubSubChannelType;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizer;
@@ -77,12 +74,6 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serial
     public JSONObject publish(String name, PubSubChannelType type, JSONObject message) throws Exception;
 
     public JSONObject publish(String name, List<PubSubChannelType> list, JSONObject message) throws Exception;
-
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, Closure<MessageReceivedEvent> handler) throws Exception;
-
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, Closure<MessageReceivedEvent> handler) throws Exception;
-
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, Closure<MessageReceivedEvent> handler) throws Exception;
 
     public IPubSubHandlerRegistration addMessageReceivedHandler(String name, IPubSubMessageReceivedHandler handler) throws Exception;
 
