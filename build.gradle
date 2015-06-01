@@ -34,7 +34,7 @@ apply plugin: 'maven'
 
 sourceCompatibility = 1.7
 
-version = '1.0.68-SNAPSHOT'
+version = '1.0.69-SNAPSHOT'
 
 group = 'com.ahome-it'
 
@@ -134,6 +134,10 @@ def getBuildGITCommitUser() {
 
 def getBuildGITCommitMessage() {
     Grgit.open(project.file('.')).head().shortMessage
+}
+
+configurations {
+    compile.exclude(group: 'net.jcip', module: 'jcip-annotations')
 }
 
 dependencies {

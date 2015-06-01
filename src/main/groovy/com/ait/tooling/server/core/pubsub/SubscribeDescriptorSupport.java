@@ -17,21 +17,21 @@
 package com.ait.tooling.server.core.pubsub;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
 
 public class SubscribeDescriptorSupport implements Serializable
 {
-    private static final long                                              serialVersionUID            = -5741025269936370062L;
+    private static final long                                          serialVersionUID            = -5741025269936370062L;
 
-    private static final Logger                                            logger                      = Logger.getLogger(SubscribeDescriptorSupport.class);
+    private static final Logger                                        logger                      = Logger.getLogger(SubscribeDescriptorSupport.class);
 
-    private final AtomicLong                                               m_hkey                      = new AtomicLong();
+    private final AtomicLong                                           m_hkey                      = new AtomicLong();
 
-    private final ConcurrentHashMap<String, IPubSubMessageReceivedHandler> m_message_received_handlers = new ConcurrentHashMap<String, IPubSubMessageReceivedHandler>();
+    private final LinkedHashMap<String, IPubSubMessageReceivedHandler> m_message_received_handlers = new LinkedHashMap<String, IPubSubMessageReceivedHandler>();
 
     public SubscribeDescriptorSupport()
     {
