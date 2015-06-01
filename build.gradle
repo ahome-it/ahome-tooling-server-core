@@ -34,7 +34,7 @@ apply plugin: 'maven'
 
 sourceCompatibility = 1.7
 
-version = '1.0.69-SNAPSHOT'
+version = '1.0.70-SNAPSHOT'
 
 group = 'com.ahome-it'
 
@@ -51,6 +51,8 @@ task('filterConfigs', dependsOn: deleteConfigs, type: Copy) {
     filter(FixCrLfFilter)
     filter(ReplaceTokens, tokens: getFilterTokens())
 }
+
+compileJava.dependsOn(clean)
 
 jar.dependsOn(filterConfigs)
 
