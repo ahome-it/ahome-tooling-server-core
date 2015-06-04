@@ -34,13 +34,7 @@ import com.ait.tooling.json.parser.JSONParser;
 import com.ait.tooling.json.parser.JSONParserException;
 import com.ait.tooling.json.schema.JSONSchema;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
-import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
-import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration;
-import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler;
-import com.ait.tooling.server.core.pubsub.IPublishDescriptor;
-import com.ait.tooling.server.core.pubsub.ISubscribeDescriptor;
-import com.ait.tooling.server.core.pubsub.PubSubChannelType;
-import com.ait.tooling.server.core.pubsub.PubSubException;
+import com.ait.tooling.server.core.pubsub.IPubSubProvider;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 import com.ait.tooling.server.core.security.AuthorizationResult;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
@@ -261,162 +255,9 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public final IPubSubDescriptorProvider getPubSubDescriptorProvider()
+    public final IPubSubProvider getPubSubProvider()
     {
-        return Objects.requireNonNull(getBeanSafely("PubSubDescriptorProvider", IPubSubDescriptorProvider.class), "PubSubDescriptorProvider is null, initialization error.");
-    }
-
-    @Override
-    public final JSONObject publish(String name, JSONObject message) throws Exception
-    {
-        name = Objects.requireNonNull(name);
-
-        message = Objects.requireNonNull(message);
-
-        final IPublishDescriptor desc = getPubSubDescriptorProvider().getPublishDescriptor(name);
-
-        if (null != desc)
-        {
-            desc.publish(message);
-        }
-        else
-        {
-            throw new PubSubException("IPublishDescriptor " + name + " not found");
-        }
-        return message;
-    }
-
-    @Override
-    public final JSONObject publish(String name, PubSubChannelType type, JSONObject message) throws Exception
-    {
-        name = Objects.requireNonNull(name);
-
-        type = Objects.requireNonNull(type);
-
-        message = Objects.requireNonNull(message);
-
-        final IPublishDescriptor desc = getPubSubDescriptorProvider().getPublishDescriptor(name, type);
-
-        if (null != desc)
-        {
-            desc.publish(message);
-        }
-        else
-        {
-            throw new PubSubException("IPublishDescriptor " + name + " type " + type.getValue() + " not found");
-        }
-        return message;
-    }
-
-    @Override
-    public final JSONObject publish(String name, List<PubSubChannelType> list, JSONObject message) throws Exception
-    {
-        name = Objects.requireNonNull(name);
-
-        list = Objects.requireNonNull(list);
-
-        message = Objects.requireNonNull(message);
-
-        final IPublishDescriptor desc = getPubSubDescriptorProvider().getPublishDescriptor(name, list);
-
-        if (null != desc)
-        {
-            desc.publish(message);
-        }
-        else
-        {
-            StringBuilder builder = new StringBuilder();
-
-            for (PubSubChannelType type : list)
-            {
-                builder.append(type.getValue());
-
-                builder.append(",");
-            }
-            final int last = builder.lastIndexOf(",");
-
-            if (last > 0)
-            {
-                builder.deleteCharAt(last);
-            }
-            throw new PubSubException("IPublishDescriptor " + name + " of types [" + builder.toString() + "] not found");
-        }
-        return message;
-    }
-
-    @Override
-    public final IPubSubHandlerRegistration addMessageReceivedHandler(String name, IPubSubMessageReceivedHandler handler) throws Exception
-    {
-        name = Objects.requireNonNull(name);
-
-        handler = Objects.requireNonNull(handler);
-
-        final ISubscribeDescriptor desc = getPubSubDescriptorProvider().getSubscribeDescriptor(name);
-
-        if (null != desc)
-        {
-            return desc.addMessageReceivedHandler(handler);
-        }
-        else
-        {
-            throw new PubSubException("ISubscribeDescriptor " + name + " not found");
-        }
-    }
-
-    @Override
-    public final IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IPubSubMessageReceivedHandler handler) throws Exception
-    {
-        name = Objects.requireNonNull(name);
-
-        type = Objects.requireNonNull(type);
-
-        handler = Objects.requireNonNull(handler);
-
-        final ISubscribeDescriptor desc = getPubSubDescriptorProvider().getSubscribeDescriptor(name, type);
-
-        if (null != desc)
-        {
-            return desc.addMessageReceivedHandler(handler);
-        }
-        else
-        {
-            throw new PubSubException("ISubscribeDescriptor " + name + " type " + type.getValue() + " not found");
-        }
-    }
-
-    @Override
-    public final IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, IPubSubMessageReceivedHandler handler) throws Exception
-    {
-        name = Objects.requireNonNull(name);
-
-        list = Objects.requireNonNull(list);
-
-        handler = Objects.requireNonNull(handler);
-
-        final ISubscribeDescriptor desc = getPubSubDescriptorProvider().getSubscribeDescriptor(name, list);
-
-        if (null != desc)
-        {
-            return desc.addMessageReceivedHandler(handler);
-        }
-        else
-        {
-            StringBuilder builder = new StringBuilder();
-
-            for (PubSubChannelType type : list)
-            {
-                builder.append(type.getValue());
-
-                builder.append(",");
-            }
-            final int last = builder.lastIndexOf(",");
-
-            if (last > 0)
-            {
-                builder.deleteCharAt(last);
-            }
-            throw new PubSubException("ISubscribeDescriptor " + name + " of types [" + builder.toString() + "] not found");
-        }
+        return Objects.requireNonNull(getBeanSafely("PubSubProvider", IPubSubProvider.class), "PubSubProvider is null, initialization error.");
     }
 
     @Override

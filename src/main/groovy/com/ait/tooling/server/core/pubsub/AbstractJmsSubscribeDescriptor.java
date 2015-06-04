@@ -43,55 +43,25 @@ public abstract class AbstractJmsSubscribeDescriptor extends AbstractSubscribeDe
     }
 
     @Override
-    public void onMessage(final Message message)
+    public void onMessage(final Message text)
     {
-        Objects.requireNonNull(message);
+        Objects.requireNonNull(text);
 
-        if (message instanceof TextMessage)
+        if (text instanceof TextMessage)
         {
             try
             {
-                final Object result = new JSONParser().parse(((TextMessage) message).getText());
+                final Object result = new JSONParser().parse(((TextMessage) text).getText());
 
                 if (result instanceof JSONObject)
                 {
-                    final MessageReceivedEvent event = new MessageReceivedEvent(this, ((JSONObject) result));
+                    final JSONMessage message = new JSONMessage((JSONObject) result);
 
                     for (IPubSubMessageReceivedHandler listener : getMessageReceivedHandlers())
                     {
-                        final PubSubNextEventActionType next = listener.onMessageReceived(event);
-
-                        if (PubSubNextEventActionType.CANCEL == next)
-                        {
-                            event.cancel();
-                        }
-                        else if (PubSubNextEventActionType.REDISPATCH == next)
-                        {
-                            final IPublishDescriptor pubs = getPublishDescriptor();
-
-                            if (null != pubs)
-                            {
-                                try
-                                {
-                                    pubs.publish(event.getMessage().getPayload());
-                                }
-                                catch (Exception e)
-                                {
-                                    logger().error("REDISPATCH threw Exception, cancelling event.", e);
-                                }
-                            }
-                            else
-                            {
-                                logger().error("REDISPATCH didnt find IPublishDescriptor, cancelling event.");
-                            }
-                            event.cancel();
-                        }
-                        if (event.isCancelled())
-                        {
-                            return;
-                        }
+                        listener.onMessageReceived(message);
                     }
-                    getSubscribeDescriptorSupport().dispatch(event, this);
+                    getSubscribeDescriptorSupport().dispatch(message, this);
                 }
                 else
                 {

@@ -19,10 +19,9 @@ package com.ait.tooling.server.core.security;
 import java.io.Closeable;
 import java.io.Serializable;
 
-import com.ait.tooling.common.api.hash.ISHA_512_HASH;
-import com.ait.tooling.common.api.hash.ISHA_512_HASH_SALT;
+import com.ait.tooling.common.api.hash.IHasher;
 
-public interface ICryptoProvider extends Closeable, Serializable, ISHA_512_HASH_SALT, ISHA_512_HASH
+public interface ICryptoProvider extends IHasher, Closeable, Serializable
 {
     public String encodeBCrypt(String text);
 

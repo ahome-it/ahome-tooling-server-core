@@ -36,9 +36,9 @@ public class LoggingSubscribeListener implements IPubSubMessageReceivedHandler, 
     }
 
     @Override
-    public PubSubNextEventActionType onMessageReceived(final MessageReceivedEvent event)
+    public void onMessageReceived(final JSONMessage message)
     {
-        if (null != event)
+        if (null != message)
         {
             final Level level = getLoggingLevel();
 
@@ -49,10 +49,9 @@ public class LoggingSubscribeListener implements IPubSubMessageReceivedHandler, 
 
             if ((null != level) && (LogManager.getRootLogger().isEnabledFor(level)))
             {
-                m_logger.log(level, event.getMessage().toJSONString());
+                m_logger.log(level, message.toJSONString());
             }
         }
-        return PubSubNextEventActionType.CONTINUE;
     }
 
     @Override

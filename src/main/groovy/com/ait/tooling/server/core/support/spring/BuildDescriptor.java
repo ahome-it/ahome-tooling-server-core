@@ -45,6 +45,8 @@ public final class BuildDescriptor implements IBuildDescriptor
 
     private String              m_build_git_commit_message = UNKNOWN;
 
+    private String              m_build_git_repo_url       = UNKNOWN;
+
     protected static final String doValidatePropValue(final String valu)
     {
         if (null == StringOps.toTrimOrNull(valu))
@@ -53,108 +55,14 @@ public final class BuildDescriptor implements IBuildDescriptor
         }
         if (valu.startsWith("@GRADLE"))
         {
-            return UNKNOWN;
+            return valu;
         }
         return valu;
     }
 
-    private static final String doValidateNameSpace(String name_space)
-    {
-        name_space = StringOps.requireTrimOrNull(name_space, "BuildDescriptor(name_space empty)");
-
-        final int size = name_space.length();
-
-        int dots = 0;
-
-        int bars = 0;
-
-        int dash = 0;
-
-        for (int i = 0; i < size; i++)
-        {
-            final char c = name_space.charAt(i);
-
-            if (i == 0)
-            {
-                if (false == Character.isLetter(c))
-                {
-                    throw new IllegalArgumentException("BuildDescriptor(name_space must begin with letter)");
-                }
-            }
-            else
-            {
-                if ('.' == c)
-                {
-                    if (0 != dots)
-                    {
-                        throw new IllegalArgumentException("BuildDescriptor(name_space adjacent dots)");
-                    }
-                    if (0 != bars)
-                    {
-                        throw new IllegalArgumentException("BuildDescriptor(name_space adjacent bars to dots)");
-                    }
-                    if (0 != dash)
-                    {
-                        throw new IllegalArgumentException("BuildDescriptor(name_space adjacent dash to dots)");
-                    }
-                    dots++;
-                }
-                else
-                {
-                    if ('_' == c)
-                    {
-                        if (0 != bars)
-                        {
-                            throw new IllegalArgumentException("BuildDescriptor(name_space adjacent bars)");
-                        }
-                        if (0 != dots)
-                        {
-                            throw new IllegalArgumentException("BuildDescriptor(name_space adjacent dots to bars)");
-                        }
-                        if (0 != dash)
-                        {
-                            throw new IllegalArgumentException("BuildDescriptor(name_space adjacent dash to bars)");
-                        }
-                        bars++;
-                    }
-                    else if ('-' == c)
-                    {
-                        if (0 != dash)
-                        {
-                            throw new IllegalArgumentException("BuildDescriptor(name_space adjacent dash)");
-                        }
-                        if (0 != dots)
-                        {
-                            throw new IllegalArgumentException("BuildDescriptor(name_space adjacent dots to dash)");
-                        }
-                        if (0 != bars)
-                        {
-                            throw new IllegalArgumentException("BuildDescriptor(name_space adjacent bars to dash)");
-                        }
-                        dash++;
-                    }
-                    else if (false == Character.isLetter(c))
-                    {
-                        throw new IllegalArgumentException("BuildDescriptor(name_space must only contail letters or dots or bars)");
-                    }
-                    dots = 0;
-
-                    bars = 0;
-
-                    dash = 0;
-                }
-            }
-        }
-        if ((0 != dots) || (0 != bars) || (0 != dash))
-        {
-            throw new IllegalArgumentException("BuildDescriptor(name_space must not end with dots or bars or dash)");
-        }
-        return name_space;
-    }
-
     public BuildDescriptor(final String name_space)
     {
-        m_name_space = doValidateNameSpace(name_space);
+        m_name_space = StringOps.requireTrimOrNull(name_space);
     }
 
     @Override
@@ -249,6 +157,16 @@ public final class BuildDescriptor implements IBuildDescriptor
     public void setBuildGITCommitMessage(final String value)
     {
         m_build_git_commit_message = doValidatePropValue(value);
+    }
+
+    public String getbuildGITRepoURL()
+    {
+        return m_build_git_repo_url;
+    }
+
+    public void setbuildGITRepoURL(final String value)
+    {
+        m_build_git_repo_url = doValidatePropValue(value);
     }
 
     @Override

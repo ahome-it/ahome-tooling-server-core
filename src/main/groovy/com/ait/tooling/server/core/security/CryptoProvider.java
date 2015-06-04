@@ -42,9 +42,9 @@ public final class CryptoProvider implements ICryptoProvider
 
     private final Hasher                m_hasher;
 
-    private CryptoProvider(String pass, String salt)
+    private CryptoProvider(final String pass, final String salt)
     {
-        m_pcrypt = Encryptors.text(pass, salt);
+        m_pcrypt = Encryptors.text(Objects.requireNonNull(pass), Objects.requireNonNull(salt));
 
         m_bcrypt = new BCryptPasswordEncoder();
 
@@ -52,7 +52,7 @@ public final class CryptoProvider implements ICryptoProvider
     }
 
     @Override
-    public final synchronized String encodeBCrypt(String text)
+    public final synchronized String encodeBCrypt(final String text)
     {
         return m_bcrypt.encode(Objects.requireNonNull(text));
     }
@@ -76,26 +76,21 @@ public final class CryptoProvider implements ICryptoProvider
     }
 
     @Override
-    public void close()
+    public String sha512(final String text, final String salt)
     {
+        return m_hasher.sha512(Objects.requireNonNull(text), Objects.requireNonNull(salt));
     }
 
     @Override
-    public String SHA512(final String text, final String salt)
+    public String sha512(final String text, final String salt, final int iter)
     {
-        return m_hasher.SHA512(Objects.requireNonNull(text), Objects.requireNonNull(salt));
+        return m_hasher.sha512(Objects.requireNonNull(text), Objects.requireNonNull(salt), iter);
     }
 
     @Override
-    public String SHA512(final String text, final String salt, final int iter)
+    public String sha512(final String text)
     {
-        return m_hasher.SHA512(Objects.requireNonNull(text), Objects.requireNonNull(salt), iter);
-    }
-
-    @Override
-    public String SHA512(String string)
-    {
-        string = Objects.requireNonNull(string);
+        Objects.requireNonNull(text);
 
         MessageDigest md;
 
@@ -113,16 +108,21 @@ public final class CryptoProvider implements ICryptoProvider
 
         try
         {
-            bytes = string.getBytes(IHTTPConstants.CHARSET_UTF_8);
+            bytes = text.getBytes(IHTTPConstants.CHARSET_UTF_8);
         }
         catch (UnsupportedEncodingException e)
         {
             logger.error("No " + IHTTPConstants.CHARSET_UTF_8 + " encoding ", e);
 
-            bytes = string.getBytes();
+            bytes = text.getBytes();
         }
         md.update(bytes);
 
         return Hex.encodeHexString(md.digest());
+    }
+
+    @Override
+    public void close()
+    {
     }
 }

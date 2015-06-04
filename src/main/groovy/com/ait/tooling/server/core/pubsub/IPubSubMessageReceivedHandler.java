@@ -18,5 +18,5 @@ package com.ait.tooling.server.core.pubsub;
 
 public interface IPubSubMessageReceivedHandler
 {
-    public PubSubNextEventActionType onMessageReceived(MessageReceivedEvent event);
+    public void onMessageReceived(JSONMessage message);
 }

@@ -31,10 +31,7 @@ import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.json.parser.JSONParserException;
 import com.ait.tooling.json.schema.JSONSchema;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
-import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
-import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration;
-import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler;
-import com.ait.tooling.server.core.pubsub.PubSubChannelType;
+import com.ait.tooling.server.core.pubsub.IPubSubProvider;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizer;
 import com.ait.tooling.server.core.security.ICryptoProvider;
@@ -46,9 +43,9 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serial
     public ApplicationContext getApplicationContext();
 
     public boolean containsBean(String name);
-    
+
     public <B> B getBean(String name, Class<B> type) throws Exception;
-    
+
     public <B> B getBeanSafely(String name, Class<B> type);
 
     public Environment getEnvironment();
@@ -67,19 +64,7 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serial
 
     public ICryptoProvider getCryptoProvider();
 
-    public IPubSubDescriptorProvider getPubSubDescriptorProvider();
-
-    public JSONObject publish(String name, JSONObject message) throws Exception;
-
-    public JSONObject publish(String name, PubSubChannelType type, JSONObject message) throws Exception;
-
-    public JSONObject publish(String name, List<PubSubChannelType> list, JSONObject message) throws Exception;
-
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, IPubSubMessageReceivedHandler handler) throws Exception;
-
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IPubSubMessageReceivedHandler handler) throws Exception;
-
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, IPubSubMessageReceivedHandler handler) throws Exception;
+    public IPubSubProvider getPubSubProvider();
 
     public Logger logger();
 

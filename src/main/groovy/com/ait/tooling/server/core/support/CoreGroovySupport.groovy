@@ -27,10 +27,7 @@ import com.ait.tooling.json.JSONObject
 import com.ait.tooling.json.parser.JSONParserException
 import com.ait.tooling.json.schema.JSONSchema
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager
-import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider
-import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration
-import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler
-import com.ait.tooling.server.core.pubsub.PubSubChannelType
+import com.ait.tooling.server.core.pubsub.IPubSubProvider
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.security.ICryptoProvider
@@ -138,15 +135,14 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     }
 
     @Memoized
-    public IPubSubDescriptorProvider getPubSubDescriptorProvider()
-    {
-        getServerContext().getPubSubDescriptorProvider()
-    }
-
-    @Memoized
     public ICryptoProvider getCryptoProvider()
     {
         getServerContext().getCryptoProvider()
+    }
+    
+    public IPubSubProvider getPubSubProvider()
+    {
+        getServerContext().getPubSubProvider()
     }
 
     @Override
@@ -167,17 +163,7 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
         getServerContext().getBeanSafely(Objects.requireNonNull(name), Objects.requireNonNull(type))
     }
 
-    @Override
-    public JSONObject publish(String name, PubSubChannelType type, JSONObject message) throws Exception
-    {
-        getServerContext().publish(Objects.requireNonNull(name), Objects.requireNonNull(type), Objects.requireNonNull(message))
-    }
-
-    @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IPubSubMessageReceivedHandler handler) throws Exception
-    {
-        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(type), Objects.requireNonNull(handler))
-    }
+    
 
     @Override
     public JSONObject json()
@@ -236,29 +222,5 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     public JSONObject jsonParse(Reader reader) throws IOException, JSONParserException
     {
         getServerContext().jsonParse(Objects.requireNonNull(reader))
-    }
-
-    @Override
-    public JSONObject publish(String name, JSONObject message) throws Exception
-    {
-        getServerContext().publish(Objects.requireNonNull(name), Objects.requireNonNull(message))
-    }
-
-    @Override
-    public JSONObject publish(String name, List<PubSubChannelType> list, JSONObject message) throws Exception
-    {
-        getServerContext().publish(Objects.requireNonNull(name), Objects.requireNonNull(list),  Objects.requireNonNull(message))
-    }
-
-    @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, IPubSubMessageReceivedHandler handler) throws Exception
-    {
-        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(handler))
-    }
-
-    @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, IPubSubMessageReceivedHandler handler) throws Exception
-    {
-        getServerContext().addMessageReceivedHandler(Objects.requireNonNull(name), Objects.requireNonNull(list), Objects.requireNonNull(handler))
     }
 }

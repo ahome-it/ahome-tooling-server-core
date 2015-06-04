@@ -23,7 +23,11 @@
 						http://www.springframework.org/schema/context/spring-context.xsd
 						http://www.springframework.org/schema/task
 						http://www.springframework.org/schema/task/spring-task.xsd">
-
+		
+	<context:annotation-config/>
+						
+	<import resource="classpath:/com/ait/tooling/json/server/config/JSONApplicationContext.xml"/>
+						
 	<bean id="CoreBuildDescriptor" class="com.ait.tooling.server.core.support.spring.BuildDescriptor">
 		<constructor-arg value="@GRADLE_BUILD_PROJECT_TITLE@"/>
 		<property name="buildUser" value="@GRADLE_BUILD_USER@"/>
@@ -66,6 +70,8 @@
 	</bean>
 
 	<bean id="PubSubDescriptorProvider" class="com.ait.tooling.server.core.pubsub.PubSubDescriptorProvider" destroy-method="close"/>
+	
+	<bean id="PubSubProvider" class="com.ait.tooling.server.core.pubsub.PubSubProvider" destroy-method="close"/>
 
 	<context:component-scan base-package="com.ait.tooling.server.core.jmx"/>
 

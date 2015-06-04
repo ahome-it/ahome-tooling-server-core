@@ -16,9 +16,7 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-import com.ait.tooling.json.JSONObject;
-
 public interface IPublishDescriptor extends IPubSubDescriptor
 {
-    public JSONObject publish(JSONObject message) throws Exception;
+    public void publish(JSONMessage message) throws Exception;
 }

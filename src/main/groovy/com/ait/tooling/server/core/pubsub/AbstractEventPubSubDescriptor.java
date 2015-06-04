@@ -18,8 +18,6 @@ package com.ait.tooling.server.core.pubsub;
 
 import java.util.Objects;
 
-import com.ait.tooling.json.JSONObject;
-
 @SuppressWarnings("serial")
 public abstract class AbstractEventPubSubDescriptor extends AbstractSubscribeDescriptor implements IPublishDescriptor, ISubscribeDescriptor
 {
@@ -29,10 +27,8 @@ public abstract class AbstractEventPubSubDescriptor extends AbstractSubscribeDes
     }
 
     @Override
-    public JSONObject publish(final JSONObject message) throws Exception
+    public void publish(final JSONMessage message) throws Exception
     {
-        getSubscribeDescriptorSupport().dispatch(new MessageReceivedEvent(this, Objects.requireNonNull(message)), this);
-
-        return message;
+        getSubscribeDescriptorSupport().dispatch(message, this);
     }
 }

@@ -23,11 +23,11 @@ import java.util.Objects;
 
 import org.apache.log4j.Logger;
 
-import com.ait.tooling.common.api.types.Activatible;
+import com.ait.tooling.common.api.types.Activatable;
 import com.ait.tooling.server.core.support.spring.ServerContextInstance;
 
 @SuppressWarnings("serial")
-public abstract class AbstractSubscribeDescriptor extends Activatible implements ISubscribeDescriptor
+public abstract class AbstractSubscribeDescriptor extends Activatable implements ISubscribeDescriptor
 {
     private final String                                   m_name;
 
@@ -89,7 +89,7 @@ public abstract class AbstractSubscribeDescriptor extends Activatible implements
         {
             if (null == m_desc)
             {
-                m_desc = ServerContextInstance.getServerContextInstance().getPubSubDescriptorProvider();
+                m_desc = ServerContextInstance.getServerContextInstance().getPubSubProvider().getPubSubDescriptorProvider();
             }
             m_pubs = m_desc.getPublishDescriptor(m_name, m_type);
         }

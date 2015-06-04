@@ -27,11 +27,10 @@ import org.apache.log4j.Logger;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 
-import com.ait.tooling.common.api.types.Activatible;
-import com.ait.tooling.json.JSONObject;
+import com.ait.tooling.common.api.types.Activatable;
 
 @SuppressWarnings("serial")
-public abstract class AbstractJmsTemplatePublishDescriptor extends Activatible implements IJmsTempletePublishDescriptor
+public abstract class AbstractJmsTemplatePublishDescriptor extends Activatable implements IJmsTempletePublishDescriptor
 {
     private final String            m_name;
 
@@ -97,7 +96,7 @@ public abstract class AbstractJmsTemplatePublishDescriptor extends Activatible i
     }
 
     @Override
-    public JSONObject publish(final JSONObject message) throws Exception
+    public void publish(final JSONMessage message) throws Exception
     {
         Objects.requireNonNull(message);
 
@@ -108,7 +107,6 @@ public abstract class AbstractJmsTemplatePublishDescriptor extends Activatible i
                 return session.createTextMessage(message.toJSONString());
             }
         });
-        return message;
     }
 
     @Override

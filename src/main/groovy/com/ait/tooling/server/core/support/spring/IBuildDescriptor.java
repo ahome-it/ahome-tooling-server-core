@@ -40,6 +40,8 @@ public interface IBuildDescriptor extends Serializable
 
     public String getBuildGITCommitMessage();
 
+    public String getbuildGITRepoURL();
+
     public String getBuildModuleVersion();
 
     public JSONObject toJSONObject();
