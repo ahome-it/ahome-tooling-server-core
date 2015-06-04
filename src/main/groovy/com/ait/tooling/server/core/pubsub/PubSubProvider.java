@@ -20,14 +20,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 public class PubSubProvider implements IPubSubProvider
 {
-    private static final long        serialVersionUID = -3317663412767450650L;
+    private static final long         serialVersionUID = -3317663412767450650L;
 
-    @Autowired
-    private PubSubDescriptorProvider m_descriptor_provider;
+    private IPubSubDescriptorProvider m_descriptor_provider;
+
+    public PubSubProvider(final IPubSubDescriptorProvider provider)
+    {
+        m_descriptor_provider = Objects.requireNonNull(provider);
+    }
 
     @Override
     public IPubSubDescriptorProvider getPubSubDescriptorProvider()

@@ -25,7 +25,7 @@ import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler
 import com.ait.tooling.server.core.pubsub.IPubSubProvider
 import com.ait.tooling.server.core.pubsub.JSONMessage
 import com.ait.tooling.server.core.pubsub.PubSubChannelType
-import com.ait.tooling.server.core.support.CoreGroovySupport
+import com.ait.tooling.server.core.support.spring.ServerContextInstance
 
 @CompileStatic
 public trait PubSubTrait
@@ -33,7 +33,7 @@ public trait PubSubTrait
     @Memoized
     public IPubSubProvider getPubSubProvider()
     {
-        CoreGroovySupport.getCoreGroovySupport().getPubSubProvider()
+        ServerContextInstance.getServerContextInstance().getPubSubProvider()
     }
 
     @Memoized
