@@ -24,7 +24,6 @@ import java.util.Objects;
 import org.apache.log4j.Logger;
 
 import com.ait.tooling.common.api.types.Activatable;
-import com.ait.tooling.server.core.support.spring.ServerContextInstance;
 
 @SuppressWarnings("serial")
 public abstract class AbstractSubscribeDescriptor extends Activatable implements ISubscribeDescriptor
@@ -38,10 +37,6 @@ public abstract class AbstractSubscribeDescriptor extends Activatable implements
     private final ArrayList<IPubSubMessageReceivedHandler> m_list   = new ArrayList<IPubSubMessageReceivedHandler>();
 
     private final Logger                                   m_logger = Logger.getLogger(getClass());
-
-    private IPublishDescriptor                             m_pubs   = null;
-
-    private IPubSubDescriptorProvider                      m_desc   = null;
 
     protected AbstractSubscribeDescriptor(final String name, final PubSubChannelType type)
     {
@@ -76,24 +71,6 @@ public abstract class AbstractSubscribeDescriptor extends Activatable implements
     public IPubSubHandlerRegistration addMessageReceivedHandler(final IPubSubMessageReceivedHandler handler)
     {
         return m_supp.addMessageReceivedHandler(Objects.requireNonNull(handler));
-    }
-
-    public void setPublishDescriptor(final IPublishDescriptor pubs)
-    {
-        m_pubs = pubs;
-    }
-
-    public IPublishDescriptor getPublishDescriptor()
-    {
-        if (null == m_pubs)
-        {
-            if (null == m_desc)
-            {
-                m_desc = ServerContextInstance.getServerContextInstance().getPubSubProvider().getPubSubDescriptorProvider();
-            }
-            m_pubs = m_desc.getPublishDescriptor(m_name, m_type);
-        }
-        return m_pubs;
     }
 
     @Override

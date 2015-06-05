@@ -27,7 +27,11 @@ import com.ait.tooling.json.JSONObject
 import com.ait.tooling.json.parser.JSONParserException
 import com.ait.tooling.json.schema.JSONSchema
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager
-import com.ait.tooling.server.core.pubsub.IPubSubProvider
+import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider
+import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration
+import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler
+import com.ait.tooling.server.core.pubsub.JSONMessage
+import com.ait.tooling.server.core.pubsub.PubSubChannelType
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.security.ICryptoProvider
@@ -139,10 +143,47 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     {
         getServerContext().getCryptoProvider()
     }
-    
-    public IPubSubProvider getPubSubProvider()
+
+    @Memoized
+    public IPubSubDescriptorProvider getPubSubDescriptorProvider()
     {
-        getServerContext().getPubSubProvider()
+        getServerContext().getPubSubDescriptorProvider()
+    }
+
+    @Override
+    public void publish(String name, JSONMessage message) throws Exception
+    {
+        getPubSubDescriptorProvider().getPublishDescriptor(name).publish(message)
+    }
+
+    @Override
+    public void publish(String name, PubSubChannelType type, JSONMessage message) throws Exception
+    {
+        getPubSubDescriptorProvider().getPublishDescriptor(name, type).publish(message)
+    }
+
+    @Override
+    public void publish(String name, List<PubSubChannelType> list, JSONMessage message) throws Exception
+    {
+        getPubSubDescriptorProvider().getPublishDescriptor(name, list).publish(message)
+    }
+
+    @Override
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, IPubSubMessageReceivedHandler handler) throws Exception
+    {
+        getPubSubDescriptorProvider().getSubscribeDescriptor(name).addMessageReceivedHandler(handler)
+    }
+
+    @Override
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IPubSubMessageReceivedHandler handler) throws Exception
+    {
+        getPubSubDescriptorProvider().getSubscribeDescriptor(name, type).addMessageReceivedHandler(handler)
+    }
+
+    @Override
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, IPubSubMessageReceivedHandler handler) throws Exception
+    {
+        getPubSubDescriptorProvider().getSubscribeDescriptor(name, list).addMessageReceivedHandler(handler)
     }
 
     @Override
@@ -162,8 +203,6 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     {
         getServerContext().getBeanSafely(Objects.requireNonNull(name), Objects.requireNonNull(type))
     }
-
-    
 
     @Override
     public JSONObject json()

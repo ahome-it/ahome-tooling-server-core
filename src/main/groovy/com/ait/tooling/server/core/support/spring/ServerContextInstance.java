@@ -34,7 +34,11 @@ import com.ait.tooling.json.parser.JSONParser;
 import com.ait.tooling.json.parser.JSONParserException;
 import com.ait.tooling.json.schema.JSONSchema;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
-import com.ait.tooling.server.core.pubsub.IPubSubProvider;
+import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
+import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration;
+import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler;
+import com.ait.tooling.server.core.pubsub.JSONMessage;
+import com.ait.tooling.server.core.pubsub.PubSubChannelType;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 import com.ait.tooling.server.core.security.AuthorizationResult;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
@@ -255,9 +259,45 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public final IPubSubProvider getPubSubProvider()
+    public IPubSubDescriptorProvider getPubSubDescriptorProvider()
     {
-        return Objects.requireNonNull(getBeanSafely("PubSubProvider", IPubSubProvider.class), "PubSubProvider is null, initialization error.");
+        return Objects.requireNonNull(getBeanSafely("PubSubDescriptorProvider", IPubSubDescriptorProvider.class), "PubSubDescriptorProvider is null, initialization error.");
+    }
+
+    @Override
+    public void publish(final String name, final JSONMessage message) throws Exception
+    {
+        getPubSubDescriptorProvider().getPublishDescriptor(Objects.requireNonNull(name)).publish(Objects.requireNonNull(message));
+    }
+
+    @Override
+    public void publish(final String name, final PubSubChannelType type, final JSONMessage message) throws Exception
+    {
+        getPubSubDescriptorProvider().getPublishDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(type)).publish(Objects.requireNonNull(message));
+    }
+
+    @Override
+    public void publish(final String name, final List<PubSubChannelType> list, final JSONMessage message) throws Exception
+    {
+        getPubSubDescriptorProvider().getPublishDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(list)).publish(Objects.requireNonNull(message));
+    }
+
+    @Override
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, final IPubSubMessageReceivedHandler handler) throws Exception
+    {
+        return getPubSubDescriptorProvider().getSubscribeDescriptor(name).addMessageReceivedHandler(Objects.requireNonNull(handler));
+    }
+
+    @Override
+    public IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final PubSubChannelType type, final IPubSubMessageReceivedHandler handler) throws Exception
+    {
+        return getPubSubDescriptorProvider().getSubscribeDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(type)).addMessageReceivedHandler(Objects.requireNonNull(handler));
+    }
+
+    @Override
+    public IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final List<PubSubChannelType> list, final IPubSubMessageReceivedHandler handler) throws Exception
+    {
+        return getPubSubDescriptorProvider().getSubscribeDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(list)).addMessageReceivedHandler(Objects.requireNonNull(handler));
     }
 
     @Override

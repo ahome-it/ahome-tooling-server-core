@@ -96,15 +96,15 @@ public abstract class AbstractJmsTemplatePublishDescriptor extends Activatable i
     }
 
     @Override
-    public void publish(final JSONMessage message) throws Exception
+    public void publish(final JSONMessage message)
     {
-        Objects.requireNonNull(message);
+        Objects.requireNonNull(message.getPayload());
 
         getJmsTemplate().send(new MessageCreator()
         {
             public Message createMessage(final Session session) throws JMSException
             {
-                return session.createTextMessage(message.toJSONString());
+                return session.createTextMessage(message.getPayload().toJSONString());
             }
         });
     }

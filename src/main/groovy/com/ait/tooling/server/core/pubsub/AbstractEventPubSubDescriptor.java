@@ -27,8 +27,8 @@ public abstract class AbstractEventPubSubDescriptor extends AbstractSubscribeDes
     }
 
     @Override
-    public void publish(final JSONMessage message) throws Exception
+    public void publish(final JSONMessage message)
     {
-        getSubscribeDescriptorSupport().dispatch(message, this);
+        getSubscribeDescriptorSupport().dispatch(Objects.requireNonNull(message));
     }
 }

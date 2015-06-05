@@ -59,9 +59,16 @@ public abstract class AbstractJmsSubscribeDescriptor extends AbstractSubscribeDe
 
                     for (IPubSubMessageReceivedHandler listener : getMessageReceivedHandlers())
                     {
-                        listener.onMessageReceived(message);
+                        try
+                        {
+                            listener.onMessageReceived(message);
+                        }
+                        catch (Exception e)
+                        {
+                            logger().error("onMessageReceived() error", e);
+                        }
                     }
-                    getSubscribeDescriptorSupport().dispatch(message, this);
+                    getSubscribeDescriptorSupport().dispatch(message);
                 }
                 else
                 {

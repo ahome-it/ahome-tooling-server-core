@@ -31,7 +31,11 @@ import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.json.parser.JSONParserException;
 import com.ait.tooling.json.schema.JSONSchema;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
-import com.ait.tooling.server.core.pubsub.IPubSubProvider;
+import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
+import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration;
+import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler;
+import com.ait.tooling.server.core.pubsub.JSONMessage;
+import com.ait.tooling.server.core.pubsub.PubSubChannelType;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizer;
 import com.ait.tooling.server.core.security.ICryptoProvider;
@@ -64,7 +68,19 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serial
 
     public ICryptoProvider getCryptoProvider();
 
-    public IPubSubProvider getPubSubProvider();
+    public IPubSubDescriptorProvider getPubSubDescriptorProvider();
+
+    public void publish(String name, JSONMessage message) throws Exception;
+
+    public void publish(String name, PubSubChannelType type, JSONMessage message) throws Exception;
+
+    public void publish(String name, List<PubSubChannelType> list, JSONMessage message) throws Exception;
+
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, IPubSubMessageReceivedHandler handler) throws Exception;
+
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IPubSubMessageReceivedHandler handler) throws Exception;
+
+    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, IPubSubMessageReceivedHandler handler) throws Exception;
 
     public Logger logger();
 

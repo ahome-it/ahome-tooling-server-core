@@ -18,7 +18,5 @@ package com.ait.tooling.server.core.pubsub;
 
 public interface ISubscribeDescriptor extends IPubSubDescriptor
 {
-    public IPublishDescriptor getPublishDescriptor();
-    
     public IPubSubHandlerRegistration addMessageReceivedHandler(IPubSubMessageReceivedHandler handler);
 }

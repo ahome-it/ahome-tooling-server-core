@@ -18,5 +18,5 @@ package com.ait.tooling.server.core.pubsub;
 
 public interface IPublishDescriptor extends IPubSubDescriptor
 {
-    public void publish(JSONMessage message) throws Exception;
+    public void publish(JSONMessage message);
 }
