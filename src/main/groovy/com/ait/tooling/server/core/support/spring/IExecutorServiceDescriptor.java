@@ -21,9 +21,9 @@ import java.io.Serializable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
 
-import com.ait.tooling.common.api.types.INamedDefinition;
+import com.ait.tooling.common.api.types.INamedType;
 
-public interface IExecutorServiceDescriptor extends INamedDefinition, Closeable, Serializable
+public interface IExecutorServiceDescriptor extends INamedType, Closeable, Serializable
 {
     public ThreadFactory getThreadFactory();
 

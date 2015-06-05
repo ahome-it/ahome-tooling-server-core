@@ -29,8 +29,18 @@ import com.ait.tooling.server.core.pubsub.PubSubChannelType
 import com.ait.tooling.server.core.support.CoreGroovySupport
 
 @CompileStatic
-public class PubSubSupport extends CoreGroovySupport implements IPubSubProvider
+public class PubSubSupport extends CoreGroovySupport implements IPubSubProvider, Serializable
 {
+    private static final PubSubSupport INSTANCE = new PubSubSupport()
+
+    private static final long serialVersionUID = 550485000270815479L
+
+    @Memoized
+    public static final PubSubSupport getPubSubSupport()
+    {
+        INSTANCE
+    }
+
     @Memoized
     public IPubSubProvider getPubSubProvider()
     {
