@@ -166,6 +166,6 @@ public abstract class HTTPServletBase extends HttpServlet implements IHTTPConsta
 
     protected final AuthorizationResult isAuthorized(final Object target, final JSONObject principals)
     {
-        return getServerContext().getAuthorizationProvider().isAuthorized(target, principals);
+        return getServerContext().isAuthorized(target, principals);
     }
 }

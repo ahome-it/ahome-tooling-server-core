@@ -65,13 +65,14 @@ public class CorePropertiesResolver implements IPropertiesResolver, BeanFactoryA
         {
             m_factory = ((ConfigurableBeanFactory) factory);
         }
+        m_docache.clear();
     }
 
     private final String doResolve(final String name)
     {
         Objects.requireNonNull(m_factory);
 
-        String valu = m_docache.get(name);
+        String valu = m_docache.get(Objects.requireNonNull(name));
 
         if (null != valu)
         {
@@ -87,7 +88,10 @@ public class CorePropertiesResolver implements IPropertiesResolver, BeanFactoryA
         }
         if (null != valu)
         {
-            m_docache.put(name, valu);
+            synchronized (m_docache)
+            {
+                m_docache.put(name, valu);
+            }
         }
         return valu;
     }

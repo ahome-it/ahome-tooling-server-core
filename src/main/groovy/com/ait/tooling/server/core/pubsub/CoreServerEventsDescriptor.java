@@ -16,12 +16,14 @@
 
 package com.ait.tooling.server.core.pubsub;
 
+import java.util.Objects;
+
 public class CoreServerEventsDescriptor extends AbstractEventPubSubDescriptor
 {
     private static final long serialVersionUID = 1865009395616655765L;
 
     public CoreServerEventsDescriptor(final String name)
     {
-        super(name);
+        super(Objects.requireNonNull(name));
     }
 }

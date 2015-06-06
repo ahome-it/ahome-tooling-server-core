@@ -20,7 +20,7 @@ import com.ait.tooling.common.api.types.IStringValued;
 
 public enum AuthorizationType implements IStringValued
 {
-    USER("USER"), ROLE("ROLE"), ANON("ANON");
+    USER(IAuthorizationConstants.USER), ROLE(IAuthorizationConstants.ROLE), ANON(IAuthorizationConstants.ANON);
 
     private final String m_value;
 

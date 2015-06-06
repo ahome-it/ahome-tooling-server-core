@@ -29,14 +29,15 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 
+import com.ait.tooling.json.JSONArray;
 import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.json.parser.JSONParser;
 import com.ait.tooling.json.parser.JSONParserException;
 import com.ait.tooling.json.schema.JSONSchema;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
+import com.ait.tooling.server.core.pubsub.IMessageReceivedHandler;
+import com.ait.tooling.server.core.pubsub.IMessageReceivedHandlerRegistration;
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
-import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration;
-import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler;
 import com.ait.tooling.server.core.pubsub.JSONMessage;
 import com.ait.tooling.server.core.pubsub.PubSubChannelType;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
@@ -49,8 +50,6 @@ public class ServerContextInstance implements IServerContext
     private static final long                          serialVersionUID    = 8451400323005323866L;
 
     private static ApplicationContext                  APPLICATION_CONTEXT = null;
-
-    private static final Logger                        logger              = Logger.getLogger(ServerContextInstance.class);
 
     private final static AnonOnlyAuthorizationProvider DEFAULT_AUTH        = new AnonOnlyAuthorizationProvider();
 
@@ -188,18 +187,13 @@ public class ServerContextInstance implements IServerContext
     @Override
     public final IAuthorizationProvider getAuthorizationProvider()
     {
-        if (getApplicationContext().containsBean("AuthorizationProvider"))
+        final IAuthorizationProvider auth = getBeanSafely("AuthorizationProvider", IAuthorizationProvider.class);
+
+        if (null != auth)
         {
-            try
-            {
-                return getBean("AuthorizationProvider", IAuthorizationProvider.class);
-            }
-            catch (Exception e)
-            {
-                logger.error("Invalid AuthorizationProvider", e);
-            }
+            return auth;
         }
-        logger.warn("Using AuthorizationProvider default " + DEFAULT_AUTH.getClass().getName());
+        logger().warn("Using AuthorizationProvider default " + DEFAULT_AUTH.getClass().getName());
 
         return DEFAULT_AUTH;
     }
@@ -207,18 +201,13 @@ public class ServerContextInstance implements IServerContext
     @Override
     public final Iterable<String> getPrincipalsKeys()
     {
-        if (getApplicationContext().containsBean("PrincipalsKeysProvider"))
+        final IPrincipalsKeysProvider keys = getBeanSafely("PrincipalsKeysProvider", IPrincipalsKeysProvider.class);
+
+        if (null != keys)
         {
-            try
-            {
-                return getBean("PrincipalsKeysProvider", IPrincipalsKeysProvider.class);
-            }
-            catch (Exception e)
-            {
-                logger.error("Invalid PrincipalsKeysProvider", e);
-            }
+            return keys;
         }
-        logger.warn("Using PrincipalsKeysProvider default " + DEFAULT_KEYS.getClass().getName());
+        logger().warn("Using PrincipalsKeysProvider default " + DEFAULT_KEYS.getClass().getName());
 
         return DEFAULT_KEYS;
     }
@@ -265,39 +254,51 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public void publish(final String name, final JSONMessage message) throws Exception
+    public void publish(final String name, final JSONMessage message)
     {
-        getPubSubDescriptorProvider().getPublishDescriptor(Objects.requireNonNull(name)).publish(Objects.requireNonNull(message));
+        Objects.requireNonNull(message);
+
+        getPubSubDescriptorProvider().getPublishDescriptor(Objects.requireNonNull(name)).publish(message);
     }
 
     @Override
-    public void publish(final String name, final PubSubChannelType type, final JSONMessage message) throws Exception
+    public void publish(final String name, final PubSubChannelType type, final JSONMessage message)
     {
-        getPubSubDescriptorProvider().getPublishDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(type)).publish(Objects.requireNonNull(message));
+        Objects.requireNonNull(message);
+
+        getPubSubDescriptorProvider().getPublishDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(type)).publish(message);
     }
 
     @Override
-    public void publish(final String name, final List<PubSubChannelType> list, final JSONMessage message) throws Exception
+    public void publish(final String name, final List<PubSubChannelType> list, final JSONMessage message)
     {
-        getPubSubDescriptorProvider().getPublishDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(list)).publish(Objects.requireNonNull(message));
+        Objects.requireNonNull(message);
+
+        getPubSubDescriptorProvider().getPublishDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(list)).publish(message);
     }
 
     @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, final IPubSubMessageReceivedHandler handler) throws Exception
+    public IMessageReceivedHandlerRegistration addMessageReceivedHandler(final String name, final IMessageReceivedHandler handler)
     {
-        return getPubSubDescriptorProvider().getSubscribeDescriptor(name).addMessageReceivedHandler(Objects.requireNonNull(handler));
+        Objects.requireNonNull(handler);
+
+        return getPubSubDescriptorProvider().getSubscribeDescriptor(Objects.requireNonNull(name)).addMessageReceivedHandler(handler);
     }
 
     @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final PubSubChannelType type, final IPubSubMessageReceivedHandler handler) throws Exception
+    public IMessageReceivedHandlerRegistration addMessageReceivedHandler(final String name, final PubSubChannelType type, final IMessageReceivedHandler handler)
     {
-        return getPubSubDescriptorProvider().getSubscribeDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(type)).addMessageReceivedHandler(Objects.requireNonNull(handler));
+        Objects.requireNonNull(handler);
+
+        return getPubSubDescriptorProvider().getSubscribeDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(type)).addMessageReceivedHandler(handler);
     }
 
     @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(final String name, final List<PubSubChannelType> list, final IPubSubMessageReceivedHandler handler) throws Exception
+    public IMessageReceivedHandlerRegistration addMessageReceivedHandler(final String name, final List<PubSubChannelType> list, final IMessageReceivedHandler handler)
     {
-        return getPubSubDescriptorProvider().getSubscribeDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(list)).addMessageReceivedHandler(Objects.requireNonNull(handler));
+        Objects.requireNonNull(handler);
+
+        return getPubSubDescriptorProvider().getSubscribeDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(list)).addMessageReceivedHandler(handler);
     }
 
     @Override
@@ -307,9 +308,9 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public final JSONObject json(final Map<String, ?> valu)
+    public final JSONObject json(final Map<String, ?> map)
     {
-        return new JSONObject(Objects.requireNonNull(valu));
+        return new JSONObject(Objects.requireNonNull(map));
     }
 
     @Override
@@ -388,5 +389,61 @@ public class ServerContextInstance implements IServerContext
             return ((JSONObject) result);
         }
         return null;
+    }
+
+    @Override
+    public JSONArray jarr()
+    {
+        return new JSONArray();
+    }
+
+    @Override
+    public JSONArray jarr(final JSONObject object)
+    {
+        Objects.requireNonNull(object);
+
+        final JSONArray list = jarr();
+
+        jarr().add(object);
+
+        return list;
+    }
+
+    @Override
+    public JSONArray jarr(final List<?> list)
+    {
+        return new JSONArray(Objects.requireNonNull(list));
+    }
+
+    @Override
+    public JSONArray jarr(final Map<String, ?> map)
+    {
+        return jarr(new JSONObject(Objects.requireNonNull(map)));
+    }
+
+    @Override
+    public JSONArray jarr(final String name, final Object value)
+    {
+        return jarr(new JSONObject(Objects.requireNonNull(name), value));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public JSONArray jarr(final Collection<?> collection)
+    {
+        Objects.requireNonNull(collection);
+
+        if (collection instanceof List)
+        {
+            return jarr((List<?>) collection);
+        }
+        else if (collection instanceof Map)
+        {
+            return jarr((Map<String, ?>) collection);
+        }
+        else
+        {
+            return jarr(new ArrayList<Object>(collection));
+        }
     }
 }

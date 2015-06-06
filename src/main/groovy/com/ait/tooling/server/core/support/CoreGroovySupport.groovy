@@ -23,13 +23,14 @@ import org.apache.log4j.Logger
 import org.springframework.context.ApplicationContext
 import org.springframework.core.env.Environment
 
+import com.ait.tooling.json.JSONArray
 import com.ait.tooling.json.JSONObject
 import com.ait.tooling.json.parser.JSONParserException
 import com.ait.tooling.json.schema.JSONSchema
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager
+import com.ait.tooling.server.core.pubsub.IMessageReceivedHandler
+import com.ait.tooling.server.core.pubsub.IMessageReceivedHandlerRegistration
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider
-import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration
-import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler
 import com.ait.tooling.server.core.pubsub.JSONMessage
 import com.ait.tooling.server.core.pubsub.PubSubChannelType
 import com.ait.tooling.server.core.security.AuthorizationResult
@@ -151,39 +152,51 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     }
 
     @Override
-    public void publish(String name, JSONMessage message) throws Exception
+    public void publish(String name, JSONMessage message)
     {
-        getPubSubDescriptorProvider().getPublishDescriptor(name).publish(message)
+        Objects.requireNonNull(message)
+
+        getPubSubDescriptorProvider().getPublishDescriptor(Objects.requireNonNull(name)).publish(message)
     }
 
     @Override
-    public void publish(String name, PubSubChannelType type, JSONMessage message) throws Exception
+    public void publish(String name, PubSubChannelType type, JSONMessage message)
     {
-        getPubSubDescriptorProvider().getPublishDescriptor(name, type).publish(message)
+        Objects.requireNonNull(message)
+
+        getPubSubDescriptorProvider().getPublishDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(type)).publish(message)
     }
 
     @Override
-    public void publish(String name, List<PubSubChannelType> list, JSONMessage message) throws Exception
+    public void publish(String name, List<PubSubChannelType> list, JSONMessage message)
     {
-        getPubSubDescriptorProvider().getPublishDescriptor(name, list).publish(message)
+        Objects.requireNonNull(message)
+
+        getPubSubDescriptorProvider().getPublishDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(list)).publish(message)
     }
 
     @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, IPubSubMessageReceivedHandler handler) throws Exception
+    public IMessageReceivedHandlerRegistration addMessageReceivedHandler(String name, IMessageReceivedHandler handler)
     {
-        getPubSubDescriptorProvider().getSubscribeDescriptor(name).addMessageReceivedHandler(handler)
+        Objects.requireNonNull(handler)
+
+        getPubSubDescriptorProvider().getSubscribeDescriptor(Objects.requireNonNull(name)).addMessageReceivedHandler(handler)
     }
 
     @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IPubSubMessageReceivedHandler handler) throws Exception
+    public IMessageReceivedHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IMessageReceivedHandler handler)
     {
-        getPubSubDescriptorProvider().getSubscribeDescriptor(name, type).addMessageReceivedHandler(handler)
+        Objects.requireNonNull(handler)
+
+        getPubSubDescriptorProvider().getSubscribeDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(type)).addMessageReceivedHandler(handler)
     }
 
     @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, IPubSubMessageReceivedHandler handler) throws Exception
+    public IMessageReceivedHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, IMessageReceivedHandler handler)
     {
-        getPubSubDescriptorProvider().getSubscribeDescriptor(name, list).addMessageReceivedHandler(handler)
+        Objects.requireNonNull(handler)
+
+        getPubSubDescriptorProvider().getSubscribeDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(list)).addMessageReceivedHandler(handler)
     }
 
     @Override
@@ -261,5 +274,41 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     public JSONObject jsonParse(Reader reader) throws IOException, JSONParserException
     {
         getServerContext().jsonParse(Objects.requireNonNull(reader))
+    }
+
+    @Override
+    public JSONArray jarr()
+    {
+        getServerContext().jarr()
+    }
+
+    @Override
+    public JSONArray jarr(JSONObject object)
+    {
+        getServerContext().jarr(Objects.requireNonNull(object))
+    }
+
+    @Override
+    public JSONArray jarr(List<?> list)
+    {
+        getServerContext().jarr(Objects.requireNonNull(list))
+    }
+
+    @Override
+    public JSONArray jarr(Map<String, ?> map)
+    {
+        getServerContext().jarr(Objects.requireNonNull(map))
+    }
+
+    @Override
+    public JSONArray jarr(String name, Object value)
+    {
+        getServerContext().jarr(Objects.requireNonNull(name), value)
+    }
+
+    @Override
+    public JSONArray jarr(Collection<?> collection)
+    {
+        getServerContext().jarr(Objects.requireNonNull(collection))
     }
 }

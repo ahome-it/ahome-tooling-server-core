@@ -18,7 +18,7 @@ package com.ait.tooling.server.core.pubsub;
 
 import java.io.Serializable;
 
-public interface IPubSubHandlerRegistration extends Serializable
+public interface IMessageReceivedHandlerRegistration extends Serializable
 {
     public void removeHandler();
 }

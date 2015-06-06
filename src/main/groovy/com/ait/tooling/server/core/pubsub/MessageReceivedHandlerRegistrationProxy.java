@@ -24,24 +24,24 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public final class PubSubHandlerRegistrationProxy implements IPubSubHandlerRegistration, Iterable<IPubSubHandlerRegistration>
+public final class MessageReceivedHandlerRegistrationProxy implements IMessageReceivedHandlerRegistration, Iterable<IMessageReceivedHandlerRegistration>
 {
-    private static final long                                      serialVersionUID = -109586196122482271L;
+    private static final long                                               serialVersionUID = -109586196122482271L;
 
-    private final CopyOnWriteArrayList<IPubSubHandlerRegistration> m_list           = new CopyOnWriteArrayList<IPubSubHandlerRegistration>();
+    private final CopyOnWriteArrayList<IMessageReceivedHandlerRegistration> m_list           = new CopyOnWriteArrayList<IMessageReceivedHandlerRegistration>();
 
-    public PubSubHandlerRegistrationProxy()
+    public MessageReceivedHandlerRegistrationProxy()
     {
     }
 
-    public PubSubHandlerRegistrationProxy(final IPubSubHandlerRegistration... list)
+    public MessageReceivedHandlerRegistrationProxy(final IMessageReceivedHandlerRegistration... list)
     {
-        this(Arrays.asList(list));
+        this(Arrays.asList(Objects.requireNonNull(list)));
     }
 
-    public PubSubHandlerRegistrationProxy(final List<? extends IPubSubHandlerRegistration> list)
+    public MessageReceivedHandlerRegistrationProxy(final List<? extends IMessageReceivedHandlerRegistration> list)
     {
-        for (IPubSubHandlerRegistration registration : Objects.requireNonNull(list))
+        for (IMessageReceivedHandlerRegistration registration : Objects.requireNonNull(list))
         {
             add(registration);
         }
@@ -64,9 +64,9 @@ public final class PubSubHandlerRegistrationProxy implements IPubSubHandlerRegis
 
     public final void destroy()
     {
-        final ArrayList<IPubSubHandlerRegistration> list = new ArrayList<IPubSubHandlerRegistration>(m_list);
+        final ArrayList<IMessageReceivedHandlerRegistration> list = new ArrayList<IMessageReceivedHandlerRegistration>(m_list);
 
-        for (IPubSubHandlerRegistration registration : list)
+        for (IMessageReceivedHandlerRegistration registration : list)
         {
             registration.removeHandler();
 
@@ -74,7 +74,7 @@ public final class PubSubHandlerRegistrationProxy implements IPubSubHandlerRegis
         }
     }
 
-    public final void add(final IPubSubHandlerRegistration registration)
+    public final void add(final IMessageReceivedHandlerRegistration registration)
     {
         if (false == m_list.contains(Objects.requireNonNull(registration)))
         {
@@ -82,7 +82,7 @@ public final class PubSubHandlerRegistrationProxy implements IPubSubHandlerRegis
         }
     }
 
-    public final void remove(final IPubSubHandlerRegistration registration)
+    public final void remove(final IMessageReceivedHandlerRegistration registration)
     {
         if (m_list.contains(Objects.requireNonNull(registration)))
         {
@@ -97,8 +97,8 @@ public final class PubSubHandlerRegistrationProxy implements IPubSubHandlerRegis
     }
 
     @Override
-    public final Iterator<IPubSubHandlerRegistration> iterator()
+    public final Iterator<IMessageReceivedHandlerRegistration> iterator()
     {
-        return Collections.unmodifiableList(new ArrayList<IPubSubHandlerRegistration>(m_list)).iterator();
+        return Collections.unmodifiableList(new ArrayList<IMessageReceivedHandlerRegistration>(m_list)).iterator();
     }
 }

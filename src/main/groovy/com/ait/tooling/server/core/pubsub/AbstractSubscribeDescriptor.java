@@ -28,15 +28,15 @@ import com.ait.tooling.common.api.types.Activatable;
 @SuppressWarnings("serial")
 public abstract class AbstractSubscribeDescriptor extends Activatable implements ISubscribeDescriptor
 {
-    private final String                                   m_name;
+    private final String                             m_name;
 
-    private final PubSubChannelType                        m_type;
+    private final PubSubChannelType                  m_type;
 
-    private final SubscribeDescriptorSupport               m_supp   = new SubscribeDescriptorSupport();
+    private final SubscribeDescriptorSupport         m_supp   = new SubscribeDescriptorSupport();
 
-    private final ArrayList<IPubSubMessageReceivedHandler> m_list   = new ArrayList<IPubSubMessageReceivedHandler>();
+    private final ArrayList<IMessageReceivedHandler> m_list   = new ArrayList<IMessageReceivedHandler>();
 
-    private final Logger                                   m_logger = Logger.getLogger(getClass());
+    private final Logger                             m_logger = Logger.getLogger(getClass());
 
     protected AbstractSubscribeDescriptor(final String name, final PubSubChannelType type)
     {
@@ -45,7 +45,7 @@ public abstract class AbstractSubscribeDescriptor extends Activatable implements
         m_type = Objects.requireNonNull(type);
     }
 
-    protected final List<IPubSubMessageReceivedHandler> getMessageReceivedHandlers()
+    protected final List<IMessageReceivedHandler> getMessageReceivedHandlers()
     {
         return m_list;
     }
@@ -68,7 +68,7 @@ public abstract class AbstractSubscribeDescriptor extends Activatable implements
     }
 
     @Override
-    public IPubSubHandlerRegistration addMessageReceivedHandler(final IPubSubMessageReceivedHandler handler)
+    public IMessageReceivedHandlerRegistration addMessageReceivedHandler(final IMessageReceivedHandler handler)
     {
         return m_supp.addMessageReceivedHandler(Objects.requireNonNull(handler));
     }
@@ -77,6 +77,8 @@ public abstract class AbstractSubscribeDescriptor extends Activatable implements
     public void close() throws IOException
     {
         setActive(false);
+
+        getSubscribeDescriptorSupport().close();
     }
 
     public final Logger logger()
@@ -84,18 +86,18 @@ public abstract class AbstractSubscribeDescriptor extends Activatable implements
         return m_logger;
     }
 
-    public void setSubscribeListener(final IPubSubMessageReceivedHandler listener)
+    public void setSubscribeListener(final IMessageReceivedHandler listener)
     {
         m_list.clear();
 
         m_list.add(Objects.requireNonNull(listener));
     }
 
-    public void setSubscribeListeners(final List<IPubSubMessageReceivedHandler> listeners)
+    public void setSubscribeListeners(final List<IMessageReceivedHandler> listeners)
     {
         m_list.clear();
 
-        for (IPubSubMessageReceivedHandler listener : Objects.requireNonNull(listeners))
+        for (IMessageReceivedHandler listener : Objects.requireNonNull(listeners))
         {
             m_list.add(Objects.requireNonNull(listener));
         }

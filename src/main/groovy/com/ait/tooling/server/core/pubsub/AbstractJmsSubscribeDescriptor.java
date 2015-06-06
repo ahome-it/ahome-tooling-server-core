@@ -45,8 +45,6 @@ public abstract class AbstractJmsSubscribeDescriptor extends AbstractSubscribeDe
     @Override
     public void onMessage(final Message text)
     {
-        Objects.requireNonNull(text);
-
         if (text instanceof TextMessage)
         {
             try
@@ -57,11 +55,11 @@ public abstract class AbstractJmsSubscribeDescriptor extends AbstractSubscribeDe
                 {
                     final JSONMessage message = new JSONMessage((JSONObject) result);
 
-                    for (IPubSubMessageReceivedHandler listener : getMessageReceivedHandlers())
+                    for (IMessageReceivedHandler handler : getMessageReceivedHandlers())
                     {
                         try
                         {
-                            listener.onMessageReceived(message);
+                            handler.onMessageReceived(message);
                         }
                         catch (Exception e)
                         {
@@ -72,35 +70,25 @@ public abstract class AbstractJmsSubscribeDescriptor extends AbstractSubscribeDe
                 }
                 else
                 {
-                    logger().error("Message was not JSONObject");
-
-                    throw new RuntimeException("Message was not JSONObject");
+                    logger().error("Message was not a JSONObject");
                 }
             }
             catch (JSONParserException e)
             {
                 logger().error("JSONParserException", e);
-
-                throw new RuntimeException(e);
             }
             catch (JMSException e)
             {
                 logger().error("JMSException", e);
-
-                throw new RuntimeException(e);
             }
             catch (Exception e)
             {
                 logger().error("Dispatch Error", e);
-
-                throw new RuntimeException(e);
             }
         }
         else
         {
             logger().error("Message must be of type TextMessage");
-
-            throw new IllegalArgumentException("Message must be of type TextMessage");
         }
     }
 }

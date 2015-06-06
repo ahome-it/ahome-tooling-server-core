@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 
 import com.ait.tooling.server.core.logging.ICoreLoggingOperations;
 
-public class LoggingSubscribeListener implements IPubSubMessageReceivedHandler, ICoreLoggingOperations, Serializable
+public class LoggingSubscribeListener implements IMessageReceivedHandler, ICoreLoggingOperations, Serializable
 {
     private static final long serialVersionUID = 5154374919398530876L;
 

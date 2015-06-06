@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.pubsub;
+package com.ait.tooling.server.core.security;
 
-public interface IPubSubMessageReceivedHandler
+public interface IAuthorizationConstants
 {
-    public void onMessageReceived(JSONMessage message);
+    public static final String ANON = "ANON";
+
+    public static final String USER = "USER";
+
+    public static final String ROLE = "ROLE";
 }

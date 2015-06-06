@@ -27,13 +27,14 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 
+import com.ait.tooling.json.JSONArray;
 import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.json.parser.JSONParserException;
 import com.ait.tooling.json.schema.JSONSchema;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
-import com.ait.tooling.server.core.pubsub.IPubSubHandlerRegistration;
-import com.ait.tooling.server.core.pubsub.IPubSubMessageReceivedHandler;
+import com.ait.tooling.server.core.pubsub.IMessageReceivedHandlerRegistration;
+import com.ait.tooling.server.core.pubsub.IMessageReceivedHandler;
 import com.ait.tooling.server.core.pubsub.JSONMessage;
 import com.ait.tooling.server.core.pubsub.PubSubChannelType;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
@@ -70,17 +71,17 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serial
 
     public IPubSubDescriptorProvider getPubSubDescriptorProvider();
 
-    public void publish(String name, JSONMessage message) throws Exception;
+    public void publish(String name, JSONMessage message);
 
-    public void publish(String name, PubSubChannelType type, JSONMessage message) throws Exception;
+    public void publish(String name, PubSubChannelType type, JSONMessage message);
 
-    public void publish(String name, List<PubSubChannelType> list, JSONMessage message) throws Exception;
+    public void publish(String name, List<PubSubChannelType> list, JSONMessage message);
 
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, IPubSubMessageReceivedHandler handler) throws Exception;
+    public IMessageReceivedHandlerRegistration addMessageReceivedHandler(String name, IMessageReceivedHandler handler);
 
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IPubSubMessageReceivedHandler handler) throws Exception;
+    public IMessageReceivedHandlerRegistration addMessageReceivedHandler(String name, PubSubChannelType type, IMessageReceivedHandler handler);
 
-    public IPubSubHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, IPubSubMessageReceivedHandler handler) throws Exception;
+    public IMessageReceivedHandlerRegistration addMessageReceivedHandler(String name, List<PubSubChannelType> list, IMessageReceivedHandler handler);
 
     public Logger logger();
 
@@ -88,11 +89,23 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serial
 
     public JSONObject json(Map<String, ?> valu);
 
+    public JSONObject json(List<?> list);
+
     public JSONObject json(String name, Object value);
 
     public JSONObject json(Collection<?> collection);
 
-    public JSONObject json(List<?> list);
+    public JSONArray jarr();
+
+    public JSONArray jarr(JSONObject object);
+
+    public JSONArray jarr(List<?> list);
+
+    public JSONArray jarr(Map<String, ?> valu);
+
+    public JSONArray jarr(String name, Object value);
+
+    public JSONArray jarr(Collection<?> collection);
 
     public JSONSchema jsonSchema(Map<String, ?> schema);
 

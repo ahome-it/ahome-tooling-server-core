@@ -16,19 +16,7 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-import java.util.Objects;
-
-public class PubSubException extends Exception
+public interface IMessageReceivedHandler
 {
-    private static final long serialVersionUID = -2943300679284968069L;
-
-    public PubSubException(final String reason)
-    {
-        super(Objects.requireNonNull(reason));
-    }
-
-    public PubSubException(final String reason, Throwable cause)
-    {
-        super(Objects.requireNonNull(reason), cause);
-    }
+    public void onMessageReceived(JSONMessage message);
 }

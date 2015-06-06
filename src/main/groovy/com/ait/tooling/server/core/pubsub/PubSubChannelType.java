@@ -44,7 +44,7 @@ public enum PubSubChannelType implements IStringValued
         {
             for (PubSubChannelType type : values())
             {
-                if (type.getValue().equals(look))
+                if (type.getValue().equalsIgnoreCase(look))
                 {
                     return type;
                 }
