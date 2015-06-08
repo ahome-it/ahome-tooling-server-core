@@ -16,15 +16,14 @@
  * limitations under the License.
  */
 -->
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context" xmlns:task="http://www.springframework.org/schema/task"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context" xmlns:int="http://www.springframework.org/schema/integration"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 						http://www.springframework.org/schema/beans/spring-beans.xsd
 						http://www.springframework.org/schema/context
 						http://www.springframework.org/schema/context/spring-context.xsd
-						http://www.springframework.org/schema/task
-						http://www.springframework.org/schema/task/spring-task.xsd">
+						http://www.springframework.org/schema/integration
+						http://www.springframework.org/schema/integration/spring-integration.xsd">
 
-	<import resource="classpath:/com/ait/tooling/json/server/config/JSONApplicationContext.xml"/>
 
 	<bean id="CoreBuildDescriptor" class="com.ait.tooling.server.core.support.spring.BuildDescriptor">
 		<constructor-arg value="@GRADLE_BUILD_PROJECT_TITLE@"/>
@@ -54,15 +53,9 @@
 		<constructor-arg value="${crypto.provider.pass}"/>
 		<constructor-arg value="${crypto.provider.salt}"/>
 	</bean>
-
-	<bean id="CachedThreadPoolExecutorServiceDescriptor" class="com.ait.tooling.server.core.support.spring.executors.CachedThreadPoolExecutorServiceDescriptor"/>
-
-	<bean id="SingleThreadPoolExecutorServiceDescriptor" class="com.ait.tooling.server.core.support.spring.executors.SingleThreadPoolExecutorServiceDescriptor"/>
-
-	<bean id="DefaultFixedThreadPoolExecutorServiceDescriptor" class="com.ait.tooling.server.core.support.spring.executors.FixedThreadPoolExecutorServiceDescriptor"/>
-
-	<bean id="ExecutorServiceDescriptorProvider" class="com.ait.tooling.server.core.support.spring.ExecutorServiceDescriptorProvider" destroy-method="close"/>
-
+		
+	<int:publish-subscribe-channel id="CoreServerEvents"/>
+	
 	<bean id="CoreServerEventsDescriptor" class="com.ait.tooling.server.core.pubsub.CoreServerEventsDescriptor">
 		<constructor-arg value="CoreServerEvents"/>
 	</bean>
@@ -70,6 +63,8 @@
 	<bean id="PubSubDescriptorProvider" class="com.ait.tooling.server.core.pubsub.PubSubDescriptorProvider" destroy-method="close"/>
 
 	<context:component-scan base-package="com.ait.tooling.server.core.jmx"/>
+	
+	<import resource="classpath:/com/ait/tooling/json/server/config/JSONApplicationContext.xml"/>
 
 	<context:mbean-export/>
 

@@ -27,7 +27,7 @@ public abstract class AbstractJmsTemplateTopicPublishDescriptor extends Abstract
 
     protected AbstractJmsTemplateTopicPublishDescriptor(final String name)
     {
-        super(Objects.requireNonNull(name), PubSubChannelType.TOPIC);
+        super(Objects.requireNonNull(name));
     }
 
     @Override

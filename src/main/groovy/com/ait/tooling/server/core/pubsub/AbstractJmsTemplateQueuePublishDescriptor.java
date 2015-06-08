@@ -27,7 +27,7 @@ public abstract class AbstractJmsTemplateQueuePublishDescriptor extends Abstract
 
     protected AbstractJmsTemplateQueuePublishDescriptor(final String name)
     {
-        super(Objects.requireNonNull(name), PubSubChannelType.QUEUE);
+        super(Objects.requireNonNull(name));
     }
 
     @Override

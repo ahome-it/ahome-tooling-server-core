@@ -53,8 +53,6 @@ public class NoSyncBufferedWriter extends BufferedWriter
 
     private int    m_nextch;
 
-    private int    m_countc;
-
     private char   m_charbf[];
 
     public NoSyncBufferedWriter(final Writer writer)
@@ -89,16 +87,9 @@ public class NoSyncBufferedWriter extends BufferedWriter
         {
             return;
         }
-        m_countc = m_countc + m_nextch;
-
         m_writer.write(m_charbf, 0, m_nextch);
 
         m_nextch = 0;
-    }
-
-    public int getCapacityUsed()
-    {
-        return m_countc;
     }
 
     @Override
@@ -129,8 +120,6 @@ public class NoSyncBufferedWriter extends BufferedWriter
         if (len >= m_sizeof)
         {
             doFlushBuffer();
-
-            m_countc = m_countc + (len - off);
 
             m_writer.write(buf, off, len);
 

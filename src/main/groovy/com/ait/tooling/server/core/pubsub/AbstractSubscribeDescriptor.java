@@ -30,19 +30,15 @@ public abstract class AbstractSubscribeDescriptor extends Activatable implements
 {
     private final String                             m_name;
 
-    private final PubSubChannelType                  m_type;
-
     private final SubscribeDescriptorSupport         m_supp   = new SubscribeDescriptorSupport();
 
     private final ArrayList<IMessageReceivedHandler> m_list   = new ArrayList<IMessageReceivedHandler>();
 
     private final Logger                             m_logger = Logger.getLogger(getClass());
 
-    protected AbstractSubscribeDescriptor(final String name, final PubSubChannelType type)
+    protected AbstractSubscribeDescriptor(final String name)
     {
         m_name = Objects.requireNonNull(name);
-
-        m_type = Objects.requireNonNull(type);
     }
 
     protected final List<IMessageReceivedHandler> getMessageReceivedHandlers()
@@ -53,12 +49,6 @@ public abstract class AbstractSubscribeDescriptor extends Activatable implements
     protected final SubscribeDescriptorSupport getSubscribeDescriptorSupport()
     {
         return m_supp;
-    }
-
-    @Override
-    public PubSubChannelType getChannelType()
-    {
-        return m_type;
     }
 
     @Override

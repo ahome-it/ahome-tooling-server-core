@@ -32,26 +32,15 @@ import com.ait.tooling.common.api.types.Activatable;
 @SuppressWarnings("serial")
 public abstract class AbstractJmsTemplatePublishDescriptor extends Activatable implements IJmsTempletePublishDescriptor
 {
-    private final String            m_name;
+    private final String m_name;
 
-    private final PubSubChannelType m_type;
+    private final Logger m_logger = Logger.getLogger(getClass());
 
-    private final Logger            m_logger = Logger.getLogger(getClass());
+    private JmsTemplate  m_template;
 
-    private JmsTemplate             m_template;
-
-    protected AbstractJmsTemplatePublishDescriptor(final String name, final PubSubChannelType type)
+    protected AbstractJmsTemplatePublishDescriptor(final String name)
     {
         m_name = Objects.requireNonNull(name);
-
-        m_type = Objects.requireNonNull(type);
-
-        if ((m_type != PubSubChannelType.QUEUE) && (m_type != PubSubChannelType.TOPIC))
-        {
-            logger().error("Invalid PubSubChannelType for JMS " + type.getValue());
-
-            throw new IllegalArgumentException("Invalid PubSubChannelType for JMS " + type.getValue());
-        }
     }
 
     @Override
@@ -81,12 +70,6 @@ public abstract class AbstractJmsTemplatePublishDescriptor extends Activatable i
     public void setJmsTemplate(final JmsTemplate template)
     {
         m_template = Objects.requireNonNull(template);
-    }
-
-    @Override
-    public PubSubChannelType getChannelType()
-    {
-        return m_type;
     }
 
     @Override

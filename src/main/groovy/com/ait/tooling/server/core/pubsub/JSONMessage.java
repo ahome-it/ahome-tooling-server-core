@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.support.MessageBuilder;
 
 import com.ait.tooling.common.api.json.JSONStringify;
 import com.ait.tooling.json.JSONObject;
@@ -33,6 +34,11 @@ public class JSONMessage implements Message<JSONObject>, Serializable, JSONStrin
     private final JSONObject     m_payload;
 
     private final MessageHeaders m_headers;
+    
+    public static Message<JSONObject> createMessage(final JSONObject payload, final MessageHeaders headers)
+    {
+        return MessageBuilder.createMessage(payload, headers);
+    }
 
     public JSONMessage(final JSONObject payload, final MessageHeaders headers)
     {

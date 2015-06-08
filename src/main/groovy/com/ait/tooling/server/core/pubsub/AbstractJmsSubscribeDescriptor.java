@@ -30,16 +30,9 @@ import com.ait.tooling.json.parser.JSONParserException;
 @SuppressWarnings("serial")
 public abstract class AbstractJmsSubscribeDescriptor extends AbstractSubscribeDescriptor implements MessageListener
 {
-    protected AbstractJmsSubscribeDescriptor(final String name, final PubSubChannelType type)
+    protected AbstractJmsSubscribeDescriptor(final String name)
     {
-        super(Objects.requireNonNull(name), Objects.requireNonNull(type));
-
-        if ((type != PubSubChannelType.QUEUE) && (type != PubSubChannelType.TOPIC))
-        {
-            logger().error("Invalid PubSubChannelType for JMS " + type.getValue());
-
-            throw new IllegalArgumentException("Invalid PubSubChannelType for JMS " + type.getValue());
-        }
+        super(Objects.requireNonNull(name));
     }
 
     @Override

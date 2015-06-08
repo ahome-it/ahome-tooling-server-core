@@ -23,7 +23,7 @@ public abstract class AbstractEventPubSubDescriptor extends AbstractSubscribeDes
 {
     protected AbstractEventPubSubDescriptor(final String name)
     {
-        super(Objects.requireNonNull(name), PubSubChannelType.EVENT);
+        super(Objects.requireNonNull(name));
     }
 
     @Override

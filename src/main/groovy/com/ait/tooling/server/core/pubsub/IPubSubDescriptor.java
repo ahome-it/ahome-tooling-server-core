@@ -24,5 +24,4 @@ import com.ait.tooling.common.api.types.INamed;
 
 public interface IPubSubDescriptor extends INamed, IActivatable, Serializable, Closeable
 {
-    public PubSubChannelType getChannelType();
 }

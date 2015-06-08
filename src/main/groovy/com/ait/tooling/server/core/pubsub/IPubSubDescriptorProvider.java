@@ -18,19 +18,10 @@ package com.ait.tooling.server.core.pubsub;
 
 import java.io.Closeable;
 import java.io.Serializable;
-import java.util.List;
 
 public interface IPubSubDescriptorProvider extends Serializable, Closeable
 {
     public IPublishDescriptor getPublishDescriptor(String name);
 
-    public IPublishDescriptor getPublishDescriptor(String name, PubSubChannelType type);
-
-    public IPublishDescriptor getPublishDescriptor(String name, List<PubSubChannelType> list);
-
     public ISubscribeDescriptor getSubscribeDescriptor(String name);
-
-    public ISubscribeDescriptor getSubscribeDescriptor(String name, PubSubChannelType type);
-
-    public ISubscribeDescriptor getSubscribeDescriptor(String name, List<PubSubChannelType> list);
 }

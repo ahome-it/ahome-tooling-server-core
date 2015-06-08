@@ -18,8 +18,6 @@ package com.ait.tooling.server.core.pubsub;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Objects;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
@@ -135,79 +133,14 @@ public class PubSubDescriptorProvider implements IPubSubDescriptorProvider, Bean
     }
 
     @Override
-    public IPublishDescriptor getPublishDescriptor(final String name, final PubSubChannelType type)
-    {
-        final IPublishDescriptor descriptor = getPublishDescriptor(StringOps.requireTrimOrNull(name));
-
-        if (null != descriptor)
-        {
-            if (Objects.requireNonNull(type) == Objects.requireNonNull(descriptor.getChannelType()))
-            {
-                return descriptor;
-            }
-        }
-        return null;
-    }
-
-    @Override
     public IPublishDescriptor getPublishDescriptor(final String name)
     {
         return m_pub_descriptors.get(StringOps.requireTrimOrNull(name));
     }
 
     @Override
-    public IPublishDescriptor getPublishDescriptor(final String name, final List<PubSubChannelType> list)
-    {
-        Objects.requireNonNull(list);
-
-        final IPublishDescriptor descriptor = getPublishDescriptor(StringOps.requireTrimOrNull(name));
-
-        if (null != descriptor)
-        {
-            if (list.contains(Objects.requireNonNull(descriptor.getChannelType())))
-            {
-                return descriptor;
-            }
-        }
-        return null;
-    }
-
-    @Override
     public ISubscribeDescriptor getSubscribeDescriptor(final String name)
     {
         return m_sub_descriptors.get(StringOps.requireTrimOrNull(name));
-
-    }
-
-    @Override
-    public ISubscribeDescriptor getSubscribeDescriptor(final String name, final PubSubChannelType type)
-    {
-        final ISubscribeDescriptor descriptor = getSubscribeDescriptor(StringOps.requireTrimOrNull(name));
-
-        if (null != descriptor)
-        {
-            if (Objects.requireNonNull(type) == Objects.requireNonNull(descriptor.getChannelType()))
-            {
-                return descriptor;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public ISubscribeDescriptor getSubscribeDescriptor(final String name, final List<PubSubChannelType> list)
-    {
-        Objects.requireNonNull(list);
-
-        final ISubscribeDescriptor descriptor = getSubscribeDescriptor(StringOps.requireTrimOrNull(name));
-
-        if (null != descriptor)
-        {
-            if (list.contains(Objects.requireNonNull(descriptor.getChannelType())))
-            {
-                return descriptor;
-            }
-        }
-        return null;
     }
 }

@@ -28,6 +28,8 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
 
 import com.ait.tooling.json.JSONArray;
 import com.ait.tooling.json.JSONObject;
@@ -38,8 +40,6 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.pubsub.IMessageReceivedHandler;
 import com.ait.tooling.server.core.pubsub.IMessageReceivedHandlerRegistration;
 import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
-import com.ait.tooling.server.core.pubsub.JSONMessage;
-import com.ait.tooling.server.core.pubsub.PubSubChannelType;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 import com.ait.tooling.server.core.security.AuthorizationResult;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
@@ -219,12 +219,6 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public final IExecutorServiceDescriptorProvider getExecutorServiceDescriptorProvider()
-    {
-        return Objects.requireNonNull(getBeanSafely("ExecutorServiceDescriptorProvider", IExecutorServiceDescriptorProvider.class), "ExecutorServiceDescriptorProvider is null, initialization error.");
-    }
-
-    @Override
     public final IBuildDescriptorProvider getBuildDescriptorProvider()
     {
         return Objects.requireNonNull(getBeanSafely("BuildDescriptorProvider", IBuildDescriptorProvider.class), "BuildDescriptorProvider is null, initialization error.");
@@ -248,33 +242,39 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
+    public MessageChannel getMessageChannel(final String name)
+    {
+        return getBeanSafely(Objects.requireNonNull(name), MessageChannel.class);
+    }
+
+    @Override
     public IPubSubDescriptorProvider getPubSubDescriptorProvider()
     {
         return Objects.requireNonNull(getBeanSafely("PubSubDescriptorProvider", IPubSubDescriptorProvider.class), "PubSubDescriptorProvider is null, initialization error.");
     }
 
     @Override
-    public void publish(final String name, final JSONMessage message)
+    public <T> boolean publish(final String name, final Message<T> message)
     {
-        Objects.requireNonNull(message);
+        final MessageChannel channel = getMessageChannel(Objects.requireNonNull(name));
 
-        getPubSubDescriptorProvider().getPublishDescriptor(Objects.requireNonNull(name)).publish(message);
+        if (null != channel)
+        {
+            return channel.send(Objects.requireNonNull(message));
+        }
+        throw new IllegalArgumentException("MessageChannel " + name + " does not exist.");
     }
 
     @Override
-    public void publish(final String name, final PubSubChannelType type, final JSONMessage message)
+    public <T> boolean publish(final String name, final Message<T> message, final long timeout)
     {
-        Objects.requireNonNull(message);
+        final MessageChannel channel = getMessageChannel(Objects.requireNonNull(name));
 
-        getPubSubDescriptorProvider().getPublishDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(type)).publish(message);
-    }
-
-    @Override
-    public void publish(final String name, final List<PubSubChannelType> list, final JSONMessage message)
-    {
-        Objects.requireNonNull(message);
-
-        getPubSubDescriptorProvider().getPublishDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(list)).publish(message);
+        if (null != channel)
+        {
+            return channel.send(Objects.requireNonNull(message), timeout);
+        }
+        throw new IllegalArgumentException("MessageChannel " + name + " does not exist.");
     }
 
     @Override
@@ -283,22 +283,6 @@ public class ServerContextInstance implements IServerContext
         Objects.requireNonNull(handler);
 
         return getPubSubDescriptorProvider().getSubscribeDescriptor(Objects.requireNonNull(name)).addMessageReceivedHandler(handler);
-    }
-
-    @Override
-    public IMessageReceivedHandlerRegistration addMessageReceivedHandler(final String name, final PubSubChannelType type, final IMessageReceivedHandler handler)
-    {
-        Objects.requireNonNull(handler);
-
-        return getPubSubDescriptorProvider().getSubscribeDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(type)).addMessageReceivedHandler(handler);
-    }
-
-    @Override
-    public IMessageReceivedHandlerRegistration addMessageReceivedHandler(final String name, final List<PubSubChannelType> list, final IMessageReceivedHandler handler)
-    {
-        Objects.requireNonNull(handler);
-
-        return getPubSubDescriptorProvider().getSubscribeDescriptor(Objects.requireNonNull(name), Objects.requireNonNull(list)).addMessageReceivedHandler(handler);
     }
 
     @Override

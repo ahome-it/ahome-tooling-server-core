@@ -14,18 +14,27 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.support.spring;
+package com.ait.tooling.server.core.pubsub;
 
-import java.io.Closeable;
 import java.io.Serializable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadFactory;
 
-import com.ait.tooling.common.api.types.INamedType;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.converter.MessageConverter;
 
-public interface IExecutorServiceDescriptor extends INamedType, Closeable, Serializable
+public class JSONMessageConverter implements MessageConverter, Serializable
 {
-    public ThreadFactory getThreadFactory();
+    private static final long serialVersionUID = -3237899177437486650L;
 
-    public ExecutorService getExecutorService();
+    @Override
+    public Object fromMessage(Message<?> message, Class<?> type)
+    {
+        return null;
+    }
+
+    @Override
+    public Message<?> toMessage(Object payload, MessageHeaders header)
+    {
+        return null;
+    }
 }

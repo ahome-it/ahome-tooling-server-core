@@ -24,6 +24,6 @@ public class DefaultJmsTopicSubscribeDescriptor extends AbstractJmsSubscribeDesc
 
     public DefaultJmsTopicSubscribeDescriptor(final String name)
     {
-        super(Objects.requireNonNull(name), PubSubChannelType.TOPIC);
+        super(Objects.requireNonNull(name));
     }
 }

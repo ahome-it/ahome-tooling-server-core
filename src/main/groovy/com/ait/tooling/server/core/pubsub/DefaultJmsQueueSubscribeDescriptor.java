@@ -24,6 +24,6 @@ public class DefaultJmsQueueSubscribeDescriptor extends AbstractJmsSubscribeDesc
 
     public DefaultJmsQueueSubscribeDescriptor(final String name)
     {
-        super(Objects.requireNonNull(name), PubSubChannelType.QUEUE);
+        super(Objects.requireNonNull(name));
     }
 }
