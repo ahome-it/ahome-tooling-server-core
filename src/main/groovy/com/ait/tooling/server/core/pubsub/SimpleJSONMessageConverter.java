@@ -31,7 +31,7 @@ import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.json.parser.JSONParser;
 import com.ait.tooling.json.parser.JSONParserException;
 
-public class JmsJSONMessageConverter extends SimpleMessageConverter implements Serializable
+public class SimpleJSONMessageConverter extends SimpleMessageConverter implements Serializable
 {
     private static final long serialVersionUID = -6570676625594626343L;
 

@@ -24,7 +24,6 @@
 						http://www.springframework.org/schema/integration
 						http://www.springframework.org/schema/integration/spring-integration.xsd">
 
-
 	<bean id="CoreBuildDescriptor" class="com.ait.tooling.server.core.support.spring.BuildDescriptor">
 		<constructor-arg value="@GRADLE_BUILD_PROJECT_TITLE@"/>
 		<property name="buildUser" value="@GRADLE_BUILD_USER@"/>
@@ -53,17 +52,15 @@
 		<constructor-arg value="${crypto.provider.pass}"/>
 		<constructor-arg value="${crypto.provider.salt}"/>
 	</bean>
-		
+
 	<int:publish-subscribe-channel id="CoreServerEvents"/>
-	
-	<bean id="CoreServerEventsDescriptor" class="com.ait.tooling.server.core.pubsub.CoreServerEventsDescriptor">
-		<constructor-arg value="CoreServerEvents"/>
+
+	<bean id="CoreEventsLoggingService" class="com.ait.tooling.server.core.pubsub.CoreEventsLoggingService">
+		<constructor-arg ref="CoreServerEvents"/>
 	</bean>
 
-	<bean id="PubSubDescriptorProvider" class="com.ait.tooling.server.core.pubsub.PubSubDescriptorProvider" destroy-method="close"/>
-
 	<context:component-scan base-package="com.ait.tooling.server.core.jmx"/>
-	
+
 	<import resource="classpath:/com/ait/tooling/json/server/config/JSONApplicationContext.xml"/>
 
 	<context:mbean-export/>

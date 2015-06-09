@@ -28,6 +28,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 
@@ -37,9 +38,6 @@ import com.ait.tooling.json.parser.JSONParser;
 import com.ait.tooling.json.parser.JSONParserException;
 import com.ait.tooling.json.schema.JSONSchema;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
-import com.ait.tooling.server.core.pubsub.IMessageReceivedHandler;
-import com.ait.tooling.server.core.pubsub.IMessageReceivedHandlerRegistration;
-import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 import com.ait.tooling.server.core.security.AuthorizationResult;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
@@ -246,11 +244,11 @@ public class ServerContextInstance implements IServerContext
     {
         return getBeanSafely(Objects.requireNonNull(name), MessageChannel.class);
     }
-
+    
     @Override
-    public IPubSubDescriptorProvider getPubSubDescriptorProvider()
+    public PublishSubscribeChannel getPublishSubscribeChannel(String name)
     {
-        return Objects.requireNonNull(getBeanSafely("PubSubDescriptorProvider", IPubSubDescriptorProvider.class), "PubSubDescriptorProvider is null, initialization error.");
+        return getBeanSafely(Objects.requireNonNull(name), PublishSubscribeChannel.class);
     }
 
     @Override
@@ -275,14 +273,6 @@ public class ServerContextInstance implements IServerContext
             return channel.send(Objects.requireNonNull(message), timeout);
         }
         throw new IllegalArgumentException("MessageChannel " + name + " does not exist.");
-    }
-
-    @Override
-    public IMessageReceivedHandlerRegistration addMessageReceivedHandler(final String name, final IMessageReceivedHandler handler)
-    {
-        Objects.requireNonNull(handler);
-
-        return getPubSubDescriptorProvider().getSubscribeDescriptor(Objects.requireNonNull(name)).addMessageReceivedHandler(handler);
     }
 
     @Override

@@ -26,6 +26,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 
@@ -34,9 +35,6 @@ import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.json.parser.JSONParserException;
 import com.ait.tooling.json.schema.JSONSchema;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
-import com.ait.tooling.server.core.pubsub.IMessageReceivedHandler;
-import com.ait.tooling.server.core.pubsub.IMessageReceivedHandlerRegistration;
-import com.ait.tooling.server.core.pubsub.IPubSubDescriptorProvider;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizer;
 import com.ait.tooling.server.core.security.ICryptoProvider;
@@ -68,14 +66,12 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serial
     public ICryptoProvider getCryptoProvider();
 
     public MessageChannel getMessageChannel(String name);
-
-    public IPubSubDescriptorProvider getPubSubDescriptorProvider();
+    
+    public PublishSubscribeChannel getPublishSubscribeChannel(String name);
 
     public <T> boolean publish(String name, Message<T> message);
 
     public <T> boolean publish(String name, Message<T> message, long timeout);
-
-    public IMessageReceivedHandlerRegistration addMessageReceivedHandler(String name, IMessageReceivedHandler handler);
 
     public Logger logger();
 

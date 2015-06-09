@@ -21,37 +21,50 @@ import java.io.Serializable;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.springframework.integration.channel.PublishSubscribeChannel;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHandler;
+import org.springframework.messaging.MessagingException;
 
+import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.server.core.logging.ICoreLoggingOperations;
 
-public class LoggingSubscribeListener implements IMessageReceivedHandler, ICoreLoggingOperations, Serializable
+public class CoreEventsLoggingService implements ICoreLoggingOperations, Serializable
 {
     private static final long serialVersionUID = 5154374919398530876L;
 
     private final Logger      m_logger         = Logger.getLogger(getClass());
 
-    public LoggingSubscribeListener()
+    public CoreEventsLoggingService(final PublishSubscribeChannel channel)
     {
-        m_logger.setLevel(Level.DEBUG);
-    }
-
-    @Override
-    public void onMessageReceived(final JSONMessage message)
-    {
-        if (null != message)
+        channel.subscribe(new MessageHandler()
         {
-            final Level level = getLoggingLevel();
-
-            /*
-             * Converting a JSONObject to a String MAY be an expensive operation if
-             * logging is not enabled at this level.
-             */
-
-            if ((null != level) && (LogManager.getRootLogger().isEnabledFor(level)))
+            @Override
+            public void handleMessage(final Message<?> message) throws MessagingException
             {
-                m_logger.log(level, message.toJSONString());
+                if (null != message)
+                {
+                    final Level level = getLoggingLevel();
+
+                    /*
+                     * Converting a JSONObject to a String MAY be an expensive operation if
+                     * logging is not enabled at this level.
+                     */
+
+                    if ((null != level) && (LogManager.getRootLogger().isEnabledFor(level)))
+                    {
+                        final Object payload = message.getPayload();
+
+                        if (payload instanceof JSONObject)
+                        {
+                            m_logger.log(level, payload.toString());
+                        }
+
+                    }
+                }
             }
-        }
+        });
+        m_logger.setLevel(Level.DEBUG);
     }
 
     @Override
