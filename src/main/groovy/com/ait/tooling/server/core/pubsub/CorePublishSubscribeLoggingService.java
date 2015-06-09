@@ -29,13 +29,13 @@ import org.springframework.messaging.MessagingException;
 import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.server.core.logging.ICoreLoggingOperations;
 
-public class CoreEventsLoggingService implements ICoreLoggingOperations, Serializable
+public class CorePublishSubscribeLoggingService implements ICoreLoggingOperations, Serializable
 {
     private static final long serialVersionUID = 5154374919398530876L;
 
     private final Logger      m_logger         = Logger.getLogger(getClass());
 
-    public CoreEventsLoggingService(final PublishSubscribeChannel channel)
+    public CorePublishSubscribeLoggingService(final PublishSubscribeChannel channel)
     {
         channel.subscribe(new MessageHandler()
         {
@@ -57,14 +57,13 @@ public class CoreEventsLoggingService implements ICoreLoggingOperations, Seriali
 
                         if (payload instanceof JSONObject)
                         {
-                            m_logger.log(level, payload.toString());
+                            m_logger.log(level, channel.getComponentName() + " " + payload.toString());
                         }
-
                     }
                 }
             }
         });
-        m_logger.setLevel(Level.DEBUG);
+        m_logger.setLevel(Level.INFO);
     }
 
     @Override
@@ -76,7 +75,7 @@ public class CoreEventsLoggingService implements ICoreLoggingOperations, Seriali
         {
             return level;
         }
-        m_logger.setLevel(Level.DEBUG);
+        m_logger.setLevel(Level.INFO);
 
         return m_logger.getLevel();
     }

@@ -31,6 +31,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.SubscribableChannel;
 
 import com.ait.tooling.json.JSONArray;
 import com.ait.tooling.json.JSONObject;
@@ -242,13 +243,31 @@ public class ServerContextInstance implements IServerContext
     @Override
     public MessageChannel getMessageChannel(final String name)
     {
-        return getBeanSafely(Objects.requireNonNull(name), MessageChannel.class);
+        final MessageChannel channel = getBeanSafely(Objects.requireNonNull(name), MessageChannel.class);
+
+        if (null != channel)
+        {
+            return channel;
+        }
+        return getPublishSubscribeChannel(name);
     }
-    
+
     @Override
     public PublishSubscribeChannel getPublishSubscribeChannel(String name)
     {
         return getBeanSafely(Objects.requireNonNull(name), PublishSubscribeChannel.class);
+    }
+
+    @Override
+    public SubscribableChannel getSubscribableChannel(String name)
+    {
+        final SubscribableChannel channel = getBeanSafely(Objects.requireNonNull(name), SubscribableChannel.class);
+
+        if (null != channel)
+        {
+            return channel;
+        }
+        return getPublishSubscribeChannel(name);
     }
 
     @Override

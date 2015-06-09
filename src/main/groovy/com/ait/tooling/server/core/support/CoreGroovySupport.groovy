@@ -16,6 +16,8 @@
 
 package com.ait.tooling.server.core.support
 
+import java.util.Objects;
+
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 
@@ -25,6 +27,7 @@ import org.springframework.core.env.Environment
 import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
+import org.springframework.messaging.SubscribableChannel;
 
 import com.ait.tooling.json.JSONArray
 import com.ait.tooling.json.JSONObject
@@ -135,11 +138,17 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     {
         getServerContext().getMessageChannel(Objects.requireNonNull(name))
     }
-    
+
     @Memoized
     public PublishSubscribeChannel getPublishSubscribeChannel(String name)
     {
         getServerContext().getPublishSubscribeChannel(Objects.requireNonNull(name))
+    }
+
+    @Override
+    public SubscribableChannel getSubscribableChannel(String name)
+    {
+        getServerContext().getSubscribableChannel(Objects.requireNonNull(name))
     }
 
     @Memoized
@@ -157,7 +166,7 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
 
         if (channel)
         {
-            channel.send(message)
+            return channel.send(message)
         }
         throw new IllegalArgumentException("MessageChannel ${name} does not exist.")
     }
@@ -171,7 +180,7 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
 
         if (channel)
         {
-            channel.send(message, timeout)
+            return channel.send(message, timeout)
         }
         throw new IllegalArgumentException("MessageChannel ${name} does not exist.")
     }

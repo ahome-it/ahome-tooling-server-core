@@ -29,6 +29,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.SubscribableChannel;
 
 import com.ait.tooling.json.JSONArray;
 import com.ait.tooling.json.JSONObject;
@@ -68,6 +69,8 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serial
     public MessageChannel getMessageChannel(String name);
     
     public PublishSubscribeChannel getPublishSubscribeChannel(String name);
+    
+    public SubscribableChannel getSubscribableChannel(String name);
 
     public <T> boolean publish(String name, Message<T> message);
 
