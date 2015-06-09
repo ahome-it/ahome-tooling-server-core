@@ -34,7 +34,7 @@ apply plugin: 'maven'
 
 sourceCompatibility = 1.7
 
-version = '1.0.77-SNAPSHOT'
+version = '1.0.78-SNAPSHOT'
 
 group = 'com.ahome-it'
 
@@ -195,7 +195,6 @@ def List<String> springCorePackages() {
         'spring-oxm',
         'spring-jms',
         'spring-web',
-        'spring-webmvc',
         'spring-websocket',
         'spring-test'
     ]

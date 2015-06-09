@@ -22,6 +22,8 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.integration.channel.PublishSubscribeChannel;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
@@ -29,6 +31,7 @@ import org.springframework.messaging.MessagingException;
 import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.server.core.logging.ICoreLoggingOperations;
 
+@ManagedResource(objectName = "com.ait.tooling.server.core.pubsub:name=CorePublishSubscribeLoggingService", description = "Manage Publish Subscribe Logging Operations.")
 public class CorePublishSubscribeLoggingService implements ICoreLoggingOperations, Serializable
 {
     private static final long serialVersionUID = 5154374919398530876L;
@@ -90,6 +93,7 @@ public class CorePublishSubscribeLoggingService implements ICoreLoggingOperation
     }
 
     @Override
+    @ManagedAttribute(description = "Get Log4j Level.")
     public String getLoggingLevelAsString()
     {
         final Level level = getLoggingLevel();
@@ -102,8 +106,9 @@ public class CorePublishSubscribeLoggingService implements ICoreLoggingOperation
     }
 
     @Override
-    public void setLoggingLevelAsString(String level)
+    @ManagedAttribute(description = "Set Log4j Level.")
+    public void setLoggingLevelAsString(final String level)
     {
-        setLoggingLevel(Level.toLevel(level));
+        setLoggingLevel(Level.toLevel(level, Level.INFO));
     }
 }
