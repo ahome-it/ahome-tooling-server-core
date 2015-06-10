@@ -55,9 +55,7 @@
 		<constructor-arg value="${crypto.provider.salt}"/>
 	</bean>
 
-	<task:executor id="CoreServerEventsExecutor"/>
-
-	<int:publish-subscribe-channel id="CoreServerEvents" task-executor="CoreServerEventsExecutor"/>
+	<int:publish-subscribe-channel id="CoreServerEvents"/>
 
 	<bean id="CoreServerEventsLoggingService" class="com.ait.tooling.server.core.pubsub.CorePublishSubscribeLoggingService">
 		<constructor-arg ref="CoreServerEvents"/>
