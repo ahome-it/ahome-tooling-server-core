@@ -55,7 +55,7 @@
 		<constructor-arg value="${crypto.provider.salt}"/>
 	</bean>
 
-	<task:executor id="CoreServerEventsExecutor" pool-size="2-16"/>
+	<task:executor id="CoreServerEventsExecutor"/>
 
 	<int:publish-subscribe-channel id="CoreServerEvents" task-executor="CoreServerEventsExecutor"/>
 
