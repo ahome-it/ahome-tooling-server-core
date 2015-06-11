@@ -152,6 +152,7 @@ dependencies {
     springIntegrationPackages().each { String name ->
         compile(group: 'org.springframework.integration', name: name, version: '4.1.4.RELEASE')
     }
+    compile(group: 'org.springframework.session', name: 'spring-session', version: '1.0.1.RELEASE')
     compile(group: 'org.springframework.integration', name: 'spring-integration-flow', version: '1.0.0.RELEASE')
     compile(group: 'org.springframework.integration', name: 'spring-integration-java-dsl', version: '1.0.1.RELEASE')
     compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.3', classifier: 'indy')
