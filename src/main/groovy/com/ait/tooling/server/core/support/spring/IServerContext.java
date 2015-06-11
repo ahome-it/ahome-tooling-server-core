@@ -39,6 +39,8 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizer;
 import com.ait.tooling.server.core.security.ICryptoProvider;
+import com.ait.tooling.server.core.security.session.IServerSessionRepository;
+import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider;
 
 public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serializable
 {
@@ -57,6 +59,10 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serial
     public IAuthorizationProvider getAuthorizationProvider();
 
     public Iterable<String> getPrincipalsKeys();
+    
+    public IServerSessionRepositoryProvider getServerSessionRepositoryProvider();
+    
+    public IServerSessionRepository getServerSessionRepository(String domain_name);
 
     public ICoreServerManager getCoreServerManager();
 

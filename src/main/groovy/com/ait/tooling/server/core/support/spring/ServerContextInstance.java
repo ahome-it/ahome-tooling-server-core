@@ -43,6 +43,8 @@ import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 import com.ait.tooling.server.core.security.AuthorizationResult;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.ICryptoProvider;
+import com.ait.tooling.server.core.security.session.IServerSessionRepository;
+import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider;
 
 public class ServerContextInstance implements IServerContext
 {
@@ -212,6 +214,18 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
+    public IServerSessionRepositoryProvider getServerSessionRepositoryProvider()
+    {
+        return Objects.requireNonNull(getBeanSafely("ServerSessionRepositoryProvider", IServerSessionRepositoryProvider.class), "ServerSessionRepositoryProvider is null, initialization error.");
+    }
+
+    @Override
+    public IServerSessionRepository getServerSessionRepository(final String domain_name)
+    {
+        return getServerSessionRepositoryProvider().getServerSessionRepository(Objects.requireNonNull(domain_name));
+    }
+
+    @Override
     public final ICoreServerManager getCoreServerManager()
     {
         return Objects.requireNonNull(getBeanSafely("CoreServerManager", ICoreServerManager.class), "CoreServerManager is null, initialization error.");
@@ -235,9 +249,9 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public final AuthorizationResult isAuthorized(final Object target, final JSONObject principals)
+    public final AuthorizationResult isAuthorized(final Object target, final Iterable<String> roles)
     {
-        return getAuthorizationProvider().isAuthorized(target, principals);
+        return getAuthorizationProvider().isAuthorized(target, roles);
     }
 
     @Override

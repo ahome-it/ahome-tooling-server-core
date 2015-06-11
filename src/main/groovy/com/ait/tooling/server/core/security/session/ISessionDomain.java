@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.session;
+package com.ait.tooling.server.core.security.session;
 
 import java.io.Serializable;
-import java.util.List;
 
-import org.springframework.session.ExpiringSession;
+import com.ait.tooling.common.api.types.INamed;
+import com.ait.tooling.json.JSONObject;
 
-public interface IServerSession extends ExpiringSession, Serializable
+public interface ISessionDomain extends INamed, Serializable
 {
-    public String getUserId();
+    public boolean isActive();
 
-    public String getStatus();
+    public JSONObject getProperties();
 
-    public String getDomainName();
+    public Iterable<String> getRolesForUser(String user);
 
-    public List<String> getRoles();
+    public Iterable<String> getRolesForSession(IServerSession session);
 }

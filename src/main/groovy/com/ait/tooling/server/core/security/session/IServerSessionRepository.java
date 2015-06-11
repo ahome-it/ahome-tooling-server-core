@@ -14,17 +14,31 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.session;
+package com.ait.tooling.server.core.security.session;
 
-import java.io.Closeable;
 import java.io.Serializable;
-import java.util.List;
 
-public interface IServerSessionRepositoryProvider extends Serializable, Closeable
+import org.springframework.session.SessionRepository;
+
+import com.ait.tooling.json.JSONObject;
+
+public interface IServerSessionRepository extends SessionRepository<IServerSession>, Serializable
 {
+    public static final double MAX_RATE_LIMIT = 2000.0;
+
+    public static final double MIN_RATE_LIMIT = 0.1000;
+
     public boolean isActive();
 
-    public List<ISessionDomain> getServerSessionRepositoryDomains();
+    public JSONObject getProperties();
 
-    public IServerSessionRepository getServerSessionRepository(String domain);
+    public ISessionDomain getDomain();
+
+    public void setRateLimit(double limit);
+
+    public void touch(IServerSession session);
+
+    public IServerSession createSession(JSONObject keys);
+
+    public void cleanExpiredSessions();
 }

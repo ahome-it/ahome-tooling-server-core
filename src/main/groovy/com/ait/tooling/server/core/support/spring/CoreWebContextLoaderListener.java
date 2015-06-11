@@ -25,8 +25,6 @@ import org.apache.log4j.Logger;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
 
-import com.ait.tooling.common.api.java.util.StringOps;
-
 public class CoreWebContextLoaderListener extends ContextLoaderListener implements Serializable
 {
     private static final long   serialVersionUID = -4326074193461352464L;
@@ -63,16 +61,5 @@ public class CoreWebContextLoaderListener extends ContextLoaderListener implemen
         ServerContextInstance.getServerContextInstance().setApplicationContext(context);
 
         logger.info("CoreWebContextLoaderListener.customizeContext() COMPLETE");
-
-        int i = 0;
-
-        for (String location : context.getConfigLocations())
-        {
-            final String locn = StringOps.toTrimOrNull(location);
-
-            logger.info("CoreWebContextLoaderListener.customizeContext() LOCATION [ " + i + " , " + locn + " ]");
-
-            i++;
-        }
     }
 }

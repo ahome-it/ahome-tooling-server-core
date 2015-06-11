@@ -74,7 +74,7 @@ public abstract class HTTPServletBase extends HttpServlet implements IHTTPConsta
     @Override
     public void service(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
     {
-        MDC.put("user", "");
+        MDC.put("session", "");
 
         try
         {
@@ -90,7 +90,7 @@ public abstract class HTTPServletBase extends HttpServlet implements IHTTPConsta
         }
         finally
         {
-            MDC.put("user", "");
+            MDC.put("session", "");
         }
     }
 
@@ -164,8 +164,8 @@ public abstract class HTTPServletBase extends HttpServlet implements IHTTPConsta
         return principals;
     }
 
-    protected final AuthorizationResult isAuthorized(final Object target, final JSONObject principals)
+    protected final AuthorizationResult isAuthorized(final Object target, final Iterable<String> roles)
     {
-        return getServerContext().isAuthorized(target, principals);
+        return getServerContext().isAuthorized(target, roles);
     }
 }

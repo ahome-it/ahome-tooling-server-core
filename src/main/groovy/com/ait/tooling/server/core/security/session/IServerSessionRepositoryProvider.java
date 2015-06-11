@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.session;
+package com.ait.tooling.server.core.security.session;
 
+import java.io.Closeable;
 import java.io.Serializable;
+import java.util.List;
 
-import com.ait.tooling.common.api.types.INamed;
-
-public interface ISessionDomain extends INamed, Serializable
+public interface IServerSessionRepositoryProvider extends Serializable, Closeable
 {
     public boolean isActive();
+    
+    public List<String> getServerSessionRepositoryDomainNames();
+
+    public List<ISessionDomain> getServerSessionRepositoryDomains();
+
+    public IServerSessionRepository getServerSessionRepository(String domain_name);
+
+    public void cleanExpiredSessions();
 }

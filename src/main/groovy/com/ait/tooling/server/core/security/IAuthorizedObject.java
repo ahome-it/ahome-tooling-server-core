@@ -16,9 +16,7 @@
 
 package com.ait.tooling.server.core.security;
 
-import com.ait.tooling.json.JSONObject;
-
 public interface IAuthorizedObject
 {
-    public AuthorizationResult isAuthorized(JSONObject principals);
+    public AuthorizationResult isAuthorized(Iterable<String> roles);
 }

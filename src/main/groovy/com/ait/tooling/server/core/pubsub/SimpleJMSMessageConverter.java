@@ -31,9 +31,13 @@ import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.json.parser.JSONParser;
 import com.ait.tooling.json.parser.JSONParserException;
 
-public class SimpleJSONMessageConverter extends SimpleMessageConverter implements Serializable
+public class SimpleJMSMessageConverter extends SimpleMessageConverter implements Serializable
 {
     private static final long serialVersionUID = -6570676625594626343L;
+
+    public SimpleJMSMessageConverter()
+    {
+    }
 
     @Override
     public Message toMessage(final Object object, final Session session) throws JMSException, MessageConversionException
@@ -71,7 +75,7 @@ public class SimpleJSONMessageConverter extends SimpleMessageConverter implement
             }
             catch (JSONParserException e)
             {
-                throw new MessageConversionException("");
+                throw new MessageConversionException("Error parsing JSON", e);
             }
         }
         return super.fromMessage(message);

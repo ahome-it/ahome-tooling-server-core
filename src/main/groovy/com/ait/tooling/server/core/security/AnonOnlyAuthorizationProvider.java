@@ -18,8 +18,6 @@ package com.ait.tooling.server.core.security;
 
 import java.io.IOException;
 
-import com.ait.tooling.json.JSONObject;
-
 public class AnonOnlyAuthorizationProvider implements IAuthorizationProvider
 {
     private static final long serialVersionUID = -1550272083884800529L;
@@ -30,19 +28,19 @@ public class AnonOnlyAuthorizationProvider implements IAuthorizationProvider
     }
 
     @Override
-    public AuthorizationResult isAuthorized(final Object target, final JSONObject principals)
+    public AuthorizationResult isAuthorized(final Object target, final Iterable<String> roles)
     {
         if (null == target)
         {
             return new AuthorizationResult(false, false, E_SERVER_ERROR, "null target");
         }
-        if (null == principals)
+        if (null == roles)
         {
-            return new AuthorizationResult(false, false, E_SERVER_ERROR, "null principals");
+            return new AuthorizationResult(false, false, E_SERVER_ERROR, "null roles");
         }
         if (target instanceof IAuthorizedObject)
         {
-            return ((IAuthorizedObject) target).isAuthorized(principals);
+            return ((IAuthorizedObject) target).isAuthorized(roles);
         }
         final Authorized authorized = target.getClass().getAnnotation(Authorized.class);
 

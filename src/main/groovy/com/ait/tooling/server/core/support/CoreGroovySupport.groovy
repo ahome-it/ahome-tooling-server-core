@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
  *
@@ -16,18 +17,16 @@
 
 package com.ait.tooling.server.core.support
 
-import java.util.Objects;
-
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 
 import org.apache.log4j.Logger
 import org.springframework.context.ApplicationContext
 import org.springframework.core.env.Environment
-import org.springframework.integration.channel.PublishSubscribeChannel;
+import org.springframework.integration.channel.PublishSubscribeChannel
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
-import org.springframework.messaging.SubscribableChannel;
+import org.springframework.messaging.SubscribableChannel
 
 import com.ait.tooling.json.JSONArray
 import com.ait.tooling.json.JSONObject
@@ -37,6 +36,8 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.security.ICryptoProvider
+import com.ait.tooling.server.core.security.session.IServerSessionRepository
+import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IPropertiesResolver
 import com.ait.tooling.server.core.support.spring.IServerContext
@@ -126,11 +127,23 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     {
         getServerContext().getAuthorizationProvider()
     }
+    
+    @Memoized
+    public IServerSessionRepositoryProvider getServerSessionRepositoryProvider()
+    {
+        getServerContext().getServerSessionRepositoryProvider()
+    }
+    
+    @Memoized
+    public IServerSessionRepository getServerSessionRepository(String domain_name)
+    {
+        getServerSessionRepositoryProvider().getServerSessionRepository(Objects.requireNonNull(domain_name));
+    }
 
     @Override
-    public AuthorizationResult isAuthorized(Object target, JSONObject principals)
+    public AuthorizationResult isAuthorized(Object target, Iterable<String> roles)
     {
-        getServerContext().isAuthorized(target, principals)
+        getServerContext().isAuthorized(target, roles)
     }
 
     @Memoized

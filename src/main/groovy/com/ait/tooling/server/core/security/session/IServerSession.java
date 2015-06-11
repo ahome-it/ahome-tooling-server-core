@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.session;
+package com.ait.tooling.server.core.security.session;
 
 import java.io.Serializable;
 
-import org.springframework.session.SessionRepository;
+import org.springframework.session.ExpiringSession;
 
-import com.ait.tooling.json.JSONObject;
-
-public interface IServerSessionRepository extends SessionRepository<IServerSession>, Serializable
+public interface IServerSession extends ExpiringSession, Serializable
 {
-    public boolean isActive();
-    
-    public void touch(IServerSession session);
+    public static final String SERVER_SESSION_KEY = IServerSession.class.getSimpleName().toUpperCase() + "_KEY";
 
-    public IServerSession createSession(JSONObject keys);
+    public String getUserId();
 
-    public ISessionDomain getDomain();
+    public String getStatus();
+
+    public String getDomainName();
+
+    public Iterable<String> getRoles();
+
+    public IServerSession getProxyForSession();
 }

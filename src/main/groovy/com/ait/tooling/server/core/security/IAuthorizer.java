@@ -18,8 +18,6 @@ package com.ait.tooling.server.core.security;
 
 import java.io.Serializable;
 
-import com.ait.tooling.json.JSONObject;
-
 public interface IAuthorizer extends Serializable
 {
     public static final int E_IS_VALIDATED = 0;
@@ -34,5 +32,5 @@ public interface IAuthorizer extends Serializable
 
     public static final int E_SERVER_ERROR = 500;
 
-    public AuthorizationResult isAuthorized(Object target, JSONObject principals);
+    public AuthorizationResult isAuthorized(Object target, Iterable<String> roles);
 }
