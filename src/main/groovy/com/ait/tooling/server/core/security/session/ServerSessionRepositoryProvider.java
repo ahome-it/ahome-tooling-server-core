@@ -19,7 +19,6 @@ package com.ait.tooling.server.core.security.session;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -52,33 +51,24 @@ public class ServerSessionRepositoryProvider extends Activatable implements ISer
     {
         if (null != repository)
         {
-            final ISessionDomain domain = repository.getDomain();
+            final String domain = StringOps.toTrimOrNull(repository.getDomain());
 
             if (null != domain)
             {
-                final String name = StringOps.toTrimOrNull(domain.getName());
-
-                if (null != name)
+                if (null == m_repositories.get(domain))
                 {
-                    if (null == m_repositories.get(name))
-                    {
-                        m_repositories.put(name, repository);
+                    m_repositories.put(domain, repository);
 
-                        logger.info("ServerSessionRepositoryProvider.addSessionRepository(" + name + ") Registered");
-                    }
-                    else
-                    {
-                        logger.error("ServerSessionRepositoryProvider.addSessionRepository(" + name + ") Duplicate ignored");
-                    }
+                    logger.info("ServerSessionRepositoryProvider.addSessionRepository(" + domain + ") Registered");
                 }
                 else
                 {
-                    logger.error("ServerSessionRepositoryProvider.addSessionRepository() null domain name");
+                    logger.error("ServerSessionRepositoryProvider.addSessionRepository(" + domain + ") Duplicate ignored");
                 }
             }
             else
             {
-                logger.error("ServerSessionRepositoryProvider.addSessionRepository() null domain");
+                logger.error("ServerSessionRepositoryProvider.addSessionRepository() null domain name");
             }
         }
         else
@@ -110,76 +100,15 @@ public class ServerSessionRepositoryProvider extends Activatable implements ISer
 
     @Override
     @ManagedOperation(description = "Get Domain Names.")
-    public List<String> getServerSessionRepositoryDomainNames()
+    public List<String> getServerSessionRepositoryDomains()
     {
-        final HashSet<String> hset = new HashSet<String>();
-
-        for (IServerSessionRepository repository : m_repositories.values())
-        {
-            if (null != repository)
-            {
-                final ISessionDomain domain = repository.getDomain();
-
-                if (null != domain)
-                {
-                    final String name = domain.getName();
-
-                    if (null != name)
-                    {
-                        hset.add(name);
-                    }
-                }
-            }
-        }
-        return new ArrayList<String>(hset);
+        return Collections.unmodifiableList(new ArrayList<String>(m_repositories.keySet()));
     }
 
     @Override
-    public List<ISessionDomain> getServerSessionRepositoryDomains()
+    public IServerSessionRepository getServerSessionRepository(final String domain)
     {
-        final ArrayList<ISessionDomain> list = new ArrayList<ISessionDomain>();
-
-        for (IServerSessionRepository repository : m_repositories.values())
-        {
-            if (null != repository)
-            {
-                final ISessionDomain domain = repository.getDomain();
-
-                if (null != domain)
-                {
-                    list.add(domain);
-                }
-            }
-        }
-        return Collections.unmodifiableList(list);
-    }
-
-    @Override
-    public IServerSessionRepository getServerSessionRepository(final String domain_name)
-    {
-        final IServerSessionRepository repository = m_repositories.get(StringOps.requireTrimOrNull(domain_name));
-
-        if (null != repository)
-        {
-            final ISessionDomain domain = repository.getDomain();
-
-            if (null != domain)
-            {
-                if (domain_name.equals(domain.getName()))
-                {
-                    return repository;
-                }
-                else
-                {
-                    logger.error("ServerSessionRepositoryProvider.getServerSessionRepository(" + domain_name + ") does not match " + domain.getName());
-                }
-            }
-            else
-            {
-                logger.error("ServerSessionRepositoryProvider.getServerSessionRepository(" + domain_name + ") null domain");
-            }
-        }
-        return null;
+        return m_repositories.get(StringOps.requireTrimOrNull(domain));
     }
 
     @Override

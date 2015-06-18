@@ -31,6 +31,6 @@ public interface IServerSession extends ExpiringSession, Serializable
     public String getDomainName();
 
     public Iterable<String> getRoles();
-
+    
     public IServerSession getProxyForSession();
 }

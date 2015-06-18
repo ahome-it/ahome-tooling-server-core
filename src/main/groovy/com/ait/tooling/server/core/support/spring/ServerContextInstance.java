@@ -31,6 +31,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.PollableChannel;
 import org.springframework.messaging.SubscribableChannel;
 
 import com.ait.tooling.json.JSONArray;
@@ -257,23 +258,29 @@ public class ServerContextInstance implements IServerContext
     @Override
     public MessageChannel getMessageChannel(final String name)
     {
-        final MessageChannel channel = getBeanSafely(Objects.requireNonNull(name), MessageChannel.class);
+        MessageChannel channel = getBeanSafely(Objects.requireNonNull(name), MessageChannel.class);
 
         if (null != channel)
         {
             return channel;
         }
-        return getPublishSubscribeChannel(name);
+        channel = getPublishSubscribeChannel(name);
+
+        if (null != channel)
+        {
+            return channel;
+        }
+        return getPollableChannel(name);
     }
 
     @Override
-    public PublishSubscribeChannel getPublishSubscribeChannel(String name)
+    public PublishSubscribeChannel getPublishSubscribeChannel(final String name)
     {
         return getBeanSafely(Objects.requireNonNull(name), PublishSubscribeChannel.class);
     }
 
     @Override
-    public SubscribableChannel getSubscribableChannel(String name)
+    public SubscribableChannel getSubscribableChannel(final String name)
     {
         final SubscribableChannel channel = getBeanSafely(Objects.requireNonNull(name), SubscribableChannel.class);
 
@@ -282,6 +289,12 @@ public class ServerContextInstance implements IServerContext
             return channel;
         }
         return getPublishSubscribeChannel(name);
+    }
+
+    @Override
+    public PollableChannel getPollableChannel(final String name)
+    {
+        return getBeanSafely(Objects.requireNonNull(name), PollableChannel.class);
     }
 
     @Override

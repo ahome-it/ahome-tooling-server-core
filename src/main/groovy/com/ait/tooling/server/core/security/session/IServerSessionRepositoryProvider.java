@@ -23,12 +23,10 @@ import java.util.List;
 public interface IServerSessionRepositoryProvider extends Serializable, Closeable
 {
     public boolean isActive();
-    
-    public List<String> getServerSessionRepositoryDomainNames();
 
-    public List<ISessionDomain> getServerSessionRepositoryDomains();
+    public List<String> getServerSessionRepositoryDomains();
 
-    public IServerSessionRepository getServerSessionRepository(String domain_name);
+    public IServerSessionRepository getServerSessionRepository(String domain);
 
     public void cleanExpiredSessions();
 }

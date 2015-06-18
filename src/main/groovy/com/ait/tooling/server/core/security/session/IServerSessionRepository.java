@@ -28,11 +28,13 @@ public interface IServerSessionRepository extends SessionRepository<IServerSessi
 
     public static final double MIN_RATE_LIMIT = 0.1000;
 
+    public String getDomain();
+
     public boolean isActive();
 
     public JSONObject getProperties();
 
-    public ISessionDomain getDomain();
+    public Iterable<String> getRolesForUser(String user);
 
     public void setRateLimit(double limit);
 

@@ -29,6 +29,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.PollableChannel;
 import org.springframework.messaging.SubscribableChannel;
 
 import com.ait.tooling.json.JSONArray;
@@ -77,6 +78,8 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serial
     public PublishSubscribeChannel getPublishSubscribeChannel(String name);
     
     public SubscribableChannel getSubscribableChannel(String name);
+    
+    public PollableChannel getPollableChannel(String name);
 
     public <T> boolean publish(String name, Message<T> message);
 

@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
  *
@@ -26,6 +25,7 @@ import org.springframework.core.env.Environment
 import org.springframework.integration.channel.PublishSubscribeChannel
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
+import org.springframework.messaging.PollableChannel
 import org.springframework.messaging.SubscribableChannel
 
 import com.ait.tooling.json.JSONArray
@@ -127,13 +127,13 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     {
         getServerContext().getAuthorizationProvider()
     }
-    
+
     @Memoized
     public IServerSessionRepositoryProvider getServerSessionRepositoryProvider()
     {
         getServerContext().getServerSessionRepositoryProvider()
     }
-    
+
     @Memoized
     public IServerSessionRepository getServerSessionRepository(String domain_name)
     {
@@ -144,6 +144,12 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     public AuthorizationResult isAuthorized(Object target, Iterable<String> roles)
     {
         getServerContext().isAuthorized(target, roles)
+    }
+
+    @Memoized
+    public ICryptoProvider getCryptoProvider()
+    {
+        getServerContext().getCryptoProvider()
     }
 
     @Memoized
@@ -158,16 +164,16 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
         getServerContext().getPublishSubscribeChannel(Objects.requireNonNull(name))
     }
 
-    @Override
+    @Memoized
     public SubscribableChannel getSubscribableChannel(String name)
     {
         getServerContext().getSubscribableChannel(Objects.requireNonNull(name))
     }
 
     @Memoized
-    public ICryptoProvider getCryptoProvider()
+    public PollableChannel getPollableChannel(String name)
     {
-        getServerContext().getCryptoProvider()
+        getServerContext().getPollableChannel(Objects.requireNonNull(name))
     }
 
     @Override
