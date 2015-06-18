@@ -57,8 +57,6 @@
 
 	<bean id="ServerSessionRepositoryProvider" class="com.ait.tooling.server.core.security.session.ServerSessionRepositoryProvider" destroy-method="close"/>
 
-	<bean id="SimpleJMSMessageConverter" class="com.ait.tooling.server.core.pubsub.SimpleJMSMessageConverter"/>
-
 	<int:publish-subscribe-channel id="CoreServerEvents"/>
 
 	<bean id="CoreServerEventsLoggingService" class="com.ait.tooling.server.core.pubsub.CorePublishSubscribeLoggingService">
