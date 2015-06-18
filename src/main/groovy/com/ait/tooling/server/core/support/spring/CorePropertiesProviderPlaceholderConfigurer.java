@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.security;
+package com.ait.tooling.server.core.support.spring;
 
-import java.io.Closeable;
 import java.io.Serializable;
 
-import com.ait.tooling.common.api.hash.IHasher;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
-public interface ICryptoProvider extends IStringSigningProvider, IStringCryptoProvider, IBCryptHashProvider, IHasher, Closeable, Serializable
+public class CorePropertiesProviderPlaceholderConfigurer extends PropertySourcesPlaceholderConfigurer implements Serializable
 {
+    private static final long serialVersionUID = -6733043232569981085L;
+
+    public CorePropertiesProviderPlaceholderConfigurer()
+    {
+    }
 }

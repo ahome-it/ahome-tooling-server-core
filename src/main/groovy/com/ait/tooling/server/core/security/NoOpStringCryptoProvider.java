@@ -16,11 +16,19 @@
 
 package com.ait.tooling.server.core.security;
 
-import java.io.Closeable;
-import java.io.Serializable;
-
-import com.ait.tooling.common.api.hash.IHasher;
-
-public interface ICryptoProvider extends IStringSigningProvider, IStringCryptoProvider, IBCryptHashProvider, IHasher, Closeable, Serializable
+public final class NoOpStringCryptoProvider implements IStringCryptoProvider
 {
+    private static final long serialVersionUID = 3716150557966785317L;
+
+    @Override
+    public final String encrypt(final String text)
+    {
+        return text;
+    }
+
+    @Override
+    public final String decrypt(final String text)
+    {
+        return text;
+    }
 }

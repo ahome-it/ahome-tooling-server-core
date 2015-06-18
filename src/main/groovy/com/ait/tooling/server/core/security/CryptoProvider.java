@@ -21,6 +21,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
 import org.apache.commons.codec.binary.Hex;
 import org.apache.log4j.Logger;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -36,11 +39,15 @@ public final class CryptoProvider implements ICryptoProvider
 
     private static final Logger         logger           = Logger.getLogger(CryptoProvider.class);
 
+    private static final String         HMAC_ALGORITHM   = "HmacSHA256";
+
     private final TextEncryptor         m_pcrypt;
 
     private final BCryptPasswordEncoder m_bcrypt;
 
     private final Hasher                m_hasher;
+
+    private final SecretKeySpec         m_secret;
 
     private CryptoProvider(final String pass, final String salt)
     {
@@ -49,30 +56,71 @@ public final class CryptoProvider implements ICryptoProvider
         m_bcrypt = new BCryptPasswordEncoder();
 
         m_hasher = new Hasher(this);
+
+        try
+        {
+            m_secret = new SecretKeySpec(pass.getBytes(IHTTPConstants.CHARSET_UTF_8), HMAC_ALGORITHM);
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public final synchronized String encodeBCrypt(final String text)
+    public final synchronized String makeSignature(final String text)
+    {
+        return hmac(Objects.requireNonNull(text));
+    }
+
+    @Override
+    public final synchronized boolean testSignature(final String text, final String value)
+    {
+        Objects.requireNonNull(text);
+
+        return value.equals(hmac(text));
+    }
+
+    private final String hmac(final String text)
+    {
+        try
+        {
+            final Mac hmac = Mac.getInstance(HMAC_ALGORITHM);
+
+            hmac.init(m_secret);
+
+            return Hex.encodeHexString(hmac.doFinal(text.getBytes(IHTTPConstants.CHARSET_UTF_8)));
+        }
+        catch (Exception e)
+        {
+            logger.error("hmac error", e);
+
+            return null;
+        }
+    }
+
+    @Override
+    public final synchronized String makeBCrypt(final String text)
     {
         return m_bcrypt.encode(Objects.requireNonNull(text));
     }
 
     @Override
-    public final synchronized String encrypt(final String text)
+    public final String encrypt(final String text)
     {
         return m_pcrypt.encrypt(Objects.requireNonNull(text));
     }
 
     @Override
-    public final synchronized String decrypt(final String text)
+    public final String decrypt(final String text)
     {
         return m_pcrypt.decrypt(Objects.requireNonNull(text));
     }
 
     @Override
-    public final synchronized boolean matchesBCrypt(final String text, final String encoded)
+    public final synchronized boolean testBCrypt(final String text, final String value)
     {
-        return m_bcrypt.matches(Objects.requireNonNull(text), Objects.requireNonNull(encoded));
+        return m_bcrypt.matches(Objects.requireNonNull(text), Objects.requireNonNull(value));
     }
 
     @Override

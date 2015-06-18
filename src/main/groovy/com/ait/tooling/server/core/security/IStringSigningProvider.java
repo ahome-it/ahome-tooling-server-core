@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.support.spring;
+package com.ait.tooling.server.core.security;
 
 import java.io.Serializable;
 
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-
-public class PropertiesProvider extends PropertySourcesPlaceholderConfigurer implements Serializable
+public interface IStringSigningProvider extends Serializable
 {
-    private static final long serialVersionUID = -6733043232569981085L;
+    public String makeSignature(String text);
 
-    public PropertiesProvider()
-    {
-    }
+    public boolean testSignature(String text, String value);
 }
