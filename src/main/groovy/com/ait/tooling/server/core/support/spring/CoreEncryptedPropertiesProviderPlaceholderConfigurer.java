@@ -16,48 +16,80 @@
 
 package com.ait.tooling.server.core.support.spring;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.Objects;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.springframework.util.DefaultPropertiesPersister;
+import org.springframework.util.PropertiesPersister;
 
 import com.ait.tooling.server.core.security.IStringCryptoProvider;
 
 public final class CoreEncryptedPropertiesProviderPlaceholderConfigurer extends CorePropertiesProviderPlaceholderConfigurer
 {
-    private static final long           serialVersionUID = 3571385011409361222L;
-
-    private static final Logger         logger           = Logger.getLogger(CoreEncryptedPropertiesProviderPlaceholderConfigurer.class);
-
-    private final IStringCryptoProvider m_crypto;
+    private static final long serialVersionUID = 3571385011409361222L;
 
     public CoreEncryptedPropertiesProviderPlaceholderConfigurer(final IStringCryptoProvider crypto)
     {
-        m_crypto = Objects.requireNonNull(crypto);
+        setPropertiesPersister(new CoreEncryptionPropertiesPersister(Objects.requireNonNull(crypto)));
     }
 
-    @Override
-    protected String convertProperty(final String name, final String value)
+    private static final class CoreEncryptionPropertiesPersister extends DefaultPropertiesPersister implements PropertiesPersister
     {
-        logger.info("convertProperty(name:" + name + ",value:" + value + ")");
+        private static final Logger         logger = Logger.getLogger(CoreEncryptionPropertiesPersister.class);
 
-        return convertPropertyValue(value);
-    }
+        private final IStringCryptoProvider m_crypto;
 
-    @Override
-    protected String convertPropertyValue(final String value)
-    {
-        final String found = super.convertPropertyValue(value);
-
-        if (null == found)
+        public CoreEncryptionPropertiesPersister(final IStringCryptoProvider crypto)
         {
-            return null;
+            m_crypto = Objects.requireNonNull(crypto);
         }
-        logger.info("convertProperty(found:" + found + ",value:" + value + ")");
 
-        final String crypt = m_crypto.decrypt(found);
+        @Override
+        public void load(Properties props, InputStream is) throws IOException
+        {
+            super.load(props, is);
+        }
 
-        logger.info("convertProperty(crypt:" + crypt + ",value:" + value + ")");
+        @Override
+        public void load(Properties props, Reader reader) throws IOException
+        {
+            super.load(props, reader);
+        }
 
-        return crypt;
+        @Override
+        public void store(Properties props, OutputStream os, String header) throws IOException
+        {
+            super.store(props, os, header);
+        }
+
+        @Override
+        public void store(Properties props, Writer writer, String header) throws IOException
+        {
+            super.store(props, writer, header);
+        }
+
+        @Override
+        public void loadFromXml(Properties props, InputStream is) throws IOException
+        {
+            super.loadFromXml(props, is);
+        }
+
+        @Override
+        public void storeToXml(Properties props, OutputStream os, String header) throws IOException
+        {
+            super.storeToXml(props, os, header);
+        }
+
+        @Override
+        public void storeToXml(Properties props, OutputStream os, String header, String encoding) throws IOException
+        {
+            super.storeToXml(props, os, header, encoding);
+        }
     }
 }
