@@ -16,14 +16,13 @@
 
 package com.ait.tooling.server.core.security;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.Closeable;
+import java.io.Serializable;
+import java.util.List;
 
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface AuthorizationRoles
+public interface ISignatoryProvider extends Serializable, Closeable
 {
-    String[] value() default IAuthorizationConstants.USER;
+    public List<String> getSignatoryNames();
+
+    public ISignatory getSignatory(String name);
 }

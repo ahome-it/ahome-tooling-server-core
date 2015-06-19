@@ -16,9 +16,9 @@
 
 package com.ait.tooling.server.core.security;
 
-public final class CryptoStringCommandLine
+public final class AESCryptoStringCommandLine
 {
-    private CryptoStringCommandLine(final String[] args)
+    private AESCryptoStringCommandLine(final String[] args)
     {
         if (args.length != 4)
         {
@@ -49,6 +49,6 @@ public final class CryptoStringCommandLine
 
     public static final void main(final String[] args)
     {
-        new CryptoStringCommandLine(args);
+        new AESCryptoStringCommandLine(args);
     }
 }

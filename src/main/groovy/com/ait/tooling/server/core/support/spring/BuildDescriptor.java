@@ -45,8 +45,6 @@ public final class BuildDescriptor implements IBuildDescriptor
 
     private String              m_build_git_commit_message = UNKNOWN;
 
-    private String              m_build_git_repo_url       = UNKNOWN;
-
     protected static final String doValidatePropValue(final String valu)
     {
         if (null == StringOps.toTrimOrNull(valu))
@@ -157,16 +155,6 @@ public final class BuildDescriptor implements IBuildDescriptor
     public void setBuildGITCommitMessage(final String value)
     {
         m_build_git_commit_message = doValidatePropValue(value);
-    }
-
-    public String getbuildGITRepoURL()
-    {
-        return m_build_git_repo_url;
-    }
-
-    public void setbuildGITRepoURL(final String value)
-    {
-        m_build_git_repo_url = doValidatePropValue(value);
     }
 
     @Override

@@ -19,8 +19,6 @@ package com.ait.tooling.server.core.security;
 import java.io.Closeable;
 import java.io.Serializable;
 
-import com.ait.tooling.common.api.hash.IHasher;
-
-public interface ICryptoProvider extends IStringSigningProvider, IStringCryptoProvider, IBCryptHashProvider, IHasher, Closeable, Serializable
+public interface ICryptoProvider extends IStringSigningProvider, IStringCryptoProvider, IBCryptHashProvider, ISHA512HashProvider, Closeable, Serializable
 {
 }

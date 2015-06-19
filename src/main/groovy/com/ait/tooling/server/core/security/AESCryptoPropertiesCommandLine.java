@@ -21,9 +21,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public final class CryptoPropertiesCommandLine
+public final class AESCryptoPropertiesCommandLine
 {
-    private CryptoPropertiesCommandLine(final String[] args)
+    private AESCryptoPropertiesCommandLine(final String[] args)
     {
         if (args.length != 4)
         {
@@ -97,6 +97,6 @@ public final class CryptoPropertiesCommandLine
 
     public static final void main(final String[] args)
     {
-        new CryptoPropertiesCommandLine(args);
+        new AESCryptoPropertiesCommandLine(args);
     }
 }

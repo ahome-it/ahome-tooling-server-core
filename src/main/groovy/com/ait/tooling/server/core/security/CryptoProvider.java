@@ -16,93 +16,63 @@
 
 package com.ait.tooling.server.core.security;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.io.IOException;
 import java.util.Objects;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
-import org.apache.commons.codec.binary.Hex;
-import org.apache.log4j.Logger;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.encrypt.Encryptors;
-import org.springframework.security.crypto.encrypt.TextEncryptor;
-
-import com.ait.tooling.common.api.hash.Hasher;
-import com.ait.tooling.common.api.java.util.IHTTPConstants;
 
 public final class CryptoProvider implements ICryptoProvider
 {
-    private static final long           serialVersionUID = -685446946283005169L;
+    private static final long                    serialVersionUID = -685446946283005169L;
 
-    private static final Logger         logger           = Logger.getLogger(CryptoProvider.class);
+    private final AESStringCryptoProvider        m_pcrypt;
 
-    private static final String         HMAC_ALGORITHM   = "HmacSHA256";
+    private final SimpleBCryptHashProvider       m_bcrypt;
 
-    private final TextEncryptor         m_pcrypt;
+    private final SimpleSHA512HashProvider       m_hasher;
 
-    private final BCryptPasswordEncoder m_bcrypt;
+    private final SimpleKeyStringSigningProvider m_secret;
 
-    private final Hasher                m_hasher;
-
-    private final SecretKeySpec         m_secret;
-
-    private CryptoProvider(final String pass, final String salt)
+    public CryptoProvider(final String pass, final String salt)
     {
-        m_pcrypt = Encryptors.text(Objects.requireNonNull(pass), Objects.requireNonNull(salt));
+        this(pass, salt, pass, DEFAULT_STRENGTH);
+    }
 
-        m_bcrypt = new BCryptPasswordEncoder();
+    public CryptoProvider(final String pass, final String salt, int strength)
+    {
+        this(pass, salt, pass, strength);
+    }
 
-        m_hasher = new Hasher(this);
+    public CryptoProvider(final String pass, final String salt, final String sign)
+    {
+        this(pass, salt, sign, DEFAULT_STRENGTH);
+    }
 
-        try
-        {
-            m_secret = new SecretKeySpec(pass.getBytes(IHTTPConstants.CHARSET_UTF_8), HMAC_ALGORITHM);
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            throw new RuntimeException(e);
-        }
+    public CryptoProvider(final String pass, final String salt, final String sign, int strength)
+    {
+        m_hasher = new SimpleSHA512HashProvider();
+
+        m_bcrypt = new SimpleBCryptHashProvider(strength);
+
+        m_secret = new SimpleKeyStringSigningProvider(Objects.requireNonNull(sign));
+
+        m_pcrypt = new AESStringCryptoProvider(Objects.requireNonNull(pass), Objects.requireNonNull(salt));
     }
 
     @Override
-    public final synchronized String makeSignature(final String text)
+    public final String makeSignature(final String text)
     {
-        return hmac(Objects.requireNonNull(text));
+        return m_secret.makeSignature(Objects.requireNonNull(text));
     }
 
     @Override
-    public final synchronized boolean testSignature(final String text, final String value)
+    public final boolean testSignature(final String text, final String value)
     {
-        Objects.requireNonNull(text);
-
-        return value.equals(hmac(text));
-    }
-
-    private final String hmac(final String text)
-    {
-        try
-        {
-            final Mac hmac = Mac.getInstance(HMAC_ALGORITHM);
-
-            hmac.init(m_secret);
-
-            return Hex.encodeHexString(hmac.doFinal(text.getBytes(IHTTPConstants.CHARSET_UTF_8)));
-        }
-        catch (Exception e)
-        {
-            logger.error("hmac error", e);
-
-            return null;
-        }
+        return m_secret.testSignature(Objects.requireNonNull(text), Objects.requireNonNull(value));
     }
 
     @Override
-    public final synchronized String makeBCrypt(final String text)
+    public final String makeBCrypt(final String text)
     {
-        return m_bcrypt.encode(Objects.requireNonNull(text));
+        return m_bcrypt.makeBCrypt(Objects.requireNonNull(text));
     }
 
     @Override
@@ -118,9 +88,9 @@ public final class CryptoProvider implements ICryptoProvider
     }
 
     @Override
-    public final synchronized boolean testBCrypt(final String text, final String value)
+    public final boolean testBCrypt(final String text, final String value)
     {
-        return m_bcrypt.matches(Objects.requireNonNull(text), Objects.requireNonNull(value));
+        return m_bcrypt.testBCrypt(Objects.requireNonNull(text), Objects.requireNonNull(value));
     }
 
     @Override
@@ -138,39 +108,11 @@ public final class CryptoProvider implements ICryptoProvider
     @Override
     public String sha512(final String text)
     {
-        Objects.requireNonNull(text);
-
-        MessageDigest md;
-
-        try
-        {
-            md = MessageDigest.getInstance("SHA-512");
-        }
-        catch (NoSuchAlgorithmException e)
-        {
-            logger.error("No SHA-512 Algorithm ", e);
-
-            throw new IllegalArgumentException(e);
-        }
-        byte[] bytes;
-
-        try
-        {
-            bytes = text.getBytes(IHTTPConstants.CHARSET_UTF_8);
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            logger.error("No " + IHTTPConstants.CHARSET_UTF_8 + " encoding ", e);
-
-            bytes = text.getBytes();
-        }
-        md.update(bytes);
-
-        return Hex.encodeHexString(md.digest());
+        return m_hasher.sha512(Objects.requireNonNull(text));
     }
 
     @Override
-    public void close()
+    public void close() throws IOException
     {
     }
 }

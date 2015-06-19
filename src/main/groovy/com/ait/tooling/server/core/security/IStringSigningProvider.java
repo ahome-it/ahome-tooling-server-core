@@ -20,6 +20,8 @@ import java.io.Serializable;
 
 public interface IStringSigningProvider extends Serializable
 {
+    public static final String HMAC_ALGORITHM = "HmacSHA256";
+
     public String makeSignature(String text);
 
     public boolean testSignature(String text, String value);

@@ -44,6 +44,7 @@ import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 import com.ait.tooling.server.core.security.AuthorizationResult;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.ICryptoProvider;
+import com.ait.tooling.server.core.security.ISignatoryProvider;
 import com.ait.tooling.server.core.security.session.IServerSessionRepository;
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider;
 
@@ -94,7 +95,7 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public boolean containsBean(final String name)
+    public final boolean containsBean(final String name)
     {
         return getApplicationContext().containsBean(Objects.requireNonNull(name));
     }
@@ -201,27 +202,27 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public final Iterable<String> getPrincipalsKeys()
+    public final List<String> getPrincipalsKeys()
     {
         final IPrincipalsKeysProvider keys = getBeanSafely("PrincipalsKeysProvider", IPrincipalsKeysProvider.class);
 
         if (null != keys)
         {
-            return keys;
+            return keys.getPrincipalsKeys();
         }
         logger().warn("Using PrincipalsKeysProvider default " + DEFAULT_KEYS.getClass().getName());
 
-        return DEFAULT_KEYS;
+        return DEFAULT_KEYS.getPrincipalsKeys();
     }
 
     @Override
-    public IServerSessionRepositoryProvider getServerSessionRepositoryProvider()
+    public final IServerSessionRepositoryProvider getServerSessionRepositoryProvider()
     {
         return Objects.requireNonNull(getBeanSafely("ServerSessionRepositoryProvider", IServerSessionRepositoryProvider.class), "ServerSessionRepositoryProvider is null, initialization error.");
     }
 
     @Override
-    public IServerSessionRepository getServerSessionRepository(final String domain_name)
+    public final IServerSessionRepository getServerSessionRepository(final String domain_name)
     {
         return getServerSessionRepositoryProvider().getServerSessionRepository(Objects.requireNonNull(domain_name));
     }
@@ -244,19 +245,25 @@ public class ServerContextInstance implements IServerContext
         return Objects.requireNonNull(getBeanSafely("CryptoProvider", ICryptoProvider.class), "CryptoProvider is null, initialization error.");
     }
 
+    @Override
+    public final ISignatoryProvider getSignatoryProvider()
+    {
+        return Objects.requireNonNull(getBeanSafely("SignatoryProvider", ISignatoryProvider.class), "SignatoryProvider is null, initialization error.");
+    }
+
     private final CorePropertiesResolver getCorePropertiesResolver()
     {
         return Objects.requireNonNull(getBeanSafely("CorePropertiesResolver", CorePropertiesResolver.class), "CorePropertiesResolver is null, initialization error.");
     }
 
     @Override
-    public final AuthorizationResult isAuthorized(final Object target, final Iterable<String> roles)
+    public final AuthorizationResult isAuthorized(final Object target, final List<String> roles)
     {
         return getAuthorizationProvider().isAuthorized(target, roles);
     }
 
     @Override
-    public MessageChannel getMessageChannel(final String name)
+    public final MessageChannel getMessageChannel(final String name)
     {
         MessageChannel channel = getBeanSafely(Objects.requireNonNull(name), MessageChannel.class);
 
@@ -274,13 +281,13 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public PublishSubscribeChannel getPublishSubscribeChannel(final String name)
+    public final PublishSubscribeChannel getPublishSubscribeChannel(final String name)
     {
         return getBeanSafely(Objects.requireNonNull(name), PublishSubscribeChannel.class);
     }
 
     @Override
-    public SubscribableChannel getSubscribableChannel(final String name)
+    public final SubscribableChannel getSubscribableChannel(final String name)
     {
         final SubscribableChannel channel = getBeanSafely(Objects.requireNonNull(name), SubscribableChannel.class);
 
@@ -292,13 +299,13 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public PollableChannel getPollableChannel(final String name)
+    public final PollableChannel getPollableChannel(final String name)
     {
         return getBeanSafely(Objects.requireNonNull(name), PollableChannel.class);
     }
 
     @Override
-    public <T> boolean publish(final String name, final Message<T> message)
+    public final <T> boolean publish(final String name, final Message<T> message)
     {
         final MessageChannel channel = getMessageChannel(Objects.requireNonNull(name));
 
@@ -310,7 +317,7 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public <T> boolean publish(final String name, final Message<T> message, final long timeout)
+    public final <T> boolean publish(final String name, final Message<T> message, final long timeout)
     {
         final MessageChannel channel = getMessageChannel(Objects.requireNonNull(name));
 
@@ -412,13 +419,13 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public JSONArray jarr()
+    public final JSONArray jarr()
     {
         return new JSONArray();
     }
 
     @Override
-    public JSONArray jarr(final JSONObject object)
+    public final JSONArray jarr(final JSONObject object)
     {
         Objects.requireNonNull(object);
 
@@ -430,26 +437,26 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public JSONArray jarr(final List<?> list)
+    public final JSONArray jarr(final List<?> list)
     {
         return new JSONArray(Objects.requireNonNull(list));
     }
 
     @Override
-    public JSONArray jarr(final Map<String, ?> map)
+    public final JSONArray jarr(final Map<String, ?> map)
     {
         return jarr(new JSONObject(Objects.requireNonNull(map)));
     }
 
     @Override
-    public JSONArray jarr(final String name, final Object value)
+    public final JSONArray jarr(final String name, final Object value)
     {
         return jarr(new JSONObject(Objects.requireNonNull(name), value));
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public JSONArray jarr(final Collection<?> collection)
+    public final JSONArray jarr(final Collection<?> collection)
     {
         Objects.requireNonNull(collection);
 

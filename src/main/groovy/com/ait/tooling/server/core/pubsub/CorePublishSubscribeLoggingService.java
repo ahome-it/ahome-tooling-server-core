@@ -31,7 +31,7 @@ import org.springframework.messaging.MessagingException;
 import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.server.core.logging.ICoreLoggingOperations;
 
-@ManagedResource(objectName = "com.ait.tooling.server.core.pubsub:name=CorePublishSubscribeLoggingService", description = "Manage Publish Subscribe Logging Operations.")
+@ManagedResource
 public class CorePublishSubscribeLoggingService implements ICoreLoggingOperations, Serializable
 {
     private static final long serialVersionUID = 5154374919398530876L;

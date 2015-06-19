@@ -19,6 +19,7 @@ package com.ait.tooling.server.core.servlet;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -134,7 +135,7 @@ public abstract class HTTPServletBase extends HttpServlet implements IHTTPConsta
         return new JSONObject(getHeadersFromRequest(request));
     }
 
-    public static final JSONObject getUserPrincipalsFromRequest(final HttpServletRequest request, final Iterable<String> keys)
+    public static final JSONObject getUserPrincipalsFromRequest(final HttpServletRequest request, final List<String> keys)
     {
         final JSONObject principals = new JSONObject();
 
@@ -164,7 +165,7 @@ public abstract class HTTPServletBase extends HttpServlet implements IHTTPConsta
         return principals;
     }
 
-    protected final AuthorizationResult isAuthorized(final Object target, final Iterable<String> roles)
+    protected final AuthorizationResult isAuthorized(final Object target, final List<String> roles)
     {
         return getServerContext().isAuthorized(target, roles);
     }

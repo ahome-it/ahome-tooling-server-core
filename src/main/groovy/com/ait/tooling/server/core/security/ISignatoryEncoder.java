@@ -16,22 +16,9 @@
 
 package com.ait.tooling.server.core.security;
 
-import com.ait.tooling.common.api.types.IStringValued;
+import java.io.Serializable;
 
-public enum AuthorizationType implements IStringValued
+public interface ISignatoryEncoder extends Serializable
 {
-    USER(IAuthorizationConstants.USER), ROLE(IAuthorizationConstants.ROLE), ANON(IAuthorizationConstants.ANON);
-
-    private final String m_value;
-
-    private AuthorizationType(final String value)
-    {
-        m_value = value;
-    }
-
-    @Override
-    public String getValue()
-    {
-        return m_value;
-    }
+    public String encodeBytes(byte[] src) throws Exception;
 }

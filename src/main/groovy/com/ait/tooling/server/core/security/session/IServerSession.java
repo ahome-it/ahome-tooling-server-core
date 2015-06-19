@@ -17,6 +17,7 @@
 package com.ait.tooling.server.core.security.session;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.springframework.session.ExpiringSession;
 
@@ -30,7 +31,9 @@ public interface IServerSession extends ExpiringSession, Serializable
 
     public String getDomainName();
 
-    public Iterable<String> getRoles();
-    
+    public List<String> getRoles();
+
     public IServerSession getProxyForSession();
+
+    public boolean isSignatureValid(String signature);
 }

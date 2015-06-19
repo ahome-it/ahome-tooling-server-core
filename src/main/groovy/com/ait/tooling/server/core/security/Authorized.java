@@ -25,5 +25,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Authorized
 {
-    AuthorizationType[] value() default AuthorizationType.USER;
+    String[] value() default "USER";
 }

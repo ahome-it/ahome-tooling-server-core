@@ -20,6 +20,8 @@ import java.io.Serializable;
 
 public interface IBCryptHashProvider extends Serializable
 {
+    public static final int DEFAULT_STRENGTH = 10;
+
     public String makeBCrypt(String text);
 
     public boolean testBCrypt(String text, String value);

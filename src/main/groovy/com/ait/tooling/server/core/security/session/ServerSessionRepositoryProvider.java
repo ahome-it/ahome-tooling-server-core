@@ -33,7 +33,7 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.common.api.types.Activatable;
 
-@ManagedResource(objectName = "com.ait.tooling.server.core.security.session:name=ServerSessionRepositoryProvider", description = "Manage Server Session Repositories.")
+@ManagedResource
 public class ServerSessionRepositoryProvider extends Activatable implements IServerSessionRepositoryProvider, BeanFactoryAware
 {
     private static final long                                     serialVersionUID = -4351465993846157349L;

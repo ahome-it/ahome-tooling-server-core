@@ -17,6 +17,7 @@
 package com.ait.tooling.server.core.security;
 
 import java.io.Serializable;
+import java.util.List;
 
 public interface IAuthorizer extends Serializable
 {
@@ -30,7 +31,9 @@ public interface IAuthorizer extends Serializable
 
     public static final int E_NO_ANONYMOUS = 4;
 
+    public static final int E_NO_VALIDROLE = 5;
+
     public static final int E_SERVER_ERROR = 500;
 
-    public AuthorizationResult isAuthorized(Object target, Iterable<String> roles);
+    public AuthorizationResult isAuthorized(Object target, List<String> roles);
 }

@@ -40,6 +40,7 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizer;
 import com.ait.tooling.server.core.security.ICryptoProvider;
+import com.ait.tooling.server.core.security.ISignatoryProvider;
 import com.ait.tooling.server.core.security.session.IServerSessionRepository;
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider;
 
@@ -59,10 +60,10 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serial
 
     public IAuthorizationProvider getAuthorizationProvider();
 
-    public Iterable<String> getPrincipalsKeys();
-    
+    public List<String> getPrincipalsKeys();
+
     public IServerSessionRepositoryProvider getServerSessionRepositoryProvider();
-    
+
     public IServerSessionRepository getServerSessionRepository(String domain_name);
 
     public ICoreServerManager getCoreServerManager();
@@ -73,12 +74,14 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serial
 
     public ICryptoProvider getCryptoProvider();
 
+    public ISignatoryProvider getSignatoryProvider();
+
     public MessageChannel getMessageChannel(String name);
-    
+
     public PublishSubscribeChannel getPublishSubscribeChannel(String name);
-    
+
     public SubscribableChannel getSubscribableChannel(String name);
-    
+
     public PollableChannel getPollableChannel(String name);
 
     public <T> boolean publish(String name, Message<T> message);

@@ -32,7 +32,7 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.ait.tooling.common.api.java.util.StringOps;
 
-@ManagedResource(objectName = "com.ait.tooling.server.core.support.spring:name=BuildDescriptorProvider", description = "Manage Build Descriptors.")
+@ManagedResource
 public class BuildDescriptorProvider implements IBuildDescriptorProvider, BeanFactoryAware
 {
     private static final long                             serialVersionUID = -2989587698018544105L;

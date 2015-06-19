@@ -18,7 +18,6 @@ package com.ait.tooling.server.core.support.spring;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,8 +36,8 @@ public abstract class AbstractPrincipalsKeysProvider implements IPrincipalsKeysP
     }
 
     @Override
-    public Iterator<String> iterator()
+    public List<String> getPrincipalsKeys()
     {
-        return Collections.unmodifiableList(m_list).iterator();
+        return Collections.unmodifiableList(m_list);
     }
 }

@@ -16,11 +16,10 @@
 
 package com.ait.tooling.server.core.security;
 
-public interface IAuthorizationConstants
+import java.io.Serializable;
+
+import com.ait.tooling.common.api.hash.IHasher;
+
+public interface ISHA512HashProvider extends IHasher, Serializable
 {
-    public static final String ANON = "ANON";
-
-    public static final String USER = "USER";
-
-    public static final String ROLE = "ROLE";
 }

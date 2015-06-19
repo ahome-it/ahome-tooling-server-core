@@ -36,6 +36,7 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.security.ICryptoProvider
+import com.ait.tooling.server.core.security.ISignatoryProvider
 import com.ait.tooling.server.core.security.session.IServerSessionRepository
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
@@ -87,7 +88,7 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     }
 
     @Memoized
-    public Iterable<String> getPrincipalsKeys()
+    public List<String> getPrincipalsKeys()
     {
         getServerContext().getPrincipalsKeys()
     }
@@ -137,11 +138,11 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     @Memoized
     public IServerSessionRepository getServerSessionRepository(String domain_name)
     {
-        getServerSessionRepositoryProvider().getServerSessionRepository(Objects.requireNonNull(domain_name));
+        getServerSessionRepositoryProvider().getServerSessionRepository(Objects.requireNonNull(domain_name))
     }
 
     @Override
-    public AuthorizationResult isAuthorized(Object target, Iterable<String> roles)
+    public AuthorizationResult isAuthorized(Object target, List<String> roles)
     {
         getServerContext().isAuthorized(target, roles)
     }
@@ -150,6 +151,12 @@ public class CoreGroovySupport implements IServerContext, Closeable, Serializabl
     public ICryptoProvider getCryptoProvider()
     {
         getServerContext().getCryptoProvider()
+    }
+
+    @Memoized
+    public ISignatoryProvider getSignatoryProvider()
+    {
+        getServerContext().getSignatoryProvider()
     }
 
     @Memoized
