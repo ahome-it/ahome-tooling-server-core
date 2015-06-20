@@ -24,10 +24,12 @@ import org.apache.log4j.Logger;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
+import org.springframework.stereotype.Component;
 
 import com.ait.tooling.common.api.java.util.StringOps;
 
 @ManagedResource
+@Component("CoreServerManager")
 public class CoreServerManager implements ICoreServerManager
 {
     private static final long                     serialVersionUID   = -6550533604236621679L;
