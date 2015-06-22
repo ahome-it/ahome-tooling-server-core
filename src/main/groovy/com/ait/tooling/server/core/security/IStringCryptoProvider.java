@@ -18,9 +18,7 @@ package com.ait.tooling.server.core.security;
 
 import java.io.Serializable;
 
-import com.ait.tooling.server.core.logging.ICoreLoggingOperations;
-
-public interface IStringCryptoProvider extends ICoreLoggingOperations, Serializable
+public interface IStringCryptoProvider extends Serializable
 {
     public String encrypt(String text);
 

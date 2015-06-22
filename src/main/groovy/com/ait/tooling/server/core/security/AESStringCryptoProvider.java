@@ -21,7 +21,7 @@ import java.util.Objects;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 
-public final class AESStringCryptoProvider extends AbstractStringCryptoProvider
+public final class AESStringCryptoProvider implements IStringCryptoProvider
 {
     private static final long   serialVersionUID = -4685221437853283705L;
 

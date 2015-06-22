@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -30,35 +30,77 @@ import org.apache.log4j.Logger;
 import org.springframework.util.DefaultPropertiesPersister;
 import org.springframework.util.PropertiesPersister;
 
+import com.ait.tooling.common.api.java.util.StringOps;
+import com.ait.tooling.server.core.logging.ICoreLoggingOperations;
 import com.ait.tooling.server.core.security.IStringCryptoProvider;
 
-public final class CoreEncryptedPropertiesProviderPlaceholderConfigurer extends CorePropertiesProviderPlaceholderConfigurer
+public final class CoreEncryptedPropertiesProviderPlaceholderConfigurer extends CorePropertiesProviderPlaceholderConfigurer implements ICoreLoggingOperations
 {
     private static final long serialVersionUID = 3571385011409361222L;
 
-    public CoreEncryptedPropertiesProviderPlaceholderConfigurer(final IStringCryptoProvider crypto)
+    private Level             m_levels         = Level.OFF;
+
+    private boolean           m_onsave         = false;
+
+    public CoreEncryptedPropertiesProviderPlaceholderConfigurer(final IStringCryptoProvider crypto, final String prefix)
     {
-        this(crypto, "OFF");
+        setPropertiesPersister(new CoreEncryptionPropertiesPersister(Objects.requireNonNull(crypto), this, StringOps.requireTrimOrNull(prefix)));
     }
 
-    public CoreEncryptedPropertiesProviderPlaceholderConfigurer(final IStringCryptoProvider crypto, final String level)
+    @Override
+    public Level getLoggingLevel()
     {
-        setPropertiesPersister(new CoreEncryptionPropertiesPersister(Objects.requireNonNull(crypto), level));
+        return m_levels;
+    }
+
+    @Override
+    public void setLoggingLevel(final Level level)
+    {
+        if (null != level)
+        {
+            m_levels = level;
+        }
+    }
+
+    @Override
+    public String getLoggingLevelAsString()
+    {
+        return getLoggingLevel().toString();
+    }
+
+    @Override
+    public void setLoggingLevelAsString(final String level)
+    {
+        setLoggingLevel(Level.toLevel(level, Level.OFF));
+    }
+
+    public void setEncryptOnSave(final boolean onsave)
+    {
+        m_onsave = onsave;
+    }
+
+    public boolean isEncryptOnSave()
+    {
+        return m_onsave;
     }
 
     private static final class CoreEncryptionPropertiesPersister extends DefaultPropertiesPersister implements PropertiesPersister
     {
-        private static final Logger         logger = Logger.getLogger(CoreEncryptionPropertiesPersister.class);
+        private static final Logger                                        logger = Logger.getLogger(CoreEncryptionPropertiesPersister.class);
 
-        private final Level                 m_levels;
+        private final IStringCryptoProvider                                m_crypto;
 
-        private final IStringCryptoProvider m_crypto;
+        private final CoreEncryptedPropertiesProviderPlaceholderConfigurer m_parent;
 
-        public CoreEncryptionPropertiesPersister(final IStringCryptoProvider crypto, final String level)
+        private final String                                               m_prefix;
+
+        public CoreEncryptionPropertiesPersister(final IStringCryptoProvider crypto, final CoreEncryptedPropertiesProviderPlaceholderConfigurer parent, final String prefix)
         {
             m_crypto = Objects.requireNonNull(crypto);
 
-            m_levels = Level.toLevel(level, Level.OFF);
+            m_parent = Objects.requireNonNull(parent);
+
+            m_prefix = StringOps.requireTrimOrNull(prefix);
         }
 
         @Override
@@ -80,16 +122,20 @@ public final class CoreEncryptedPropertiesProviderPlaceholderConfigurer extends 
         @Override
         public void store(final Properties props, final OutputStream os, final String header) throws IOException
         {
-            encrypt(props);
-
+            if (m_parent.isEncryptOnSave())
+            {
+                encrypt(props);
+            }
             super.store(props, os, header);
         }
 
         @Override
         public void store(final Properties props, final Writer writer, final String header) throws IOException
         {
-            encrypt(props);
-
+            if (m_parent.isEncryptOnSave())
+            {
+                encrypt(props);
+            }
             super.store(props, writer, header);
         }
 
@@ -104,22 +150,28 @@ public final class CoreEncryptedPropertiesProviderPlaceholderConfigurer extends 
         @Override
         public void storeToXml(final Properties props, final OutputStream os, String header) throws IOException
         {
-            encrypt(props);
-
+            if (m_parent.isEncryptOnSave())
+            {
+                encrypt(props);
+            }
             super.storeToXml(props, os, header);
         }
 
         @Override
         public void storeToXml(final Properties props, final OutputStream os, final String header, final String encoding) throws IOException
         {
-            encrypt(props);
-
+            if (m_parent.isEncryptOnSave())
+            {
+                encrypt(props);
+            }
             super.storeToXml(props, os, header, encoding);
         }
 
         private final void decrypt(final Properties props)
         {
-            final HashMap<String, String> saved = new HashMap<String, String>(props.size());
+            final Level level = m_parent.getLoggingLevel();
+
+            final LinkedHashMap<String, String> saved = new LinkedHashMap<String, String>();
 
             for (Object o : props.keySet())
             {
@@ -127,13 +179,15 @@ public final class CoreEncryptedPropertiesProviderPlaceholderConfigurer extends 
 
                 final String v = props.getProperty(k);
 
-                if ((null != v) && (false == v.isEmpty()))
+                if ((null != v) && (false == v.isEmpty()) && (v.startsWith(m_prefix)))
                 {
-                    logger.log(m_levels, "decrypt(name:" + k + ",prop-value;" + v + ")");
+                    final String r = v.replace(m_prefix, "");
 
-                    final String d = m_crypto.decrypt(v);
+                    final String d = (r.isEmpty() ? r : m_crypto.decrypt(r));
 
-                    logger.log(m_levels, "decrypt(name:" + k + ",decrypted:" + d + ")");
+                    logger.log(level, "decrypt(name:" + k + ",prop-value;" + v + ")");
+
+                    logger.log(level, "decrypt(name:" + k + ",decrypted:" + d + ")");
 
                     saved.put(k, d);
                 }
@@ -146,7 +200,9 @@ public final class CoreEncryptedPropertiesProviderPlaceholderConfigurer extends 
 
         private final void encrypt(final Properties props)
         {
-            final HashMap<String, String> saved = new HashMap<String, String>(props.size());
+            final Level level = m_parent.getLoggingLevel();
+
+            final LinkedHashMap<String, String> saved = new LinkedHashMap<String, String>(props.size());
 
             for (Object o : props.keySet())
             {
@@ -156,11 +212,11 @@ public final class CoreEncryptedPropertiesProviderPlaceholderConfigurer extends 
 
                 if ((null != v) && (false == v.isEmpty()))
                 {
-                    logger.log(m_levels, "encrypt(name:" + k + ",prop-value;" + v + ")");
+                    logger.log(level, "encrypt(name:" + k + ",prop-value;" + v + ")");
 
-                    final String e = m_crypto.encrypt(v);
+                    final String e = m_prefix + m_crypto.encrypt(v);
 
-                    logger.log(m_levels, "encrypt(name:" + k + ",encrypted:" + e + ")");
+                    logger.log(level, "encrypt(name:" + k + ",encrypted:" + e + ")");
 
                     saved.put(k, e);
                 }

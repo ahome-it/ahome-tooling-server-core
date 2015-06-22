@@ -19,7 +19,6 @@ package com.ait.tooling.server.core.security;
 import java.io.IOException;
 import java.util.Objects;
 
-import org.apache.log4j.Level;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 @ManagedResource
@@ -34,8 +33,6 @@ public final class CryptoProvider implements ICryptoProvider
     private final SimpleSHA512HashProvider       m_hasher;
 
     private final SimpleKeyStringSigningProvider m_secret;
-
-    private Level                                m_loglev         = Level.INFO;
 
     public CryptoProvider(final String pass, final String salt)
     {
@@ -120,32 +117,5 @@ public final class CryptoProvider implements ICryptoProvider
     @Override
     public void close() throws IOException
     {
-    }
-
-    @Override
-    public Level getLoggingLevel()
-    {
-        return m_loglev;
-    }
-
-    @Override
-    public void setLoggingLevel(final Level level)
-    {
-        if (null != level)
-        {
-            m_loglev = level;
-        }
-    }
-
-    @Override
-    public String getLoggingLevelAsString()
-    {
-        return getLoggingLevel().toString();
-    }
-
-    @Override
-    public void setLoggingLevelAsString(final String level)
-    {
-        setLoggingLevel(Level.toLevel(level, Level.INFO));
     }
 }
