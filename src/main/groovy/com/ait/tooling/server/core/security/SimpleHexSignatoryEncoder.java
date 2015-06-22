@@ -16,19 +16,15 @@
 
 package com.ait.tooling.server.core.security;
 
-public final class NoOpStringCryptoProvider extends AbstractStringCryptoProvider
+import org.apache.commons.codec.binary.Hex;
+
+public class SimpleHexSignatoryEncoder implements ISignatoryEncoder
 {
-    private static final long serialVersionUID = 3716150557966785317L;
+    private static final long serialVersionUID = -2664156739712347477L;
 
     @Override
-    public final String encrypt(final String text)
+    public String encodeBytes(final byte[] src) throws Exception
     {
-        return text;
-    }
-
-    @Override
-    public final String decrypt(final String text)
-    {
-        return text;
+        return Hex.encodeHexString(src);
     }
 }
