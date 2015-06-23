@@ -39,13 +39,15 @@ import com.google.common.util.concurrent.RateLimiter;
 @SuppressWarnings("serial")
 public abstract class HTTPServletBase extends HttpServlet implements IHTTPConstants
 {
-    public static final String UNKNOWN_USER   = "%-UNKNOWN-USER-%";
+    public static final String SESSION_DOMAIN_PARAM = "core.server.session.domain";
 
-    public static final String NULL_SESSION   = "%-NULL_SESSION-%";
+    public static final String UNKNOWN_USER         = "%-UNKNOWN-USER-%";
 
-    public static final double MAX_RATE_LIMIT = 2000.0;
+    public static final String NULL_SESSION         = "%-NULL_SESSION-%";
 
-    public static final double MIN_RATE_LIMIT = 0.1000;
+    public static final double MAX_RATE_LIMIT       = 2000.0;
+
+    public static final double MIN_RATE_LIMIT       = 0.1000;
 
     private final RateLimiter  m_ratelimit;
 
@@ -65,6 +67,11 @@ public abstract class HTTPServletBase extends HttpServlet implements IHTTPConsta
         {
             m_ratelimit.acquire();
         }
+    }
+
+    protected String getDefaultSessionRepositoryDomain()
+    {
+        return getInitParameter(SESSION_DOMAIN_PARAM);
     }
 
     protected final static IServerContext getServerContext()

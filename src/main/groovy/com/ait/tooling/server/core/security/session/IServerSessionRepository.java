@@ -17,6 +17,7 @@
 package com.ait.tooling.server.core.security.session;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.springframework.session.SessionRepository;
 
@@ -32,7 +33,7 @@ public interface IServerSessionRepository extends SessionRepository<IServerSessi
 
     public boolean isActive();
 
-    public JSONObject getProperties();
+    public Map<String, Object> getProperties();
 
     public Iterable<String> getRolesForUser(String user);
 

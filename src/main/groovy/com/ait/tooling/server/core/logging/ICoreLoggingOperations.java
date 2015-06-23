@@ -20,6 +20,8 @@ import org.apache.log4j.Level;
 
 public interface ICoreLoggingOperations
 {
+    public static final String CORE_LOGGING_OPERATIONS_KEY = ICoreLoggingOperations.class.getSimpleName().toUpperCase() + "_KEY";
+
     public Level getLoggingLevel();
 
     public void setLoggingLevel(Level level);

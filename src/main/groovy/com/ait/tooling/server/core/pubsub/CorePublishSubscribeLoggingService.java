@@ -28,7 +28,6 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 
-import com.ait.tooling.json.JSONObject;
 import com.ait.tooling.server.core.logging.ICoreLoggingOperations;
 
 @ManagedResource
@@ -45,22 +44,47 @@ public class CorePublishSubscribeLoggingService implements ICoreLoggingOperation
             @Override
             public void handleMessage(final Message<?> message) throws MessagingException
             {
-                if (null != message)
+                Level level = getLoggingLevel();
+
+                if (null != level)
                 {
-                    final Level level = getLoggingLevel();
-
-                    /*
-                     * Converting a JSONObject to a String MAY be an expensive operation if
-                     * logging is not enabled at this level.
-                     */
-
-                    if ((null != level) && (LogManager.getRootLogger().isEnabledFor(level)))
+                    if (0 == level.toInt())
                     {
-                        final Object payload = message.getPayload();
+                        return;
+                    }
+                    if (null != message)
+                    {
+                        final Object look = message.getHeaders().get(CORE_LOGGING_OPERATIONS_KEY);
 
-                        if (payload instanceof JSONObject)
+                        if (null != look)
                         {
-                            m_logger.log(level, channel.getComponentName() + " " + payload.toString());
+                            if (look instanceof Level)
+                            {
+                                level = ((Level) look);
+                            }
+                            else if (look instanceof String)
+                            {
+                                level = Level.toLevel(look.toString(), level);
+                            }
+                            if (0 == level.toInt())
+                            {
+                                return;
+                            }
+                        }
+
+                        /*
+                         * Converting a JSONObject to a String MAY be an expensive operation if
+                         * logging is not enabled at this level.
+                         */
+
+                        if (LogManager.getRootLogger().isEnabledFor(level))
+                        {
+                            final Object payload = message.getPayload();
+
+                            if (null != payload)
+                            {
+                                m_logger.log(level, payload.toString());
+                            }
                         }
                     }
                 }

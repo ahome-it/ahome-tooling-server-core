@@ -271,7 +271,7 @@ public class ServerContextInstance implements IServerContext
         {
             return channel;
         }
-        channel = getPublishSubscribeChannel(name);
+        channel = getSubscribableChannel(name);
 
         if (null != channel)
         {
