@@ -33,7 +33,7 @@ apply plugin: 'signing'
 
 sourceCompatibility = 1.7
 
-version = '1.0.93-RC1'
+version = '1.0.93-RELEASE'
 
 group = 'com.ahome-it'
 
