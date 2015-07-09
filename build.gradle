@@ -33,7 +33,7 @@ apply plugin: 'signing'
 
 sourceCompatibility = 1.7
 
-version = '1.0.93-RELEASE'
+version = '1.0.94-RELEASE'
 
 group = 'com.ahome-it'
 
@@ -155,13 +155,13 @@ configurations {
 
 dependencies {
     springCorePackages().each { String name ->
-        compile(group: 'org.springframework', name: name, version: '4.1.6.RELEASE')
+        compile(group: 'org.springframework', name: name, version: '4.1.7.RELEASE')
     }
     springSecurityPackages().each { String name ->
         compile(group: 'org.springframework.security', name: name, version: '4.0.1.RELEASE')
     }
     springIntegrationPackages().each { String name ->
-        compile(group: 'org.springframework.integration', name: name, version: '4.1.5.RELEASE')
+        compile(group: 'org.springframework.integration', name: name, version: '4.1.6.RELEASE')
     }
     compile(group: 'org.springframework.session', name: 'spring-session', version: '1.0.1.RELEASE')
     compile(group: 'org.springframework.integration', name: 'spring-integration-flow', version: '1.0.0.RELEASE')
