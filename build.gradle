@@ -33,7 +33,7 @@ apply plugin: 'signing'
 
 sourceCompatibility = 1.7
 
-version = '1.0.94-RELEASE'
+version = '1.0.95-RELEASE'
 
 group = 'com.ahome-it'
 
@@ -90,10 +90,6 @@ sourceSets {
 
 tasks.withType(GroovyCompile) {
     groovyOptions.optimizationOptions.indy = true
-}
-
-configurations {
-    compile.exclude(group: 'org.slf4j', module: 'log4j-over-slf4j')
 }
 
 def getFilterTokens() {
@@ -165,7 +161,7 @@ dependencies {
     }
     compile(group: 'org.springframework.session', name: 'spring-session', version: '1.0.1.RELEASE')
     compile(group: 'org.springframework.integration', name: 'spring-integration-flow', version: '1.0.0.RELEASE')
-    compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.3', classifier: 'indy')
+    compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.4', classifier: 'indy')
     compile(group: 'org.codehaus.gpars', name: 'gpars', version: '1.2.1')
     compile(group: 'log4j', name: 'log4j', version: '1.2.17')
     compile(group: 'com.google.guava', name: 'guava', version: '18.0')
