@@ -13,7 +13,7 @@ RELEASE:
 <dependency>
   <groupId>com.ahome-it</groupId>
   <artifactId>ahome-tooling-server-core</artifactId>
-  <version>1.0.98-RELEASE</version>
+  <version>1.0.99-RELEASE</version>
 </dependency>
 ```
 

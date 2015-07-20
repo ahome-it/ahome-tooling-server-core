@@ -16,18 +16,17 @@
 
 package com.ait.tooling.server.core.test
 
+import com.ait.tooling.server.core.support.CoreGroovyTrait
 import com.ait.tooling.server.core.support.spring.IServerContext
 import com.ait.tooling.server.core.support.spring.testing.spock.ServerCoreSpecification
 
-class BasicTestsSpecification extends ServerCoreSpecification
+class BasicTestsSpecification extends ServerCoreSpecification implements CoreGroovyTrait
 {
-    static IServerContext context
-
     def setupSpec()
     {
         TestingOps.setupServerCoreLogging()
         
-        context = TestingOps.setupServerCoreContext(["classpath:/com/ait/tooling/server/core/test/ApplicationContext.xml", "classpath:/com/ait/tooling/server/core/config/CoreApplicationContext.xml"])
+        TestingOps.setupServerCoreContext(["classpath:/com/ait/tooling/server/core/test/ApplicationContext.xml", "classpath:/com/ait/tooling/server/core/config/CoreApplicationContext.xml"])
     }
 
     def cleanupSpec()
@@ -39,16 +38,18 @@ class BasicTestsSpecification extends ServerCoreSpecification
 
     def "test server context property provider"()
     {
-        expect: context.getPropertyByName("core.server.events.keep.alive") == "30"
+        expect: getPropertyByName("core.server.events.keep.alive") == "30"
     }
-    
+
     def "test server context crypto provider"()
     {
         setup:
-        def pass = context.getCryptoProvider().getRandomPass()
-        println pass
-        
+        def valu = "Crypto"
+        def text = getCryptoProvider().encrypt(valu)
+
         expect:
-        pass != null
+        getCryptoProvider().decrypt(text) != null
+        getCryptoProvider().decrypt(text) == valu
+        getCryptoProvider().decrypt(text) != text
     }
 }

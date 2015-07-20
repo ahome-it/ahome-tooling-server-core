@@ -26,11 +26,11 @@ import org.springframework.messaging.support.MessageBuilder;
 
 import com.ait.tooling.json.JSONObject;
 
-public final class JSONMessageBuilder implements Serializable
+public class JSONMessageBuilder implements Serializable
 {
     private static final long serialVersionUID = -3822701727220242634L;
 
-    private JSONMessageBuilder()
+    protected JSONMessageBuilder()
     {
     }
 
@@ -42,6 +42,21 @@ public final class JSONMessageBuilder implements Serializable
     public static final Message<JSONObject> createMessage(final JSONObject payload)
     {
         return createMessage(Objects.requireNonNull(payload), new JSONObject());
+    }
+
+    public static final Message<JSONObject> createMessage(final Map<String, ?> payload)
+    {
+        return createMessage(new JSONObject(Objects.requireNonNull(payload)));
+    }
+
+    public static final Message<JSONObject> createMessage(final Map<String, ?> payload, final Map<String, ?> headers)
+    {
+        return createMessage(new JSONObject(Objects.requireNonNull(payload)), Objects.requireNonNull(headers));
+    }
+    
+    public static final Message<JSONObject> createMessage(final Map<String, ?> payload, final MessageHeaders headers)
+    {
+        return createMessage(new JSONObject(Objects.requireNonNull(payload)), Objects.requireNonNull(headers));
     }
 
     public static final Message<JSONObject> createMessage(final JSONObject payload, final JSONObject headers)
@@ -61,6 +76,11 @@ public final class JSONMessageBuilder implements Serializable
 
     public static final MessageBuilder<JSONObject> withPayload(final JSONObject payload)
     {
-        return MessageBuilder.withPayload(Objects.requireNonNull(Objects.requireNonNull(payload)));
+        return MessageBuilder.withPayload(Objects.requireNonNull(payload));
+    }
+
+    public static final MessageBuilder<JSONObject> withPayload(final Map<String, ?> payload)
+    {
+        return MessageBuilder.withPayload(new JSONObject(Objects.requireNonNull(payload)));
     }
 }

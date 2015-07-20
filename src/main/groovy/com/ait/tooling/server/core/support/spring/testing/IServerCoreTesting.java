@@ -18,13 +18,16 @@ package com.ait.tooling.server.core.support.spring.testing;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.Log4jConfigurer;
 
 import com.ait.tooling.common.api.java.util.StringOps;
+import com.ait.tooling.server.core.support.CoreServerSupport;
 import com.ait.tooling.server.core.support.spring.IServerContext;
 import com.ait.tooling.server.core.support.spring.ServerContextInstance;
 
@@ -32,7 +35,9 @@ public interface IServerCoreTesting
 {
     public static class TestingOps implements Serializable
     {
-        private static final long serialVersionUID = -7046252747020669594L;
+        private static final long   serialVersionUID = -7046252747020669594L;
+
+        private static final Logger logger           = Logger.getLogger("TestingOps");
 
         public static final void setupServerCoreLogging() throws Exception
         {
@@ -41,24 +46,45 @@ public interface IServerCoreTesting
 
         public static final void setupServerCoreLogging(final String location) throws Exception
         {
-            Log4jConfigurer.initLogging(StringOps.requireTrimOrNull(location));
+            Log4jConfigurer.initLogging(Objects.requireNonNull(location));
+
+            logger.info("setupServerCoreLogging(" + CoreServerSupport.toEscapeJavaString(location, true) + ")");
         }
 
         public static final void closeServerCoreLogging()
         {
+            logger.info("closeServerCoreLogging()");
+
             Log4jConfigurer.shutdownLogging();
         }
 
         public static void setRootLoggingLevel(final Level level)
         {
-            LogManager.getRootLogger().setLevel(level);
+            if (null != level)
+            {
+                logger.info("setRootLoggingLevel(" + level + ")");
+
+                LogManager.getRootLogger().setLevel(level);
+            }
+            else
+            {
+                logger.error("setRootLoggingLevel(null)");
+            }
         }
 
-        public static final IServerContext setupServerCoreContext(final List<String> locations)
+        public static final IServerContext setupServerCoreContext(final String... locations)
         {
-            ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(locations.toArray(new String[0]), false);
+            if (locations.length < 1)
+            {
+                logger.error("setupServerCoreContext() locations is empty.");
+            }
+            else
+            {
+                logger.info("setupServerCoreContext(" + CoreServerSupport.toPrintString(locations) + ")");
+            }
+            final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(locations, false);
 
-            ServerContextInstance instance = ServerContextInstance.getServerContextInstance();
+            final ServerContextInstance instance = ServerContextInstance.getServerContextInstance();
 
             instance.setApplicationContext(context);
 
@@ -67,13 +93,40 @@ public interface IServerCoreTesting
             return instance;
         }
 
+        public static final IServerContext setupServerCoreContext(final List<String> locations)
+        {
+            return setupServerCoreContext(StringOps.toArray(locations));
+        }
+
         public static final void closeServerCoreContext()
         {
-            ClassPathXmlApplicationContext context = (ClassPathXmlApplicationContext) ServerContextInstance.getServerContextInstance().getApplicationContext();
+            closeServerCoreContext(ServerContextInstance.getServerContextInstance());
+        }
 
-            context.close();
+        public static final void closeServerCoreContext(final IServerContext instance)
+        {
+            final ClassPathXmlApplicationContext context = ((ClassPathXmlApplicationContext) instance.getApplicationContext());
 
+            if (null != context)
+            {
+                if (context.isActive())
+                {
+                    context.close();
+                }
+                else
+                {
+                    logger.error("closeServerCoreContext() ApplicationContext is not active.");
+                }
+            }
+            else
+            {
+                logger.error("closeServerCoreContext() ApplicationContext is null.");
+            }
             ServerContextInstance.getServerContextInstance().setApplicationContext(null);
+        }
+
+        protected TestingOps()
+        {
         }
     }
 }

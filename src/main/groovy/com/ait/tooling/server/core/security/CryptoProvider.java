@@ -18,7 +18,6 @@ package com.ait.tooling.server.core.security;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.UUID;
 
 import org.springframework.jmx.export.annotation.ManagedResource;
 
@@ -34,6 +33,8 @@ public final class CryptoProvider implements ICryptoProvider
     private final SimpleSHA512HashProvider       m_hasher;
 
     private final SimpleKeyStringSigningProvider m_secret;
+
+    private final SimpleCryptoKeysGenerator      m_keygen;
 
     public CryptoProvider(final String pass, final String salt)
     {
@@ -59,24 +60,26 @@ public final class CryptoProvider implements ICryptoProvider
         m_secret = new SimpleKeyStringSigningProvider(Objects.requireNonNull(sign));
 
         m_pcrypt = new AESStringCryptoProvider(Objects.requireNonNull(pass), Objects.requireNonNull(salt));
+
+        m_keygen = new SimpleCryptoKeysGenerator(m_pcrypt);
     }
 
     @Override
     public final String getRandomPass()
     {
-        return encrypt(getRandomUUID());
+        return m_keygen.getRandomPass();
     }
 
     @Override
     public final String getRandomSalt()
     {
-        return encrypt(getRandomUUID());
+        return m_keygen.getRandomSalt();
     }
 
     @Override
     public final String getRandomUUID()
     {
-        return UUID.randomUUID().toString();
+        return m_keygen.getRandomUUID();
     }
 
     @Override
