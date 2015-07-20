@@ -79,7 +79,7 @@ public class ServerContextInstance implements IServerContext
 
     public final void setApplicationContext(final ApplicationContext context)
     {
-        APPLICATION_CONTEXT = Objects.requireNonNull(context);
+        APPLICATION_CONTEXT = context;
     }
 
     @Override

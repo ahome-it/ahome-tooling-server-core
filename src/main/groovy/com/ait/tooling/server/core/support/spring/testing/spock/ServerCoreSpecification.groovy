@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.security;
+package com.ait.tooling.server.core.support.spring.testing.spock
 
-import java.io.Closeable;
-import java.io.Serializable;
+import groovy.transform.CompileStatic
+import spock.lang.Specification
 
-public interface ICryptoProvider extends ICryptoKeysGenerator, IStringSigningProvider, IStringCryptoProvider, IBCryptHashProvider, ISHA512HashProvider, Closeable, Serializable
+import com.ait.tooling.server.core.support.spring.testing.IServerCoreTesting
+
+@CompileStatic
+public class ServerCoreSpecification extends Specification implements IServerCoreTesting
 {
 }
