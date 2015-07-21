@@ -93,6 +93,13 @@ public interface IServerCoreTesting
             return instance;
         }
 
+        public static final void setupServerCoreDefault(final List<String> locations) throws Exception
+        {
+            setupServerCoreLogging();
+
+            setupServerCoreContext(locations);
+        }
+
         public static final IServerContext setupServerCoreContext(final List<String> locations)
         {
             return setupServerCoreContext(StringOps.toArray(locations));
@@ -101,6 +108,13 @@ public interface IServerCoreTesting
         public static final void closeServerCoreContext()
         {
             closeServerCoreContext(ServerContextInstance.getServerContextInstance());
+        }
+
+        public static final void closeServerCoreDefault()
+        {
+            closeServerCoreContext();
+
+            closeServerCoreLogging();
         }
 
         public static final void closeServerCoreContext(final IServerContext instance)

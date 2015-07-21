@@ -53,15 +53,18 @@ public class BuildDescriptorProvider implements IBuildDescriptorProvider, BeanFa
 
             if (null != name)
             {
-                if (null == m_descriptors.get(name))
+                if (false == name.startsWith("@GRADLE"))
                 {
-                    m_descriptors.put(name, descriptor);
+                    if (null == m_descriptors.get(name))
+                    {
+                        m_descriptors.put(name, descriptor);
 
-                    logger.info("BuildDescriptorProvider.addDescriptor(" + name + ") Registered");
-                }
-                else
-                {
-                    logger.error("BuildDescriptorProvider.addDescriptor(" + name + ") Duplicate ignored");
+                        logger.info("BuildDescriptorProvider.addDescriptor(" + name + ") Registered");
+                    }
+                    else
+                    {
+                        logger.error("BuildDescriptorProvider.addDescriptor(" + name + ") Duplicate ignored");
+                    }
                 }
             }
         }

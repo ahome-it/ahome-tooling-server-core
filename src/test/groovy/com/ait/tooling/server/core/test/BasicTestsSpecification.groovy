@@ -23,17 +23,13 @@ import com.ait.tooling.server.core.support.spring.testing.spock.ServerCoreSpecif
 class BasicTestsSpecification extends ServerCoreSpecification implements CoreGroovyTrait
 {
     def setupSpec()
-    {
-        TestingOps.setupServerCoreLogging()
-        
-        TestingOps.setupServerCoreContext(["classpath:/com/ait/tooling/server/core/test/ApplicationContext.xml", "classpath:/com/ait/tooling/server/core/config/CoreApplicationContext.xml"])
+    {        
+        TestingOps.setupServerCoreDefault(["classpath:/com/ait/tooling/server/core/test/ApplicationContext.xml", "classpath:/com/ait/tooling/server/core/config/CoreApplicationContext.xml"])
     }
 
     def cleanupSpec()
     {
-        TestingOps.closeServerCoreContext()
-        
-        TestingOps.closeServerCoreLogging()
+        TestingOps.closeServerCoreDefault()
     }
 
     def "test server context property provider"()
@@ -44,12 +40,11 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     def "test server context crypto provider"()
     {
         setup:
-        def valu = "Crypto"
-        def text = getCryptoProvider().encrypt(valu)
+        def text = getCryptoProvider().encrypt("ok")
 
         expect:
         getCryptoProvider().decrypt(text) != null
-        getCryptoProvider().decrypt(text) == valu
+        getCryptoProvider().decrypt(text) == "ok"
         getCryptoProvider().decrypt(text) != text
     }
 }
