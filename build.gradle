@@ -36,7 +36,7 @@ sourceCompatibility = 1.7
 
 targetCompatibility = 1.7
 
-version = '1.0.104-RELEASE'
+version = '1.0.105-RELEASE'
 
 group = 'com.ahome-it'
 
@@ -94,7 +94,7 @@ sourceSets {
 }
 
 task codeCoverage << {
-    println "Running tests and code coverage."
+    println "Finished tests and code coverage."
 }
 
 codeCoverage.dependsOn jacocoTestReport
@@ -103,7 +103,7 @@ jacocoTestReport {
     reports {
         xml.enabled false
         csv.enabled false
-        html.destination "${buildDir}/jacoco/jacoco_html"
+        html.destination "build/jacoco/jacoco_html"
     }
 }
 
@@ -112,8 +112,8 @@ jacocoTestReport.dependsOn test
 test {
     jacoco {
         append = false
-        destinationFile = file("${buildDir}/jacoco/jacocoTest.exec")
-        classDumpFile = file("${buildDir}/jacoco/classpathdumps")
+        destinationFile = file("build/jacoco/testing.exec")
+        classDumpFile = file("build/jacoco/classpathdumps")
     }
 }
 
@@ -197,8 +197,7 @@ dependencies {
     compile(group: 'commons-io', name: 'commons-io', version: '2.4')
     compile(group: 'commons-codec', name: 'commons-codec', version: '1.10')
     compile(group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.2')
-    compile(group: 'com.ahome-it', name: 'ahome-tooling-json', version: '1.0.38-RELEASE')
-    compile(group: 'com.ahome-it', name: 'ahome-tooling-server-testability', version: '1.0.2-RELEASE')
+    compile(group: 'com.ahome-it', name: 'ahome-tooling-json', version: '1.0.40-RELEASE')
     compile(group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0')
     compile(group: 'javax.jms', name: 'jms-api', version: '1.1-rev-1')
 }

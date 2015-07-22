@@ -48,7 +48,7 @@ public class CorePublishSubscribeLoggingService implements ICoreLoggingOperation
 
                 if (null != level)
                 {
-                    if (0 == level.toInt())
+                    if (Level.OFF.equals(level))
                     {
                         return;
                     }
@@ -66,7 +66,7 @@ public class CorePublishSubscribeLoggingService implements ICoreLoggingOperation
                             {
                                 level = Level.toLevel(look.toString(), level);
                             }
-                            if (0 == level.toInt())
+                            if (Level.OFF.equals(level))
                             {
                                 return;
                             }
@@ -133,6 +133,6 @@ public class CorePublishSubscribeLoggingService implements ICoreLoggingOperation
     @ManagedAttribute(description = "Set Log4j Level.")
     public void setLoggingLevelAsString(final String level)
     {
-        setLoggingLevel(Level.toLevel(level, Level.INFO));
+        setLoggingLevel(Level.toLevel(level, Level.OFF));
     }
 }
