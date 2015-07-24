@@ -27,7 +27,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.Log4jConfigurer;
 
 import com.ait.tooling.common.api.java.util.StringOps;
-import com.ait.tooling.server.core.support.CoreServerSupport;
 import com.ait.tooling.server.core.support.spring.IServerContext;
 import com.ait.tooling.server.core.support.spring.ServerContextInstance;
 
@@ -48,7 +47,7 @@ public interface IServerCoreTesting
         {
             Log4jConfigurer.initLogging(Objects.requireNonNull(location));
 
-            logger.info("setupServerCoreLogging(" + CoreServerSupport.toEscapeJavaString(location, true) + ")");
+            logger.info("setupServerCoreLogging(" + location + ")");
         }
 
         public static final void closeServerCoreLogging()
@@ -80,7 +79,7 @@ public interface IServerCoreTesting
             }
             else
             {
-                logger.info("setupServerCoreContext(" + CoreServerSupport.toPrintString(locations) + ")");
+                logger.info("setupServerCoreContext(" + StringOps.toPrintableString(locations) + ")");
             }
             final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(locations, false);
 

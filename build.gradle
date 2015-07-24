@@ -36,7 +36,7 @@ sourceCompatibility = 1.7
 
 targetCompatibility = 1.7
 
-version = '1.0.105-RELEASE'
+version = '1.0.106-RELEASE'
 
 group = 'com.ahome-it'
 
@@ -57,7 +57,7 @@ task('filterConfigs', dependsOn: deleteConfigs, type: Copy) {
 task doJavaDocs(type: Javadoc) {
     source = sourceSets.main.allJava
     failOnError = false
-    title = 'Ahome Tooling Server Core'
+    title = "${getProjectCommonName()} ${getBuildModuleVersion()}"
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -133,6 +133,10 @@ def getProjectTitle() {
     'Ahome-Tooling-Server-Core'
 }
 
+def getProjectCommonName() {
+    'Ahome Tooling Server Core'
+}
+
 def getBuildModuleVersion() {
     version
 }
@@ -197,7 +201,7 @@ dependencies {
     compile(group: 'commons-io', name: 'commons-io', version: '2.4')
     compile(group: 'commons-codec', name: 'commons-codec', version: '1.10')
     compile(group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.2')
-    compile(group: 'com.ahome-it', name: 'ahome-tooling-json', version: '1.0.40-RELEASE')
+    compile(group: 'com.ahome-it', name: 'ahome-tooling-json', version: '1.0.41-RELEASE')
     compile(group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0')
     compile(group: 'javax.jms', name: 'jms-api', version: '1.1-rev-1')
 }
@@ -216,7 +220,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+            repository(url: "${sonatype_staging_URL}") {
                 authentication(userName: "${sonatype_user}", password: "${sonatype_password}")
             }
             pom.project {
