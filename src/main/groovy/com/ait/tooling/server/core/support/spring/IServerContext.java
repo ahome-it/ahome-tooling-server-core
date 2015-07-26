@@ -16,12 +16,8 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -32,10 +28,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.messaging.SubscribableChannel;
 
-import com.ait.tooling.json.JSONArray;
-import com.ait.tooling.json.JSONObject;
-import com.ait.tooling.json.parser.JSONParserException;
-import com.ait.tooling.json.schema.JSONSchema;
+import com.ait.tooling.json.support.IJSONUtilities;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizer;
@@ -44,7 +37,7 @@ import com.ait.tooling.server.core.security.ISignatoryProvider;
 import com.ait.tooling.server.core.security.session.IServerSessionRepository;
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider;
 
-public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serializable
+public interface IServerContext extends IJSONUtilities, IAuthorizer, IPropertiesResolver, Serializable
 {
     public IServerContext getServerContext();
 
@@ -89,34 +82,6 @@ public interface IServerContext extends IAuthorizer, IPropertiesResolver, Serial
     public <T> boolean publish(String name, Message<T> message, long timeout);
 
     public Logger logger();
-
-    public JSONObject json();
-
-    public JSONObject json(Map<String, ?> valu);
-
-    public JSONObject json(List<?> list);
-
-    public JSONObject json(String name, Object value);
-
-    public JSONObject json(Collection<?> collection);
-
-    public JSONArray jarr();
-
-    public JSONArray jarr(JSONObject object);
-
-    public JSONArray jarr(List<?> list);
-
-    public JSONArray jarr(Map<String, ?> valu);
-
-    public JSONArray jarr(String name, Object value);
-
-    public JSONArray jarr(Collection<?> collection);
-
-    public JSONSchema jsonSchema(Map<String, ?> schema);
-
-    public JSONObject jsonParse(String string) throws JSONParserException;
-
-    public JSONObject jsonParse(Reader reader) throws IOException, JSONParserException;
 
     public String uuid();
 }

@@ -16,12 +16,7 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -34,11 +29,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.messaging.SubscribableChannel;
 
-import com.ait.tooling.json.JSONArray;
-import com.ait.tooling.json.JSONObject;
-import com.ait.tooling.json.parser.JSONParser;
-import com.ait.tooling.json.parser.JSONParserException;
-import com.ait.tooling.json.schema.JSONSchema;
+import com.ait.tooling.json.support.JSONUtilitiesInstance;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 import com.ait.tooling.server.core.security.AuthorizationResult;
@@ -48,7 +39,7 @@ import com.ait.tooling.server.core.security.ISignatoryProvider;
 import com.ait.tooling.server.core.security.session.IServerSessionRepository;
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider;
 
-public class ServerContextInstance implements IServerContext
+public class ServerContextInstance extends JSONUtilitiesInstance implements IServerContext
 {
     private static final long                          serialVersionUID    = 8451400323005323866L;
 
@@ -329,148 +320,14 @@ public class ServerContextInstance implements IServerContext
     }
 
     @Override
-    public final JSONObject json()
-    {
-        return new JSONObject();
-    }
-
-    @Override
-    public final JSONObject json(final Map<String, ?> map)
-    {
-        return new JSONObject(Objects.requireNonNull(map));
-    }
-
-    @Override
-    public final JSONObject json(final String name, final Object value)
-    {
-        return new JSONObject(Objects.requireNonNull(name), value);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public final JSONObject json(final Collection<?> collection)
-    {
-        Objects.requireNonNull(collection);
-
-        if (collection instanceof List)
-        {
-            return json((List<?>) collection);
-        }
-        else if (collection instanceof Map)
-        {
-            return json((Map<String, ?>) collection);
-        }
-        else
-        {
-            return json(new ArrayList<Object>(collection));
-        }
-    }
-
-    @Override
-    public final JSONObject json(final List<?> list)
-    {
-        return new JSONObject(Objects.requireNonNull(list));
-    }
-
-    @Override
     public final String uuid()
     {
         return UUID.randomUUID().toString().toUpperCase();
     }
 
     @Override
-    public final JSONSchema jsonSchema(final Map<String, ?> schema)
-    {
-        return JSONSchema.cast(json(Objects.requireNonNull(schema)));
-    }
-
-    @Override
     public Logger logger()
     {
         return m_logger;
-    }
-
-    @Override
-    public final JSONObject jsonParse(final String string) throws JSONParserException
-    {
-        Objects.requireNonNull(string);
-
-        final Object result = new JSONParser().parse(string);
-
-        if ((null != result) && (result instanceof JSONObject))
-        {
-            return ((JSONObject) result);
-        }
-        return null;
-    }
-
-    @Override
-    public final JSONObject jsonParse(final Reader reader) throws IOException, JSONParserException
-    {
-        Objects.requireNonNull(reader);
-
-        final Object result = new JSONParser().parse(reader);
-
-        if ((null != result) && (result instanceof JSONObject))
-        {
-            return ((JSONObject) result);
-        }
-        return null;
-    }
-
-    @Override
-    public final JSONArray jarr()
-    {
-        return new JSONArray();
-    }
-
-    @Override
-    public final JSONArray jarr(final JSONObject object)
-    {
-        Objects.requireNonNull(object);
-
-        final JSONArray list = jarr();
-
-        jarr().add(object);
-
-        return list;
-    }
-
-    @Override
-    public final JSONArray jarr(final List<?> list)
-    {
-        return new JSONArray(Objects.requireNonNull(list));
-    }
-
-    @Override
-    public final JSONArray jarr(final Map<String, ?> map)
-    {
-        return jarr(new JSONObject(Objects.requireNonNull(map)));
-    }
-
-    @Override
-    public final JSONArray jarr(final String name, final Object value)
-    {
-        return jarr(new JSONObject(Objects.requireNonNull(name), value));
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public final JSONArray jarr(final Collection<?> collection)
-    {
-        Objects.requireNonNull(collection);
-
-        if (collection instanceof List)
-        {
-            return jarr((List<?>) collection);
-        }
-        else if (collection instanceof Map)
-        {
-            return jarr((Map<String, ?>) collection);
-        }
-        else
-        {
-            return jarr(new ArrayList<Object>(collection));
-        }
     }
 }

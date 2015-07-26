@@ -47,4 +47,13 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         getCryptoProvider().decrypt(text) == "ok"
         getCryptoProvider().decrypt(text) != text
     }
+    
+    def "test JSONObject"()
+    {
+        setup:
+        def valu = json([name: "Dean"])
+
+        expect:
+        valu['name'] == "Dean"
+    }
 }

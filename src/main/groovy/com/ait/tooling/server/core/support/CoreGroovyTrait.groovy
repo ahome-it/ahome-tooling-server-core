@@ -27,10 +27,7 @@ import org.springframework.messaging.MessageChannel
 import org.springframework.messaging.PollableChannel
 import org.springframework.messaging.SubscribableChannel
 
-import com.ait.tooling.json.JSONArray
-import com.ait.tooling.json.JSONObject
-import com.ait.tooling.json.parser.JSONParserException
-import com.ait.tooling.json.schema.JSONSchema
+import com.ait.tooling.json.support.JSONTrait
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
@@ -44,7 +41,7 @@ import com.ait.tooling.server.core.support.spring.IServerContext
 import com.ait.tooling.server.core.support.spring.ServerContextInstance
 
 @CompileStatic
-public trait CoreGroovyTrait
+public trait CoreGroovyTrait implements JSONTrait
 {
     @Memoized
     public IServerContext getServerContext()
@@ -200,78 +197,8 @@ public trait CoreGroovyTrait
         getServerContext().getBeanSafely(Objects.requireNonNull(name), Objects.requireNonNull(type))
     }
 
-    public JSONObject json()
-    {
-        getServerContext().json()
-    }
-
-    public JSONObject json(Map<String, ?> map)
-    {
-        getServerContext().json(Objects.requireNonNull(map))
-    }
-
-    public JSONObject json(String name, Object value)
-    {
-        getServerContext().json(Objects.requireNonNull(name), value)
-    }
-
-    public JSONObject json(Collection<?> collection)
-    {
-        getServerContext().json(Objects.requireNonNull(collection))
-    }
-
-    public JSONObject json(List<?> list)
-    {
-        getServerContext().json(Objects.requireNonNull(list))
-    }
-
-    public JSONSchema jsonSchema(Map<String, ?> schema)
-    {
-        getServerContext().jsonSchema(Objects.requireNonNull(schema))
-    }
-
     public String uuid()
     {
         getServerContext().uuid()
-    }
-
-    public JSONObject jsonParse(String string) throws JSONParserException
-    {
-        getServerContext().jsonParse(Objects.requireNonNull(string))
-    }
-
-    public JSONObject jsonParse(Reader reader) throws IOException, JSONParserException
-    {
-        getServerContext().jsonParse(Objects.requireNonNull(reader))
-    }
-
-    public JSONArray jarr()
-    {
-        getServerContext().jarr()
-    }
-
-    public JSONArray jarr(JSONObject object)
-    {
-        getServerContext().jarr(Objects.requireNonNull(object))
-    }
-
-    public JSONArray jarr(List<?> list)
-    {
-        getServerContext().jarr(Objects.requireNonNull(list))
-    }
-
-    public JSONArray jarr(Map<String, ?> map)
-    {
-        getServerContext().jarr(Objects.requireNonNull(map))
-    }
-
-    public JSONArray jarr(String name, Object value)
-    {
-        getServerContext().jarr(Objects.requireNonNull(name), value)
-    }
-
-    public JSONArray jarr(Collection<?> collection)
-    {
-        getServerContext().jarr(Objects.requireNonNull(collection))
     }
 }
