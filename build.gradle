@@ -60,6 +60,10 @@ task doJavaDocs(type: Groovydoc) {
     destinationDir = file('build/docs/javadoc')
     docTitle = "${getProjectCommonName()}"
     footer = "<small><a href=\"${getBuildGITHomeURL()}\" target=\"_blank\">${getProjectCommonName()} - ${getBuildModuleVersion()} - Author: Dean S. Jones</a></small>"
+    includes = ['com/ait/tooling/server/core/**']
+    makeGroovyDocLinks().each {
+        link(it, *(new URL("$it/package-list").text.tokenize('\n')))
+    }
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -105,7 +109,7 @@ jacocoTestReport {
     reports {
         xml.enabled false
         csv.enabled false
-        html.destination "build/jacoco/jacoco_html"
+        html.destination 'build/reports/coverage'
     }
 }
 
@@ -257,6 +261,10 @@ uploadArchives {
             }
         }
     }
+}
+
+def makeGroovyDocLinks() {
+    "${groovydoc_links_java7}".split(",")
 }
 
 def List<String> springCorePackages() {
