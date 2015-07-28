@@ -27,6 +27,14 @@ Javadoc URL:
 
 http://lienzo-core.com/documents/javadoc/ahome-tooling-server-core
 
+Latest unit test results:
+
+http://lienzo-core.com/documents/reports/ahome-tooling-server-core/tests/
+
+Latest code coverage results:
+
+http://lienzo-core.com/documents/reports/ahome-tooling-server-core/coverage/
+
 License:
 
 Copyright (c) 2014,2015 Ahome Innovation Technologies. All rights reserved.
