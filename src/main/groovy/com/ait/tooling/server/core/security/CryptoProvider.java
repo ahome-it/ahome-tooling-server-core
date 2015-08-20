@@ -61,7 +61,7 @@ public final class CryptoProvider implements ICryptoProvider
 
         m_pcrypt = new AESStringCryptoProvider(Objects.requireNonNull(pass), Objects.requireNonNull(salt));
 
-        m_keygen = new SimpleCryptoKeysGenerator(m_pcrypt);
+        m_keygen = new SimpleCryptoKeysGenerator();
     }
 
     @Override
@@ -75,11 +75,11 @@ public final class CryptoProvider implements ICryptoProvider
     {
         return m_keygen.getRandomSalt();
     }
-
+    
     @Override
-    public final String getRandomUUID()
+    public boolean isPassValid(final String pass)
     {
-        return m_keygen.getRandomUUID();
+        return m_keygen.isPassValid(pass);
     }
 
     @Override

@@ -16,35 +16,94 @@
 
 package com.ait.tooling.server.core.security;
 
-import java.util.Objects;
-import java.util.UUID;
+import java.nio.ByteBuffer;
+import java.security.SecureRandom;
+import java.util.zip.CRC32;
+
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang.RandomStringUtils;
 
 public class SimpleCryptoKeysGenerator implements ICryptoKeysGenerator
 {
-    private static final long           serialVersionUID = 8605396298931990555L;
+    private static final long serialVersionUID = 8605396298931990555L;
 
-    private final IStringCryptoProvider m_crpt;
-
-    public SimpleCryptoKeysGenerator(final IStringCryptoProvider crpt)
+    public SimpleCryptoKeysGenerator()
     {
-        m_crpt = Objects.requireNonNull(crpt);
     }
 
     @Override
     public String getRandomPass()
     {
-        return m_crpt.encrypt(getRandomUUID());
+        final StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < 11; i++)
+        {
+            builder.append(Tools.randomString(10)).append("-");
+        }
+        return builder.append(Tools.checksumOfChars(builder)).toString();
     }
 
     @Override
     public String getRandomSalt()
     {
-        return m_crpt.encrypt(getRandomUUID());
+        return Hex.encodeHexString(Tools.randomBytes(32));
     }
 
     @Override
-    public String getRandomUUID()
+    public boolean isPassValid(final String pass)
     {
-        return UUID.randomUUID().toString();
+        final int last = pass.lastIndexOf("-");
+
+        if (last <= 0)
+        {
+            return false;
+        }
+        return pass.endsWith(Tools.checksumOfChars(pass.substring(0, last + 1)));
+    }
+
+    private static final class Tools
+    {
+        // In separate class because it defers the initialization till used, SecureRandom is expensive.
+
+        private static final SecureRandom RAND = new SecureRandom();
+
+        private static final char[]       CHRS = "abcdefghijklmnopqrstuvwxyz%&*!@$0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
+
+        static final String randomString(final int leng)
+        {
+            return RandomStringUtils.random(leng, 0, CHRS.length, false, false, CHRS, RAND);
+        }
+
+        static final byte[] randomBytes(final int leng)
+        {
+            final byte[] data = new byte[leng];
+
+            RAND.nextBytes(data);
+
+            return data;
+        }
+
+        static final long checksumOfBytes(final byte[] data)
+        {
+            final CRC32 check = new CRC32();
+
+            check.update(data);
+
+            return check.getValue();
+        }
+
+        static final byte[] checksumToBytes(final long valu)
+        {
+            final ByteBuffer buffer = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE);
+
+            buffer.putInt(0, ((int) (valu & 0xffffffffL)));
+
+            return buffer.array();
+        }
+
+        static final String checksumOfChars(final CharSequence valu)
+        {
+            return Hex.encodeHexString(Tools.checksumToBytes(Tools.checksumOfBytes(valu.toString().getBytes())));
+        }
     }
 }

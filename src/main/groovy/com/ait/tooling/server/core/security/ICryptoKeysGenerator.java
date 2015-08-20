@@ -23,6 +23,6 @@ public interface ICryptoKeysGenerator extends Serializable
     public String getRandomPass();
 
     public String getRandomSalt();
-
-    public String getRandomUUID();
+    
+    public boolean isPassValid(String pass);
 }

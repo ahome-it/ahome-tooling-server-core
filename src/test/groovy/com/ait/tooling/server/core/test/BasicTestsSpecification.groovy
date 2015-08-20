@@ -56,4 +56,16 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         expect:
         valu['name'] == "Dean"
     }
+    
+    def "test Keys"()
+    {
+        setup:
+        String pass = getCryptoProvider().getRandomPass()
+        String salt = getCryptoProvider().getRandomSalt()
+        println pass
+        println salt
+        
+        expect:
+        getCryptoProvider().isPassValid(pass) == true
+    }
 }

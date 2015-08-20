@@ -36,7 +36,7 @@ sourceCompatibility = 1.7
 
 targetCompatibility = 1.7
 
-version = '1.0.108-RELEASE'
+version = '1.0.109-RELEASE'
 
 group = 'com.ahome-it'
 
@@ -194,15 +194,15 @@ configurations {
 
 dependencies {
     springCorePackages().each { String name ->
-        compile(group: 'org.springframework', name: name, version: '4.1.7.RELEASE')
+        compile(group: 'org.springframework', name: name, version: '4.2.0.RELEASE')
     }
     springSecurityPackages().each { String name ->
-        compile(group: 'org.springframework.security', name: name, version: '4.0.1.RELEASE')
+        compile(group: 'org.springframework.security', name: name, version: '4.0.2.RELEASE')
     }
     springIntegrationPackages().each { String name ->
         compile(group: 'org.springframework.integration', name: name, version: '4.1.6.RELEASE')
     }
-    compile(group: 'org.springframework.session', name: 'spring-session', version: '1.0.1.RELEASE')
+    compile(group: 'org.springframework.session', name: 'spring-session', version: '1.0.2.RELEASE')
     compile(group: 'org.springframework.integration', name: 'spring-integration-flow', version: '1.0.0.RELEASE')
     compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.4', classifier: 'indy')
     compile(group: 'org.codehaus.gpars', name: 'gpars', version: '1.2.1')
