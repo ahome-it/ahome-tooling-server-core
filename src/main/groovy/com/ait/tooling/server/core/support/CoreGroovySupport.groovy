@@ -28,11 +28,11 @@ import org.springframework.messaging.MessageChannel
 import org.springframework.messaging.PollableChannel
 import org.springframework.messaging.SubscribableChannel
 
-import com.ait.tooling.json.JSONArray
-import com.ait.tooling.json.JSONObject
-import com.ait.tooling.json.parser.JSONParserException
-import com.ait.tooling.json.schema.JSONSchema
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager
+import com.ait.tooling.server.core.json.JSONArray
+import com.ait.tooling.server.core.json.JSONObject
+import com.ait.tooling.server.core.json.parser.JSONParserException
+import com.ait.tooling.server.core.json.schema.JSONSchema
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.security.ICryptoProvider
