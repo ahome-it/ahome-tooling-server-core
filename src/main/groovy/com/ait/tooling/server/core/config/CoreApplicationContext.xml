@@ -72,10 +72,6 @@
 
 	<context:component-scan base-package="com.ait.tooling.server.core.jmx"/>
 
-	<import resource="classpath:/com/ait/tooling/server/testability/config/TestabilityApplicationContext.xml"/>
-
-	<import resource="classpath:/com/ait/tooling/json/server/config/JSONApplicationContext.xml"/>
-
 	<context:mbean-export default-domain="${jmx.default.domain}" registration="replaceExisting"/>
 
 </beans>

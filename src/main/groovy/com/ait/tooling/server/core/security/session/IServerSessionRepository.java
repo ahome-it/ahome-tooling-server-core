@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.springframework.session.SessionRepository;
 
-import com.ait.tooling.json.JSONObject;
+import com.ait.tooling.server.core.json.JSONObject;
 
 public interface IServerSessionRepository extends SessionRepository<IServerSession>, Serializable
 {

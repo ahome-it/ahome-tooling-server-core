@@ -28,8 +28,8 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.messaging.SubscribableChannel;
 
-import com.ait.tooling.json.support.IJSONUtilities;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
+import com.ait.tooling.server.core.json.support.IJSONUtilities;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizer;
 import com.ait.tooling.server.core.security.ICryptoProvider;

@@ -14,33 +14,9 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.support.spring;
+package com.ait.tooling.server.core.json;
 
-import java.io.Serializable;
-
-import com.ait.tooling.server.core.json.JSONObject;
-
-public interface IBuildDescriptor extends Serializable
+public interface IJSONObjectReplacer extends IJSONReplacerUtil
 {
-    public String getNameSpace();
-
-    public String getBuildUser();
-
-    public String getBuildDate();
-
-    public String getJavaVersion();
-
-    public String getBuildServerHost();
-
-    public String getBuildServerBuild();
-
-    public String getBuildGITCommitHash();
-
-    public String getBuildGITCommitUser();
-
-    public String getBuildGITCommitMessage();
-
-    public String getBuildModuleVersion();
-
-    public JSONObject toJSONObject();
+    public Object replace(String name, Object value);
 }

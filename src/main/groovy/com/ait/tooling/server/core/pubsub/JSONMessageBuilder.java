@@ -24,7 +24,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 
-import com.ait.tooling.json.JSONObject;
+import com.ait.tooling.server.core.json.JSONObject;
 
 public class JSONMessageBuilder implements Serializable
 {

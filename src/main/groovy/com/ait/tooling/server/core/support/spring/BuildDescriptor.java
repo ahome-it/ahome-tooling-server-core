@@ -17,7 +17,7 @@
 package com.ait.tooling.server.core.support.spring;
 
 import com.ait.tooling.common.api.java.util.StringOps;
-import com.ait.tooling.json.JSONObject;
+import com.ait.tooling.server.core.json.JSONObject;
 
 public final class BuildDescriptor implements IBuildDescriptor
 {

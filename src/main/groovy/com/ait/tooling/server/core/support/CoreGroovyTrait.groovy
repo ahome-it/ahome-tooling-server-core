@@ -27,8 +27,8 @@ import org.springframework.messaging.MessageChannel
 import org.springframework.messaging.PollableChannel
 import org.springframework.messaging.SubscribableChannel
 
-import com.ait.tooling.json.support.JSONTrait
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager
+import com.ait.tooling.server.core.json.support.JSONTrait
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.security.ICryptoProvider

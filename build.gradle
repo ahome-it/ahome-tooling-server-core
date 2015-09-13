@@ -193,25 +193,35 @@ configurations {
 }
 
 dependencies {
+    compile(group: 'log4j', name: 'log4j', version: '1.2.17')
+    compile(group: 'cglib', name: 'cglib-nodep', version: '3.1')
+    compile(group: 'org.fusesource.jansi', name: 'jansi', version: '1.11')
+    compile(group: 'commons-io', name: 'commons-io', version: '2.4')
+    compile(group: 'commons-codec', name: 'commons-codec', version: '1.10')
+    compile(group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.2')
+    compile(group: 'com.google.guava', name: 'guava', version: '18.0')
+    compile(group: 'org.spockframework', name: 'spock-core', version: '1.0-groovy-2.4') {
+        exclude(group: 'org.codehaus.groovy', module: 'groovy-all')
+    }
+    compile(group: 'org.gebish', name: 'geb-core', version: '0.12.2') {
+        exclude(group: 'org.codehaus.groovy', module: 'groovy-all')
+    }
+    compile(group: 'org.seleniumhq.selenium', name: 'selenium-api', version: '2.46.0')
+    compile(group: 'org.seleniumhq.selenium', name: 'selenium-support', version: '2.46.0')
+    compile(group: 'com.ahome-it', name: 'ahome-tooling-common', version: '1.0.45-RELEASE')
+    compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.4', classifier: 'indy')
     springCorePackages().each { String name ->
-        compile(group: 'org.springframework', name: name, version: '4.2.0.RELEASE')
+        compile(group: 'org.springframework', name: name, version: '4.2.1.RELEASE')
     }
     springSecurityPackages().each { String name ->
         compile(group: 'org.springframework.security', name: name, version: '4.0.2.RELEASE')
     }
     springIntegrationPackages().each { String name ->
-        compile(group: 'org.springframework.integration', name: name, version: '4.1.6.RELEASE')
+        compile(group: 'org.springframework.integration', name: name, version: '4.2.0.RELEASE')
     }
     compile(group: 'org.springframework.session', name: 'spring-session', version: '1.0.2.RELEASE')
-    compile(group: 'org.springframework.integration', name: 'spring-integration-flow', version: '1.0.0.RELEASE')
     compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.4', classifier: 'indy')
     compile(group: 'org.codehaus.gpars', name: 'gpars', version: '1.2.1')
-    compile(group: 'log4j', name: 'log4j', version: '1.2.17')
-    compile(group: 'com.google.guava', name: 'guava', version: '18.0')
-    compile(group: 'commons-io', name: 'commons-io', version: '2.4')
-    compile(group: 'commons-codec', name: 'commons-codec', version: '1.10')
-    compile(group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.2')
-    compile(group: 'com.ahome-it', name: 'ahome-tooling-json', version: '1.0.45-RELEASE')
     compile(group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0')
     compile(group: 'javax.jms', name: 'jms-api', version: '1.1-rev-1')
 }
@@ -305,11 +315,13 @@ def List<String> springSecurityPackages() {
 def List<String> springIntegrationPackages() {
     return [
         'spring-integration-core',
+        'spring-integration-ftp',
         'spring-integration-jms',
         'spring-integration-xml',
         'spring-integration-feed',
         'spring-integration-event',
         'spring-integration-file',
-        'spring-integration-security'
+        'spring-integration-security',
+        'spring-integration-scripting'
     ]
 }

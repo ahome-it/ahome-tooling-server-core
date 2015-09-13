@@ -27,9 +27,9 @@ import org.springframework.jms.support.converter.MessageConversionException;
 import org.springframework.jms.support.converter.SimpleMessageConverter;
 import org.springframework.util.ObjectUtils;
 
-import com.ait.tooling.json.JSONObject;
-import com.ait.tooling.json.parser.JSONParser;
-import com.ait.tooling.json.parser.JSONParserException;
+import com.ait.tooling.server.core.json.JSONObject;
+import com.ait.tooling.server.core.json.parser.JSONParser;
+import com.ait.tooling.server.core.json.parser.JSONParserException;
 
 public class SimpleJMSMessageConverter extends SimpleMessageConverter implements Serializable
 {

@@ -14,33 +14,27 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.support.spring;
+package com.ait.tooling.server.core.json;
 
-import java.io.Serializable;
+import java.util.Collection;
+import java.util.Objects;
 
-import com.ait.tooling.server.core.json.JSONObject;
-
-public interface IBuildDescriptor extends Serializable
+public class JSONReplacerWhite extends AbstractJSONKeysObjectReplacer
 {
-    public String getNameSpace();
+    private static final long serialVersionUID = -8773323741386211024L;
 
-    public String getBuildUser();
+    public JSONReplacerWhite()
+    {
+        super(true);
+    }
 
-    public String getBuildDate();
+    public JSONReplacerWhite(final Collection<String> keys)
+    {
+        super(true, Objects.requireNonNull(keys));
+    }
 
-    public String getJavaVersion();
-
-    public String getBuildServerHost();
-
-    public String getBuildServerBuild();
-
-    public String getBuildGITCommitHash();
-
-    public String getBuildGITCommitUser();
-
-    public String getBuildGITCommitMessage();
-
-    public String getBuildModuleVersion();
-
-    public JSONObject toJSONObject();
+    public JSONReplacerWhite(final String... keys)
+    {
+        super(true, keys);
+    }
 }

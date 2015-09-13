@@ -14,33 +14,29 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.support.spring;
+package com.ait.tooling.server.core.json.schema.validator;
 
 import java.io.Serializable;
 
-import com.ait.tooling.server.core.json.JSONObject;
-
-public interface IBuildDescriptor extends Serializable
+public class JSONSchemaValidatorConfiguration implements Serializable
 {
-    public String getNameSpace();
+    private static final long serialVersionUID             = 5798774647439697530L;
 
-    public String getBuildUser();
+    private boolean           m_terminating_on_first_error = true;
 
-    public String getBuildDate();
+    public JSONSchemaValidatorConfiguration()
+    {
+    }
 
-    public String getJavaVersion();
+    public boolean isTerminatingOnFirstError()
+    {
+        return m_terminating_on_first_error;
+    }
 
-    public String getBuildServerHost();
+    public JSONSchemaValidatorConfiguration setTerminationOnFirstError(final boolean terminating_on_first_error)
+    {
+        m_terminating_on_first_error = terminating_on_first_error;
 
-    public String getBuildServerBuild();
-
-    public String getBuildGITCommitHash();
-
-    public String getBuildGITCommitUser();
-
-    public String getBuildGITCommitMessage();
-
-    public String getBuildModuleVersion();
-
-    public JSONObject toJSONObject();
+        return this;
+    }
 }
