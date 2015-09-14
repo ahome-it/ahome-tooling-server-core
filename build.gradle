@@ -61,8 +61,8 @@ task doJavaDocs(type: Groovydoc) {
     docTitle = "${getProjectCommonName()}"
     footer = "<small><a href=\"${getBuildGITHomeURL()}\" target=\"_blank\">${getProjectCommonName()} - ${getBuildModuleVersion()} - Author: Dean S. Jones</a></small>"
     includes = ['com/ait/tooling/server/core/**']
-    makeGroovyDocLinks().each {
-        link(it, *(new URL("$it/package-list").text.tokenize('\n')))
+    getGroovydocLinks().each { name, list ->
+        link(name, *list)
     }
 }
 
@@ -278,8 +278,41 @@ uploadArchives {
     }
 }
 
-def makeGroovyDocLinks() {
-    "${groovydoc_links_java7}".split(",")
+def Map<String, List<String>> getGroovydocLinks() {
+    def lmap = [:]
+    File data = file('groovydoc/GROOVYDOC_LINK_LISTS.txt')
+    if (data.exists()) {
+        data.eachLine { line ->
+            def vals = ((CharSequence) line).tokenize(',')
+            lmap[vals.head()] = vals.tail()
+        }
+    }
+    lmap
+}
+
+task(buildGroovydocLinks) << {
+    def site = [:]
+    File data = file('groovydoc/GROOVYDOC_LINK_SITES.txt')
+    if (data.exists()) {
+        data.eachLine { line ->
+            site[line] = ((CharSequence) new URL("${line}/package-list").text).tokenize('\n')
+        }
+    }
+    File make = file('groovydoc/GROOVYDOC_LINK_LISTS.txt')
+    if(make.exists()) {
+        make.delete()
+    }
+    make.createNewFile()
+    def save = make.newPrintWriter()
+    site.each { link, list ->
+        def show = "${link}"
+        list.each { line ->
+            show = "${show},${line}"
+        }
+        save.println("${show}")
+    }
+    save.flush()
+    save.close()
 }
 
 def List<String> springCorePackages() {
