@@ -30,6 +30,7 @@ import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.server.core.support.spring.IServerContext;
 import com.ait.tooling.server.core.support.spring.ServerContextInstance;
 
+@SuppressWarnings("deprecation")
 public interface IServerCoreTesting
 {
     public static class TestingOps implements Serializable
