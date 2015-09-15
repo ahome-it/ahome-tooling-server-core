@@ -20,9 +20,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.Log4jConfigurer;
 
@@ -37,8 +34,6 @@ public interface IServerCoreTesting
     {
         private static final long   serialVersionUID = -7046252747020669594L;
 
-        private static final Logger logger           = Logger.getLogger("TestingOps");
-
         public static final void setupServerCoreLogging() throws Exception
         {
             setupServerCoreLogging("classpath:testing-log4j.xml");
@@ -47,41 +42,15 @@ public interface IServerCoreTesting
         public static final void setupServerCoreLogging(final String location) throws Exception
         {
             Log4jConfigurer.initLogging(Objects.requireNonNull(location));
-
-            logger.info("setupServerCoreLogging(" + location + ")");
         }
 
         public static final void closeServerCoreLogging()
         {
-            logger.info("closeServerCoreLogging()");
-
             Log4jConfigurer.shutdownLogging();
-        }
-
-        public static void setRootLoggingLevel(final Level level)
-        {
-            if (null != level)
-            {
-                logger.info("setRootLoggingLevel(" + level + ")");
-
-                LogManager.getRootLogger().setLevel(level);
-            }
-            else
-            {
-                logger.error("setRootLoggingLevel(null)");
-            }
         }
 
         public static final IServerContext setupServerCoreContext(final String... locations)
         {
-            if (locations.length < 1)
-            {
-                logger.error("setupServerCoreContext() locations is empty.");
-            }
-            else
-            {
-                logger.info("setupServerCoreContext(" + StringOps.toPrintableString(locations) + ")");
-            }
             final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(locations, false);
 
             final ServerContextInstance instance = ServerContextInstance.getServerContextInstance();
@@ -127,14 +96,6 @@ public interface IServerCoreTesting
                 {
                     context.close();
                 }
-                else
-                {
-                    logger.error("closeServerCoreContext() ApplicationContext is not active.");
-                }
-            }
-            else
-            {
-                logger.error("closeServerCoreContext() ApplicationContext is null.");
             }
             ServerContextInstance.getServerContextInstance().setApplicationContext(null);
         }
