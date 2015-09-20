@@ -205,6 +205,7 @@ dependencies {
     compile(group: 'com.ahome-it', name: 'ahome-tooling-common', version: '1.0.45-RELEASE')
     compile(group: 'log4j', name: 'log4j', version: '1.2.17')
     compile(group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.12')
+    compile(group: 'org.slf4j', name: 'log4j-over-slf4j', version: '1.7.12')
     compile(group: 'cglib', name: 'cglib-nodep', version: '3.1')
     compile(group: 'org.fusesource.jansi', name: 'jansi', version: '1.11')
     compile(group: 'commons-io', name: 'commons-io', version: '2.4')
@@ -241,6 +242,7 @@ dependencies {
     compile(group: 'javax.jms', name: 'jms-api', version: '1.1-rev-1')
     testCompile(group: 'log4j', name: 'log4j', version: '1.2.17')
     testCompile(group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.12')
+    testCompile(group: 'org.slf4j', name: 'log4j-over-slf4j', version: '1.7.12')
 }
 
 artifacts {
