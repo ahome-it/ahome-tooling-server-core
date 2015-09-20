@@ -113,7 +113,7 @@ sourceSets {
 }
 
 task codeCoverage << {
-    println ":Finished-codeCoverage"
+    println ":codeCoverage-done"
 }
 
 codeCoverage.dependsOn jacocoTestReport
