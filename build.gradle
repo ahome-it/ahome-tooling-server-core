@@ -120,8 +120,8 @@ codeCoverage.dependsOn jacocoTestReport
 
 jacocoTestReport {
     reports {
+        csv.enabled true
         xml.enabled false
-        csv.enabled false
         html.destination 'build/reports/coverage'
     }
 }
