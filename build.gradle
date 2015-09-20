@@ -43,7 +43,7 @@ sourceCompatibility = 1.8
 
 targetCompatibility = 1.8
 
-version = '1.0.111-RELEASE'
+version = '1.0.112-RELEASE'
 
 group = 'com.ahome-it'
 
@@ -204,6 +204,7 @@ def getBuildGITCommitMessage() {
 dependencies {
     compile(group: 'com.ahome-it', name: 'ahome-tooling-common', version: '1.0.45-RELEASE')
     compile(group: 'log4j', name: 'log4j', version: '1.2.17')
+    compile(group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.12')
     compile(group: 'cglib', name: 'cglib-nodep', version: '3.1')
     compile(group: 'org.fusesource.jansi', name: 'jansi', version: '1.11')
     compile(group: 'commons-io', name: 'commons-io', version: '2.4')
