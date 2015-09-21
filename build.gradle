@@ -207,6 +207,10 @@ def getBuildGITCommitMessage() {
     Grgit.open(project.file('.')).head().shortMessage
 }
 
+configurations {
+    compile.exclude(group: 'net.jcip', module: 'jcip-annotations')
+}
+
 dependencies {
     compile(group: 'com.ahome-it', name: 'ahome-tooling-common', version: '1.0.45-RELEASE')
     compile(group: 'log4j', name: 'log4j', version: '1.2.17')
