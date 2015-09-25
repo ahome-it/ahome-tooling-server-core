@@ -16,19 +16,13 @@
 
 buildscript {
     repositories {
-        maven {
-            credentials {
-                username "${artifactory_user}"
-                password "${artifactory_pass}"
-            }
-            url "${artifactory_repo}"
-        }
+        mavenCentral()
     }
     dependencies {
         classpath(group: 'org.ajoberstar', name: 'grgit', version: '1.4.0')
         classpath(group: 'commons-codec', name: 'commons-codec', version: '1.10')
         classpath(group: 'commons-logging', name: 'commons-logging', version: '1.2')
-        classpath(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.4.1')
+        classpath(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5')
     }
 }
 
@@ -46,7 +40,7 @@ sourceCompatibility = 1.8
 
 targetCompatibility = 1.8
 
-version = '1.0.114-RELEASE'
+version = '1.0.115-RELEASE'
 
 group = 'com.ahome-it'
 
@@ -97,13 +91,7 @@ jar {
 }
 
 repositories {
-    maven {
-        credentials {
-            username "${artifactory_user}"
-            password "${artifactory_pass}"
-        }
-        url "${artifactory_repo}"
-    }
+    mavenCentral()
 }
 
 sourceSets {
@@ -220,8 +208,10 @@ dependencies {
     compile(group: 'cglib', name: 'cglib-nodep', version: '3.1')
     compile(group: 'org.fusesource.jansi', name: 'jansi', version: '1.11')
     compile(group: 'commons-io', name: 'commons-io', version: '2.4')
+    compile(group: 'commons-lang', name: 'commons-lang', version: '2.6')
     compile(group: 'commons-codec', name: 'commons-codec', version: '1.10')
     compile(group: 'commons-logging', name: 'commons-logging', version: '1.2')
+    compile(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5')
     compile(group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.2')
     compile(group: 'com.google.guava', name: 'guava', version: '18.0')
     compile(group: 'org.spockframework', name: 'spock-core', version: '1.0-groovy-2.4') {
@@ -249,6 +239,7 @@ dependencies {
     }
     compile(group: 'org.springframework.integration', name: 'spring-integration-java-dsl', version: '1.1.0.RELEASE')
     compile(group: 'org.springframework.session', name: 'spring-session', version: '1.0.2.RELEASE')
+    compile(group: 'org.springframework.batch', name: 'spring-batch-core', version: '3.0.5.RELEASE')
     compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.4', classifier: 'indy')
     compile(group: 'org.codehaus.gpars', name: 'gpars', version: '1.2.1')
     compile(group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0')
@@ -358,8 +349,6 @@ def List<String> springCorePackages() {
         'spring-messaging',
         'spring-jdbc',
         'spring-tx',
-        'spring-orm',
-        'spring-oxm',
         'spring-jms',
         'spring-web',
         'spring-webmvc',
@@ -372,7 +361,6 @@ def List<String> springSecurityPackages() {
     return [
         'spring-security-web',
         'spring-security-acl',
-        'spring-security-cas',
         'spring-security-ldap',
         'spring-security-crypto',
         'spring-security-config',
@@ -392,12 +380,9 @@ def List<String> springIntegrationPackages() {
         'spring-integration-ftp',
         'spring-integration-sftp',
         'spring-integration-mail',
-        'spring-integration-feed',
         'spring-integration-file',
         'spring-integration-http',
-        'spring-integration-xmpp',
         'spring-integration-event',
-        'spring-integration-stomp',
         'spring-integration-stream',
         'spring-integration-security',
         'spring-integration-scripting'
