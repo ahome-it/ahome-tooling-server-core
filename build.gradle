@@ -40,7 +40,7 @@ sourceCompatibility = 1.8
 
 targetCompatibility = 1.8
 
-version = '1.0.115-RELEASE'
+version = '1.0.120-RELEASE'
 
 group = 'com.ahome-it'
 
@@ -200,20 +200,27 @@ configurations {
 }
 
 dependencies {
-    compile(group: 'com.ahome-it', name: 'ahome-tooling-common', version: '1.0.45-RELEASE')
+    compile(group: 'com.ahome-it', name: 'ahome-tooling-common', version: '1.0.55-RELEASE')
     compile(group: 'log4j', name: 'log4j', version: '1.2.17')
     compile(group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.12')
     compile(group: 'org.slf4j', name: 'jul-to-slf4j', version: '1.7.12')
     compile(group: 'org.slf4j', name: 'log4j-over-slf4j', version: '1.7.12')
     compile(group: 'cglib', name: 'cglib-nodep', version: '3.1')
     compile(group: 'org.fusesource.jansi', name: 'jansi', version: '1.11')
+    compile(group: 'joda-time', name: 'joda-time', version: '2.8.2')
     compile(group: 'commons-io', name: 'commons-io', version: '2.4')
+    compile(group: 'commons-net', name: 'commons-net', version: '3.3')
     compile(group: 'commons-lang', name: 'commons-lang', version: '2.6')
     compile(group: 'commons-codec', name: 'commons-codec', version: '1.10')
     compile(group: 'commons-logging', name: 'commons-logging', version: '1.2')
+    compile(group: 'commons-digester', name: 'commons-digester', version: '2.1')
+    compile(group: 'commons-collections', name: 'commons-collections', version: '3.2.1')
     compile(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5')
     compile(group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.2')
     compile(group: 'com.google.guava', name: 'guava', version: '18.0')
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.6.2')
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.6.2')
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.6.2')
     compile(group: 'org.spockframework', name: 'spock-core', version: '1.0-groovy-2.4') {
         exclude(group: 'org.codehaus.groovy', module: 'groovy-all')
     }
@@ -239,7 +246,6 @@ dependencies {
     }
     compile(group: 'org.springframework.integration', name: 'spring-integration-java-dsl', version: '1.1.0.RELEASE')
     compile(group: 'org.springframework.session', name: 'spring-session', version: '1.0.2.RELEASE')
-    compile(group: 'org.springframework.batch', name: 'spring-batch-core', version: '3.0.5.RELEASE')
     compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.4', classifier: 'indy')
     compile(group: 'org.codehaus.gpars', name: 'gpars', version: '1.2.1')
     compile(group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0')
