@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beansProjectDescription>
+	<version>1</version>
+	<pluginVersion><![CDATA[3.7.1.201510041102-RELEASE]]></pluginVersion>
+	<configSuffixes>
+		<configSuffix><![CDATA[xml]]></configSuffix>
+	</configSuffixes>
+	<enableImports><![CDATA[true]]></enableImports>
+	<configs>
+		<config>src/test/groovy/com/ait/tooling/server/core/test/ApplicationContext.xml</config>
+		<config>src/main/groovy/com/ait/tooling/server/core/config/CoreApplicationContext.xml</config>
+		<config>java:com.ait.tooling.server.core.jmx.management.CoreServerManager</config>
+	</configs>
+	<autoconfigs>
+	</autoconfigs>
+	<configSets>
+	</configSets>
+</beansProjectDescription>
