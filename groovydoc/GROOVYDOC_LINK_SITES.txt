@@ -1,5 +1,5 @@
 https://docs.oracle.com/javase/8/docs/api
-http://docs.groovy-lang.org/docs/groovy-2.4.4/html/gapi
+http://docs.groovy-lang.org/docs/groovy-2.4.5/html/gapi
 http://junit.org/javadoc/latest
 https://logging.apache.org/log4j/1.2/apidocs
 http://hamcrest.org/JavaHamcrest/javadoc/1.3
