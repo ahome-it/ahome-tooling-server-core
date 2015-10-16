@@ -7,9 +7,8 @@
 	</configSuffixes>
 	<enableImports><![CDATA[true]]></enableImports>
 	<configs>
-		<config>src/test/groovy/com/ait/tooling/server/core/test/ApplicationContext.xml</config>
-		<config>src/main/groovy/com/ait/tooling/server/core/config/CoreApplicationContext.xml</config>
-		<config>java:com.ait.tooling.server.core.jmx.management.CoreServerManager</config>
+		<config>src/test/resources/com/ait/tooling/server/core/test/ApplicationContext.xml</config>
+		<config>src/main/resources/com/ait/tooling/server/core/config/CoreApplicationContext.xml</config>
 	</configs>
 	<autoconfigs>
 	</autoconfigs>

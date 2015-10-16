@@ -22,7 +22,7 @@ buildscript {
         classpath(group: 'org.ajoberstar', name: 'grgit', version: '1.4.0')
         classpath(group: 'commons-codec', name: 'commons-codec', version: '1.10')
         classpath(group: 'commons-logging', name: 'commons-logging', version: '1.2')
-        classpath(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5')
+        classpath(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.1')
     }
 }
 
@@ -31,29 +31,36 @@ import org.apache.tools.ant.filters.ReplaceTokens
 import java.net.InetAddress
 import org.ajoberstar.grgit.Grgit
 
-apply plugin: 'groovy'
 apply plugin: 'maven'
+apply plugin: 'groovy'
 apply plugin: 'jacoco'
 apply plugin: 'signing'
+apply plugin: 'eclipse'
 
 sourceCompatibility = 1.8
 
 targetCompatibility = 1.8
 
-version = '1.0.120-RELEASE'
+version = '1.0.121-RELEASE'
 
 group = 'com.ahome-it'
 
-task('deleteConfigs', type: Delete) {
-    FileTree tree = fileTree (dir: 'build/resources/main')
+eclipse {
+    classpath {
+        downloadJavadoc = true
+    }
+}
+
+task deleteConfigs(type: Delete) {
+    FileTree tree = fileTree(dir: "${buildDir}/resources/main")
     tree.each { File file ->
         delete(file)
     }
 }
 
-task('filterConfigs', dependsOn: deleteConfigs, type: Copy) {
-    from sourceSets.main.allSource
-    into 'build/resources/main'
+task filterConfigs(dependsOn: deleteConfigs, type: Copy) {
+    from sourceSets.main.resources
+    into "${buildDir}/resources/main"
     filter(FixCrLfFilter)
     filter(ReplaceTokens, tokens: getFilterTokens())
 }
@@ -61,7 +68,7 @@ task('filterConfigs', dependsOn: deleteConfigs, type: Copy) {
 task doJavaDocs(type: Groovydoc) {
     source = sourceSets.main.allSource
     classpath = sourceSets.main.runtimeClasspath
-    destinationDir = file('build/docs/javadoc')
+    destinationDir = file("${buildDir}/docs/javadoc")
     docTitle = "${getProjectCommonName()}"
     footer = "<small><a href=\"${getBuildGITHomeURL()}\" target=\"_blank\">${getProjectCommonName()} - ${getBuildModuleVersion()} - Author: Dean S. Jones</a></small>"
     includes = ['com/ait/tooling/server/core/**']
@@ -77,7 +84,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 task javadocJar(type: Jar, dependsOn: doJavaDocs) {
     classifier = 'javadoc'
-    from 'build/docs/javadoc'
+    from "${buildDir}/docs/javadoc"
 }
 
 compileJava.dependsOn(clean)
@@ -94,15 +101,6 @@ repositories {
     mavenCentral()
 }
 
-sourceSets {
-    main {
-        resources { source groovy }
-    }
-    test {
-        resources { source groovy }
-    }
-}
-
 task codeCoverage << {
     println ":codeCoverage-done"
 }
@@ -113,10 +111,10 @@ jacocoTestReport {
     reports {
         csv {
             enabled true
-            destination "build/reports/jacoco/coverage-${version}.csv"
+            destination "${buildDir}/reports/jacoco/coverage-${version}.csv"
         }
         xml.enabled false
-        html.destination 'build/reports/coverage'
+        html.destination "${buildDir}/reports/coverage"
     }
 }
 
@@ -125,8 +123,8 @@ jacocoTestReport.dependsOn test
 test {
     jacoco {
         append = false
-        destinationFile = file("build/jacoco/testing.exec")
-        classDumpFile = file("build/jacoco/classpathdumps")
+        destinationFile = file("${buildDir}/jacoco/testing.exec")
+        classDumpFile = file("${buildDir}/jacoco/classpathdumps")
     }
 }
 
@@ -138,15 +136,15 @@ def getFilterTokens() {
     [GRADLE_BUILD_ARTIFACT_ID: getProjectArtifactID(), GRADLE_BUILD_PROJECT_TITLE: getProjectTitle(), GRADLE_BUILD_USER: getBuildUser(), GRADLE_BUILD_DATE: getBuildDate(), GRADLE_JAVA_VERSION: getJavaVersion(), GRADLE_GIT_COMMIT_HASH: getBuildGITCommitHash(), GRADLE_GIT_COMMIT_USER: getBuildGITCommitUser(), GRADLE_GIT_COMMIT_MESSAGE: getBuildGITCommitMessage(), GRADLE_BUILD_SERVER_HOST: getBuildServerHost(), GRADLE_BUILD_SERVER_BUILD: getBuildServerBuild(), GRADLE_BUILD_MODULE_VERSION: getBuildModuleVersion()]
 }
 
-def getProjectArtifactID() {
-    'ahome-tooling-server-core'
+def String getProjectArtifactID() {
+    getProjectTitle().toLowerCase()
 }
 
-def getProjectTitle() {
-    'Ahome-Tooling-Server-Core'
+def String getProjectTitle() {
+    getProjectCommonName().replaceAll(' ', '-')
 }
 
-def getProjectCommonName() {
+def String getProjectCommonName() {
     'Ahome Tooling Server Core'
 }
 
@@ -215,25 +213,24 @@ dependencies {
     compile(group: 'commons-logging', name: 'commons-logging', version: '1.2')
     compile(group: 'commons-digester', name: 'commons-digester', version: '2.1')
     compile(group: 'commons-collections', name: 'commons-collections', version: '3.2.1')
-    compile(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5')
+    compile(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.1')
     compile(group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.2')
     compile(group: 'com.google.guava', name: 'guava', version: '18.0')
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.6.2')
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.6.2')
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.6.2')
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.6.3')
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.6.3')
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.6.3')
     compile(group: 'org.spockframework', name: 'spock-core', version: '1.0-groovy-2.4') {
         exclude(group: 'org.codehaus.groovy', module: 'groovy-all')
     }
     compile(group: 'org.gebish', name: 'geb-core', version: '0.12.2') {
         exclude(group: 'org.codehaus.groovy', module: 'groovy-all')
     }
-    compile(group: 'org.seleniumhq.selenium', name: 'selenium-api', version: '2.46.0')
-    compile(group: 'org.seleniumhq.selenium', name: 'selenium-support', version: '2.46.0')
+    compile(group: 'org.seleniumhq.selenium', name: 'selenium-api', version: '2.48.2')
+    compile(group: 'org.seleniumhq.selenium', name: 'selenium-support', version: '2.48.2')
     compile(group: 'org.python', name: 'jython', version: '2.7.0')
     compile(group: 'org.jruby', name: 'jruby-complete', version: '9.0.1.0')
-    compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.4', classifier: 'indy')
     springCorePackages().each { String name ->
-        compile(group: 'org.springframework', name: name, version: '4.2.1.RELEASE')
+        compile(group: 'org.springframework', name: name, version: '4.2.2.RELEASE')
     }
     springSecurityPackages().each { String name ->
         compile(group: 'org.springframework.security', name: name, version: '4.0.2.RELEASE')
@@ -246,7 +243,7 @@ dependencies {
     }
     compile(group: 'org.springframework.integration', name: 'spring-integration-java-dsl', version: '1.1.0.RELEASE')
     compile(group: 'org.springframework.session', name: 'spring-session', version: '1.0.2.RELEASE')
-    compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.4', classifier: 'indy')
+    compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.5', classifier: 'indy')
     compile(group: 'org.codehaus.gpars', name: 'gpars', version: '1.2.1')
     compile(group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0')
     compile(group: 'javax.jms', name: 'jms-api', version: '1.1-rev-1')
