@@ -38,7 +38,7 @@ public class SimpleCryptoKeysGenerator implements ICryptoKeysGenerator
 
         for (int i = 0; i < 11; i++)
         {
-            builder.append(Tools.randomString(10)).append("-");
+            builder.append(Tools.randomString(8)).append("-");
         }
         return builder.append(Tools.checksumOfChars(builder)).toString();
     }
@@ -67,7 +67,7 @@ public class SimpleCryptoKeysGenerator implements ICryptoKeysGenerator
 
         private static final SecureRandom RAND = new SecureRandom();
 
-        private static final char[]       CHRS = "abcdefghijklmnopqrstuvwxyz%&*!@$0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
+        private static final char[]       CHRS = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
 
         static final String randomString(final int leng)
         {
