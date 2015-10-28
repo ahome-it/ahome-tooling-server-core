@@ -26,8 +26,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.MDC;
-
 import com.ait.tooling.common.api.java.util.IHTTPConstants;
 import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.server.core.json.JSONObject;
@@ -82,8 +80,6 @@ public abstract class HTTPServletBase extends HttpServlet implements IHTTPConsta
     @Override
     public void service(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
     {
-        MDC.put("session", "");
-
         try
         {
             super.service(request, response);
@@ -98,7 +94,6 @@ public abstract class HTTPServletBase extends HttpServlet implements IHTTPConsta
         }
         finally
         {
-            MDC.put("session", "");
         }
     }
 
