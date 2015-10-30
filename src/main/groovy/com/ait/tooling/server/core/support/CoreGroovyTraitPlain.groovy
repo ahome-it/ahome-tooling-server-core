@@ -27,6 +27,7 @@ import org.springframework.messaging.PollableChannel
 import org.springframework.messaging.SubscribableChannel
 
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager
+import com.ait.tooling.server.core.json.JSONObject
 import com.ait.tooling.server.core.json.support.JSONTrait
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
@@ -38,6 +39,8 @@ import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IPropertiesResolver
 import com.ait.tooling.server.core.support.spring.IServerContext
 import com.ait.tooling.server.core.support.spring.ServerContextInstance
+import com.ait.tooling.server.core.support.spring.telemetry.ITelemetryManager
+import com.ait.tooling.server.core.support.spring.telemetry.ITelemetryProvider
 
 @CompileStatic
 public trait CoreGroovyTraitPlain implements JSONTrait
@@ -161,6 +164,32 @@ public trait CoreGroovyTraitPlain implements JSONTrait
             return channel.send(message, timeout)
         }
         throw new IllegalArgumentException("MessageChannel ${name} does not exist.")
+    }
+
+    public ITelemetryProvider getTelemetryProvider()
+    {
+        getServerContext().getTelemetryProvider()
+    }
+    
+    public ITelemetryManager getTelemetryManager()
+    {
+        getServerContext().getTelemetryManager()
+    }
+
+    public boolean telemetry(String action, JSONObject message)
+    {
+        ITelemetryProvider provider = getTelemetryProvider()
+
+        if (provider.isSending())
+        {
+            return provider.post(provider.make(Objects.requireNonNull(action), Objects.requireNonNull(message)))
+        }
+        false
+    }
+
+    public boolean telemetry(String action, Map<String, ?> map)
+    {
+        telemetry(Objects.requireNonNull(action), json(Objects.requireNonNull(map)))
     }
 
     public boolean containsBean(String name)

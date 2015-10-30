@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.jmx.management;
+package com.ait.tooling.server.core.support.spring.telemetry;
 
-import java.io.Serializable;
+import java.util.Map;
 
-import com.ait.tooling.server.core.logging.ICoreLoggingOperations;
+import com.ait.tooling.server.core.json.JSONObject;
 
-public interface ICoreServerManager extends ICoreLoggingOperations, Serializable
+public interface ITelemetryService
 {
-    public boolean isRunning();
+    public ITelemetryManager getTelemetryManager();
+
+    public ITelemetryProvider getTelemetryProvider();
+    
+    public boolean telemetry(String action, JSONObject message);
+    
+    public boolean telemetry(String action, Map<String, ?> map);
 }

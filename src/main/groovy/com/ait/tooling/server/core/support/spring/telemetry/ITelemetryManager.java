@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.jmx.management;
+package com.ait.tooling.server.core.support.spring.telemetry;
 
-import java.io.Serializable;
-
-import com.ait.tooling.server.core.logging.ICoreLoggingOperations;
-
-public interface ICoreServerManager extends ICoreLoggingOperations, Serializable
+public interface ITelemetryManager extends ITelemetryOps
 {
-    public boolean isRunning();
+    public void heartbeat();
+
+    public boolean isSending();
+
+    public void setSending(boolean sending);
 }

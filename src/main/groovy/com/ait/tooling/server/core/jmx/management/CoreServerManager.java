@@ -16,8 +16,6 @@
 
 package com.ait.tooling.server.core.jmx.management;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -37,8 +35,6 @@ public class CoreServerManager implements ICoreServerManager
     private static final Logger                   logger             = Logger.getLogger(CoreServerManager.class);
 
     private boolean                               m_running          = true;
-
-    private final ConcurrentHashMap<String, Long> m_operation_counts = new ConcurrentHashMap<String, Long>();
 
     public CoreServerManager()
     {
@@ -112,41 +108,5 @@ public class CoreServerManager implements ICoreServerManager
     public boolean isRunning()
     {
         return m_running;
-    }
-
-    @ManagedAttribute()
-    public final ConcurrentHashMap<String, Long> getOperationCounts()
-    {
-        return m_operation_counts;
-    }
-
-    @Override
-    public synchronized void doIncrementOperationCount(final String name)
-    {
-        if (null != name)
-        {
-            final Long count = m_operation_counts.get(name);
-
-            if (null == count)
-            {
-                m_operation_counts.put(name, 1L);
-            }
-            else
-            {
-                m_operation_counts.put(name, count + 1L);
-            }
-        }
-    }
-
-    @Override
-    public synchronized void doResetOperationCount(final String name)
-    {
-        if (null != name)
-        {
-            if (m_operation_counts.containsKey(name))
-            {
-                m_operation_counts.put(name, 0L);
-            }
-        }
     }
 }
