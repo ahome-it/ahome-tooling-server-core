@@ -36,9 +36,8 @@ import com.ait.tooling.server.core.security.ICryptoProvider;
 import com.ait.tooling.server.core.security.ISignatoryProvider;
 import com.ait.tooling.server.core.security.session.IServerSessionRepository;
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider;
-import com.ait.tooling.server.core.support.spring.telemetry.ITelemetryService;
 
-public interface IServerContext extends IJSONUtilities, IAuthorizer, IPropertiesResolver, ITelemetryService, Serializable
+public interface IServerContext extends IJSONUtilities, IAuthorizer, IPropertiesResolver, Serializable
 {
     public IServerContext getServerContext();
 

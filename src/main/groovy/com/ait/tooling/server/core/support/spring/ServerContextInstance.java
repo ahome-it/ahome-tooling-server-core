@@ -17,7 +17,6 @@
 package com.ait.tooling.server.core.support.spring;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -31,7 +30,6 @@ import org.springframework.messaging.PollableChannel;
 import org.springframework.messaging.SubscribableChannel;
 
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
-import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.support.JSONUtilitiesInstance;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 import com.ait.tooling.server.core.security.AuthorizationResult;
@@ -40,8 +38,6 @@ import com.ait.tooling.server.core.security.ICryptoProvider;
 import com.ait.tooling.server.core.security.ISignatoryProvider;
 import com.ait.tooling.server.core.security.session.IServerSessionRepository;
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider;
-import com.ait.tooling.server.core.support.spring.telemetry.ITelemetryManager;
-import com.ait.tooling.server.core.support.spring.telemetry.ITelemetryProvider;
 
 public class ServerContextInstance extends JSONUtilitiesInstance implements IServerContext
 {
@@ -333,35 +329,5 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     public Logger logger()
     {
         return m_logger;
-    }
-
-    @Override
-    public boolean telemetry(final String action, final JSONObject message)
-    {
-        final ITelemetryProvider provider = getTelemetryProvider();
-
-        if (provider.isSending())
-        {
-            return provider.post(provider.make(Objects.requireNonNull(action), Objects.requireNonNull(message)));
-        }
-        return false;
-    }
-
-    @Override
-    public boolean telemetry(final String action, final Map<String, ?> map)
-    {
-        return telemetry(Objects.requireNonNull(action), json(Objects.requireNonNull(map)));
-    }
-
-    @Override
-    public ITelemetryProvider getTelemetryProvider()
-    {
-        return Objects.requireNonNull(getBeanSafely("TelemetryProvider", ITelemetryProvider.class), "TelemetryProvider is null, initialization error.");
-    }
-
-    @Override
-    public ITelemetryManager getTelemetryManager()
-    {
-        return Objects.requireNonNull(getBeanSafely("TelemetryManager", ITelemetryManager.class), "TelemetryManager is null, initialization error.");
     }
 }

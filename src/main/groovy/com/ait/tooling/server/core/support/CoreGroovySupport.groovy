@@ -43,8 +43,6 @@ import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IPropertiesResolver
 import com.ait.tooling.server.core.support.spring.IServerContext
 import com.ait.tooling.server.core.support.spring.ServerContextInstance
-import com.ait.tooling.server.core.support.spring.telemetry.ITelemetryManager
-import com.ait.tooling.server.core.support.spring.telemetry.ITelemetryProvider
 
 @CompileStatic
 public class CoreGroovySupport implements IServerContext, Closeable
@@ -209,36 +207,6 @@ public class CoreGroovySupport implements IServerContext, Closeable
             return channel.send(message, timeout)
         }
         throw new IllegalArgumentException("MessageChannel ${name} does not exist.")
-    }
-
-    @Memoized
-    public ITelemetryProvider getTelemetryProvider()
-    {
-        getServerContext().getTelemetryProvider()
-    }
-
-    @Memoized
-    public ITelemetryManager getTelemetryManager()
-    {
-        getServerContext().getTelemetryManager()
-    }
-
-    @Override
-    public boolean telemetry(String action, JSONObject message)
-    {
-        ITelemetryProvider provider = getTelemetryProvider()
-
-        if (provider.isSending())
-        {
-            return provider.post(provider.make(Objects.requireNonNull(action), Objects.requireNonNull(message)))
-        }
-        false
-    }
-
-    @Override
-    public boolean telemetry(String action, Map<String, ?> map)
-    {
-        telemetry(Objects.requireNonNull(action), json(Objects.requireNonNull(map)))
     }
 
     @Override
