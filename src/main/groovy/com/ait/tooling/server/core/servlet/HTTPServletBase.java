@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import com.ait.tooling.common.api.java.util.IHTTPConstants;
 import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.server.core.json.JSONObject;
@@ -37,17 +39,19 @@ import com.google.common.util.concurrent.RateLimiter;
 @SuppressWarnings("serial")
 public abstract class HTTPServletBase extends HttpServlet implements IHTTPConstants
 {
-    public static final String SESSION_DOMAIN_PARAM = "core.server.session.domain";
+    private static final Logger logger                             = Logger.getLogger(HTTPServletBase.class);
 
-    public static final String UNKNOWN_USER         = "%-UNKNOWN-USER-%";
+    public final static String  SESSION_PROVIDER_DOMAIN_NAME_PARAM = "core.server.session.provider.domain.name";
 
-    public static final String NULL_SESSION         = "%-NULL_SESSION-%";
+    public static final String  UNKNOWN_USER                       = "%-UNKNOWN-USER-%";
 
-    public static final double MAX_RATE_LIMIT       = 2000.0;
+    public static final String  NULL_SESSION                       = "%-NULL_SESSION-%";
 
-    public static final double MIN_RATE_LIMIT       = 0.1000;
+    public static final double  MAX_RATE_LIMIT                     = 2000.0;
 
-    private final RateLimiter  m_ratelimit;
+    public static final double  MIN_RATE_LIMIT                     = 0.1000;
+
+    private final RateLimiter   m_ratelimit;
 
     protected HTTPServletBase()
     {
@@ -67,9 +71,20 @@ public abstract class HTTPServletBase extends HttpServlet implements IHTTPConsta
         }
     }
 
-    protected String getDefaultSessionRepositoryDomain()
+    protected String getSessionProviderDomainName()
     {
-        return getInitParameter(SESSION_DOMAIN_PARAM);
+        String name = StringOps.toTrimOrNull(getInitParameter(SESSION_PROVIDER_DOMAIN_NAME_PARAM));
+
+        if (null == name)
+        {
+            return "default";
+        }
+        return name;
+    }
+
+    protected boolean isRunning()
+    {
+        return getServerContext().getCoreServerManager().isRunning();
     }
 
     protected final static IServerContext getServerContext()
@@ -77,24 +92,33 @@ public abstract class HTTPServletBase extends HttpServlet implements IHTTPConsta
         return ServerContextInstance.getServerContextInstance().getServerContext();
     }
 
+    protected void doNoCache(final HttpServletResponse response)
+    {
+        final long time = System.currentTimeMillis();
+
+        response.setDateHeader(DATE_HEADER, time);
+
+        response.setDateHeader(EXPIRES_HEADER, time - 31536000000L);
+
+        response.setHeader(PRAGMA_HEADER, "no-cache");
+
+        response.setHeader(CACHE_CONTROL_HEADER, "no-cache, no-store, must-revalidate");
+    }
+
     @Override
     public void service(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
     {
-        try
+        if (false == isRunning())
         {
-            super.service(request, response);
+            logger.error("server is suspended, refused request");
+
+            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+
+            return;
         }
-        catch (ServletException e)
-        {
-            throw e;
-        }
-        catch (IOException e)
-        {
-            throw e;
-        }
-        finally
-        {
-        }
+        ratelimit();
+
+        super.service(request, response);
     }
 
     public static final LinkedHashMap<String, String> getParametersFromRequest(final HttpServletRequest request)
