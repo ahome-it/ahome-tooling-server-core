@@ -31,39 +31,37 @@ import org.apache.log4j.Logger;
 import com.ait.tooling.common.api.java.util.IHTTPConstants;
 import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.server.core.json.JSONObject;
+import com.ait.tooling.server.core.locking.IRateLimited;
 import com.ait.tooling.server.core.security.AuthorizationResult;
 import com.ait.tooling.server.core.support.spring.IServerContext;
 import com.ait.tooling.server.core.support.spring.ServerContextInstance;
 import com.google.common.util.concurrent.RateLimiter;
 
 @SuppressWarnings("serial")
-public abstract class HTTPServletBase extends HttpServlet implements IHTTPConstants
+public abstract class HTTPServletBase extends HttpServlet implements IRateLimited, IHTTPConstants
 {
     private static final Logger logger                             = Logger.getLogger(HTTPServletBase.class);
 
-    public final static String  SESSION_PROVIDER_DOMAIN_NAME_PARAM = "core.server.session.provider.domain.name";
+    public static final String  SESSION_PROVIDER_DOMAIN_NAME_PARAM = "core.server.session.provider.domain.name";
 
     public static final String  UNKNOWN_USER                       = "%-UNKNOWN-USER-%";
 
-    public static final String  NULL_SESSION                       = "%-NULL_SESSION-%";
-
-    public static final double  MAX_RATE_LIMIT                     = 2000.0;
-
-    public static final double  MIN_RATE_LIMIT                     = 0.1000;
+    public static final String  NULL_SESSION                       = "%-NULL-SESSION-%";
 
     private final RateLimiter   m_ratelimit;
 
     protected HTTPServletBase()
     {
-        m_ratelimit = null;
+        m_ratelimit = RateLimiterFactory.create(getClass());
     }
 
-    protected HTTPServletBase(final double limit)
+    protected HTTPServletBase(final double rate)
     {
-        m_ratelimit = RateLimiter.create(Math.min(Math.max(limit, MIN_RATE_LIMIT), MAX_RATE_LIMIT));
+        m_ratelimit = RateLimiterFactory.create(rate);
     }
 
-    protected final void ratelimit()
+    @Override
+    public final void acquire()
     {
         if (null != m_ratelimit)
         {
@@ -73,13 +71,7 @@ public abstract class HTTPServletBase extends HttpServlet implements IHTTPConsta
 
     protected String getSessionProviderDomainName()
     {
-        String name = StringOps.toTrimOrNull(getInitParameter(SESSION_PROVIDER_DOMAIN_NAME_PARAM));
-
-        if (null == name)
-        {
-            return "default";
-        }
-        return name;
+        return StringOps.toTrimOrElse(getInitParameter(SESSION_PROVIDER_DOMAIN_NAME_PARAM), "default");
     }
 
     protected boolean isRunning()
@@ -98,11 +90,11 @@ public abstract class HTTPServletBase extends HttpServlet implements IHTTPConsta
 
         response.setDateHeader(DATE_HEADER, time);
 
-        response.setDateHeader(EXPIRES_HEADER, time - 31536000000L);
+        response.setDateHeader(EXPIRES_HEADER, time - YEAR_IN_MILLISECONDS);
 
-        response.setHeader(PRAGMA_HEADER, "no-cache");
+        response.setHeader(PRAGMA_HEADER, NO_CACHE_PRAGMA_HEADER_VALUE);
 
-        response.setHeader(CACHE_CONTROL_HEADER, "no-cache, no-store, must-revalidate");
+        response.setHeader(CACHE_CONTROL_HEADER, NO_CACHE_CONTROL_HEADER_VALUE);
     }
 
     @Override
@@ -116,7 +108,7 @@ public abstract class HTTPServletBase extends HttpServlet implements IHTTPConsta
 
             return;
         }
-        ratelimit();
+        acquire();
 
         super.service(request, response);
     }

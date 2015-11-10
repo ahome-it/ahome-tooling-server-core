@@ -147,23 +147,23 @@ public class CacheControlFilter extends AbstractHTTPFilter
 
         response.setDateHeader(DATE_HEADER, time);
 
-        response.setDateHeader(EXPIRES_HEADER, time - YEAR_IN_SECONDS);
+        response.setDateHeader(EXPIRES_HEADER, time - YEAR_IN_MILLISECONDS);
 
-        response.setHeader(PRAGMA_HEADER, "no-cache");
+        response.setHeader(PRAGMA_HEADER, NO_CACHE_PRAGMA_HEADER_VALUE);
 
-        response.setHeader(CACHE_CONTROL_HEADER, "no-cache, no-store, must-revalidate");
+        response.setHeader(CACHE_CONTROL_HEADER, NO_CACHE_CONTROL_HEADER_VALUE);
     }
 
     protected void doFarFuture(final HttpServletRequest request, final HttpServletResponse response)
     {
-        response.setHeader(CACHE_CONTROL_HEADER, "max-age=" + YEAR_IN_SECONDS);
+        response.setHeader(CACHE_CONTROL_HEADER, CACHE_CONTROL_MAX_AGE_PREFIX + YEAR_IN_SECONDS);
 
         response.setDateHeader(EXPIRES_HEADER, System.currentTimeMillis() + YEAR_IN_MILLISECONDS);
     }
 
     protected void doWeekFuture(final HttpServletRequest request, final HttpServletResponse response)
     {
-        response.setHeader(CACHE_CONTROL_HEADER, "max-age=" + WEEK_IN_SECONDS);
+        response.setHeader(CACHE_CONTROL_HEADER, CACHE_CONTROL_MAX_AGE_PREFIX + WEEK_IN_SECONDS);
 
         response.setDateHeader(EXPIRES_HEADER, System.currentTimeMillis() + WEEK_IN_MILLISECONDS);
     }
