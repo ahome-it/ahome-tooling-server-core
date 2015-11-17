@@ -17,8 +17,13 @@
 package com.ait.tooling.server.core.security;
 
 import java.io.Serializable;
+import java.util.List;
 
-public interface ISignatoryEncoder extends Serializable
+public interface IPrincipal extends Serializable
 {
-    public String encodeBytes(byte[] src) throws Exception;
+    public String getId();
+    
+    public List<IPrincipal> getRootsFor();
+    
+    public List<IPrincipal> getChildren();
 }

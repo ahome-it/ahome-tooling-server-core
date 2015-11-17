@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+ * Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,17 +23,15 @@ import org.springframework.session.ExpiringSession;
 
 public interface IServerSession extends ExpiringSession, Serializable
 {
-    public static final String SERVER_SESSION_KEY = IServerSession.class.getSimpleName().toUpperCase() + "_KEY";
+    public static final String CORE_SERVER_SESSION_KEY = "com.ait.tooling.server.core.security.session.Session.KEY";
 
     public String getUserId();
 
     public String getStatus();
 
-    public String getDomainName();
+    public String getDomain();
 
     public List<String> getRoles();
 
     public IServerSession getProxyForSession();
-
-    public boolean isSignatureValid(String signature);
 }

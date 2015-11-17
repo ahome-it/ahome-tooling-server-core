@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+ * Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.ait.tooling.server.core.security.session;
 
 import java.io.Serializable;
-import java.util.Map;
 
 import org.springframework.session.SessionRepository;
 
@@ -25,23 +24,21 @@ import com.ait.tooling.server.core.json.JSONObject;
 
 public interface IServerSessionRepository extends SessionRepository<IServerSession>, Serializable
 {
-    public static final double MAX_RATE_LIMIT = 2000.0;
-
-    public static final double MIN_RATE_LIMIT = 0.1000;
-
+    public boolean isActive();
+    
     public String getDomain();
 
-    public boolean isActive();
-
-    public Map<String, Object> getProperties();
-
-    public Iterable<String> getRolesForUser(String user);
-
-    public void setRateLimit(double limit);
-
+    public void touch(String id);
+    
     public void touch(IServerSession session);
-
-    public IServerSession createSession(JSONObject keys);
-
+    
+    public void delete(String id);
+    
+    public void delete(IServerSession session);
+    
+    public JSONObject getAttributes();
+    
     public void cleanExpiredSessions();
+    
+    public IServerSession createSession(JSONObject keys);
 }
