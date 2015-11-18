@@ -28,7 +28,6 @@ import org.springframework.messaging.PollableChannel
 import org.springframework.messaging.SubscribableChannel
 
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager
-import com.ait.tooling.server.core.json.JSONObject
 import com.ait.tooling.server.core.json.support.JSONTrait
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
@@ -201,5 +200,20 @@ public trait CoreGroovyTrait implements JSONTrait
     public String uuid()
     {
         getServerContext().uuid()
+    }
+
+    public Reader getPathResourceAsReader(String path)
+    {
+        getServerContext().getPathResourceAsReader(path)
+    }
+
+    public InputStream getPathResourceAsStream(String path)
+    {
+        getServerContext().getPathResourceAsStream(path)
+    }
+
+    public String getPathResourceAsString(String path)
+    {
+        getServerContext().getPathResourceAsString(path)
     }
 }

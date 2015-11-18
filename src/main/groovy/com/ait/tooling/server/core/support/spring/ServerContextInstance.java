@@ -16,6 +16,8 @@
 
 package com.ait.tooling.server.core.support.spring;
 
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -29,6 +31,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.messaging.SubscribableChannel;
 
+import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.json.support.JSONUtilitiesInstance;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
@@ -329,5 +332,23 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     public Logger logger()
     {
         return m_logger;
+    }
+
+    @Override
+    public Reader getPathResourceAsReader(final String path)
+    {
+        return PathResourceLoader.getPathResourceAsReader(StringOps.requireTrimOrNull(path));
+    }
+
+    @Override
+    public InputStream getPathResourceAsStream(final String path)
+    {
+        return PathResourceLoader.getPathResourceAsStream(StringOps.requireTrimOrNull(path));
+    }
+
+    @Override
+    public String getPathResourceAsString(final String path)
+    {
+        return PathResourceLoader.getPathResourceAsString(StringOps.requireTrimOrNull(path));
     }
 }

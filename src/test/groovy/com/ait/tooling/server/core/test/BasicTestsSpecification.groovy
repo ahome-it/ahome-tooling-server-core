@@ -16,10 +16,11 @@
 
 package com.ait.tooling.server.core.test
 
+import com.ait.tooling.server.core.json.JSONObject
 import com.ait.tooling.server.core.support.CoreGroovyTrait
 import com.ait.tooling.server.core.support.spring.IServerContext
-import com.ait.tooling.server.core.support.spring.testing.spock.ServerCoreSpecification
 import com.ait.tooling.server.core.support.spring.testing.IServerCoreTesting.TestingOps
+import com.ait.tooling.server.core.support.spring.testing.spock.ServerCoreSpecification
 
 class BasicTestsSpecification extends ServerCoreSpecification implements CoreGroovyTrait
 {
@@ -52,7 +53,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     def "test JSONObject"()
     {
         setup:
-        def valu = json([name: "Dean"])
+        def valu = json(name: "Dean")
 
         expect:
         valu['name'] == "Dean"
@@ -68,5 +69,21 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         
         expect:
         getCryptoProvider().isPassValid(pass) == true
+    }
+    
+    def "test binder"()
+    {
+        setup:
+        BinderPOJO pojo = new BinderPOJO()
+        pojo.setName('Dean S. Jones')
+        String text = binder().toJSONString(pojo)
+        BinderPOJO make = binder().bind(text, BinderPOJO)
+        JSONObject json = binder().toJSONObject(make)
+        String valu = json.toJSONString()
+        println text
+        println valu
+        
+        expect:
+        text == valu
     }
 }

@@ -31,6 +31,7 @@ import org.springframework.messaging.SubscribableChannel
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager
 import com.ait.tooling.server.core.json.JSONArray
 import com.ait.tooling.server.core.json.JSONObject
+import com.ait.tooling.server.core.json.binder.JSONBinder;
 import com.ait.tooling.server.core.json.parser.JSONParserException
 import com.ait.tooling.server.core.json.schema.JSONSchema
 import com.ait.tooling.server.core.security.AuthorizationResult
@@ -47,9 +48,9 @@ import com.ait.tooling.server.core.support.spring.ServerContextInstance
 @CompileStatic
 public class CoreGroovySupport implements IServerContext, Closeable
 {
-    private static final CoreGroovySupport INSTANCE = new CoreGroovySupport()
+    private static final CoreGroovySupport  INSTANCE = new CoreGroovySupport()
 
-    private final Logger    m_logger = Logger.getLogger(getClass())
+    private final Logger                    m_logger = Logger.getLogger(getClass())
 
     @Memoized
     public static final CoreGroovySupport getCoreGroovySupport()
@@ -320,5 +321,29 @@ public class CoreGroovySupport implements IServerContext, Closeable
     public JSONArray jarr(Collection<?> collection)
     {
         getServerContext().jarr(Objects.requireNonNull(collection))
+    }
+    
+    @Override
+    public Reader getPathResourceAsReader(String path)
+    {
+        getServerContext().getPathResourceAsReader(path)
+    }
+
+    @Override
+    public InputStream getPathResourceAsStream(String path)
+    {
+        getServerContext().getPathResourceAsStream(path)
+    }
+
+    @Override
+    public String getPathResourceAsString(String path)
+    {
+        getServerContext().getPathResourceAsString(path)
+    }
+    
+    @Override
+    public JSONBinder binder()
+    {
+        getServerContext().binder()
     }
 }

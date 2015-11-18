@@ -16,12 +16,14 @@
 
 package com.ait.tooling.server.core.json.support
 
+import groovy.transform.CompileStatic
+
 import com.ait.tooling.server.core.json.JSONArray
 import com.ait.tooling.server.core.json.JSONObject
+import com.ait.tooling.server.core.json.binder.JSONBinder
 import com.ait.tooling.server.core.json.parser.JSONParser
 import com.ait.tooling.server.core.json.parser.JSONParserException
 import com.ait.tooling.server.core.json.schema.JSONSchema
-import groovy.transform.CompileStatic
 
 
 @CompileStatic
@@ -149,5 +151,10 @@ public trait JSONTrait
         {
             jarr(new ArrayList<Object>(collection))
         }
+    }
+
+    public JSONBinder binder()
+    {
+        new JSONBinder()
     }
 }

@@ -16,6 +16,8 @@
 
 package com.ait.tooling.server.core.support.spring;
 
+import java.io.InputStream;
+import java.io.Reader;
 import java.io.Serializable;
 import java.util.List;
 
@@ -84,4 +86,10 @@ public interface IServerContext extends IJSONUtilities, IAuthorizer, IProperties
     public Logger logger();
 
     public String uuid();
+    
+    public String getPathResourceAsString(String path);
+    
+    public Reader getPathResourceAsReader(String path);
+
+    public InputStream getPathResourceAsStream(String path);
 }

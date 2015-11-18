@@ -26,6 +26,7 @@ import java.util.Objects;
 
 import com.ait.tooling.server.core.json.JSONArray;
 import com.ait.tooling.server.core.json.JSONObject;
+import com.ait.tooling.server.core.json.binder.JSONBinder;
 import com.ait.tooling.server.core.json.parser.JSONParser;
 import com.ait.tooling.server.core.json.parser.JSONParserException;
 import com.ait.tooling.server.core.json.schema.JSONSchema;
@@ -40,7 +41,7 @@ public class JSONUtilitiesInstance implements IJSONUtilities
     {
         return INSTANCE;
     }
-    
+
     protected JSONUtilitiesInstance()
     {
     }
@@ -177,5 +178,11 @@ public class JSONUtilitiesInstance implements IJSONUtilities
         {
             return jarr(new ArrayList<Object>(collection));
         }
+    }
+
+    @Override
+    public final JSONBinder binder()
+    {
+        return new JSONBinder();
     }
 }
