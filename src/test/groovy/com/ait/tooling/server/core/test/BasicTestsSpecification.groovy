@@ -75,7 +75,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     {
         setup:
         BinderPOJO pojo = new BinderPOJO()
-        pojo.setName('Dean S. Jones')
+        pojo.setName('Dean S. /Jones')
         String text = binder().toJSONString(pojo)
         BinderPOJO make = binder().bind(text, BinderPOJO)
         JSONObject json = binder().toJSONObject(make)

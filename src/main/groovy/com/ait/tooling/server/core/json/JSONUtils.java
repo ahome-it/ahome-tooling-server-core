@@ -277,9 +277,6 @@ public final class JSONUtils implements Serializable
                     case '\t':
                         out.write("\\t");
                         break;
-                    case '/':
-                        out.write("\\/");
-                        break;
                     default:
                         // Reference: http://www.unicode.org/versions/Unicode5.1.0/
 
