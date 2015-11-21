@@ -19,6 +19,8 @@ package com.ait.tooling.server.core.json.parser;
 
 import java.io.Reader;
 
+import com.ait.tooling.server.core.json.JSONUtils;
+
 final class Yylex
 {
     /** This character denotes the end of file */
@@ -632,7 +634,14 @@ final class Yylex
                     break;
                 case 2:
                 {
-                    Integer val = Integer.valueOf(yytext());
+                    Long val = Long.valueOf(yytext());
+
+                    Integer asi = JSONUtils.asInteger(val);
+
+                    if (null != asi)
+                    {
+                        return new Yytoken(Yytoken.TYPE_VALUE, asi);
+                    }
                     return new Yytoken(Yytoken.TYPE_VALUE, val);
                 }
                 case 45:
@@ -667,4 +676,5 @@ final class Yylex
             }
         }
     }
+
 }

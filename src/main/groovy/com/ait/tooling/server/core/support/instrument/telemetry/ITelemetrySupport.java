@@ -14,47 +14,13 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.test;
+package com.ait.tooling.server.core.support.instrument.telemetry;
 
-public class BinderPOJO
-{
-    private String m_name = "";
+import java.io.Serializable;
 
-    private double m_cost = 0d;
+public interface ITelemetrySupport extends Serializable
+{    
+    public ITelemetryProvider getTelemetryProvider();
 
-    public BinderPOJO()
-    {
-    }
-    
-    public BinderPOJO(String name)
-    {
-        m_name = name;
-    }
-    
-    public BinderPOJO(String name, double cost)
-    {
-        m_name = name;
-        
-        m_cost = cost;
-    }
-
-    public String getName()
-    {
-        return m_name;
-    }
-
-    public void setName(String name)
-    {
-        m_name = name;
-    }
-    
-    public double getCost()
-    {
-        return m_cost;
-    }
-
-    public void setCost(double cost)
-    {
-        m_cost = cost;
-    }
+    public ITelemetrySupport telemetry(String category, Object message);
 }

@@ -14,47 +14,14 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.test;
+package com.ait.tooling.server.core.support.instrument.telemetry;
 
-public class BinderPOJO
+import java.io.Closeable;
+import java.io.Serializable;
+
+public interface ITelemetryProvider extends Serializable, Closeable
 {
-    private String m_name = "";
-
-    private double m_cost = 0d;
-
-    public BinderPOJO()
-    {
-    }
+    public boolean isClosed();
     
-    public BinderPOJO(String name)
-    {
-        m_name = name;
-    }
-    
-    public BinderPOJO(String name, double cost)
-    {
-        m_name = name;
-        
-        m_cost = cost;
-    }
-
-    public String getName()
-    {
-        return m_name;
-    }
-
-    public void setName(String name)
-    {
-        m_name = name;
-    }
-    
-    public double getCost()
-    {
-        return m_cost;
-    }
-
-    public void setCost(double cost)
-    {
-        m_cost = cost;
-    }
+    public ITelemetryProvider broadcast(String category, Object message);
 }

@@ -40,6 +40,8 @@ import com.ait.tooling.server.core.security.ICryptoProvider
 import com.ait.tooling.server.core.security.ISignatoryProvider
 import com.ait.tooling.server.core.security.session.IServerSessionRepository
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider
+import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetryProvider
+import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetrySupport;
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IPropertiesResolver
 import com.ait.tooling.server.core.support.spring.IServerContext
@@ -322,7 +324,7 @@ public class CoreGroovySupport implements IServerContext, Closeable
     {
         getServerContext().jarr(Objects.requireNonNull(collection))
     }
-    
+
     @Override
     public Reader getPathResourceAsReader(String path)
     {
@@ -340,10 +342,22 @@ public class CoreGroovySupport implements IServerContext, Closeable
     {
         getServerContext().getPathResourceAsString(path)
     }
-    
+
     @Override
     public JSONBinder binder()
     {
         getServerContext().binder()
+    }
+
+    @Memoized
+    public ITelemetryProvider getTelemetryProvider()
+    {
+        getServerContext().getTelemetryProvider()
+    }
+
+    @Override
+    public ITelemetrySupport telemetry(String category, Object message)
+    {
+        getServerContext().telemetry(category, message)
     }
 }

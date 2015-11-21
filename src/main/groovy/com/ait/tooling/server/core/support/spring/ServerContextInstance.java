@@ -41,6 +41,8 @@ import com.ait.tooling.server.core.security.ICryptoProvider;
 import com.ait.tooling.server.core.security.ISignatoryProvider;
 import com.ait.tooling.server.core.security.session.IServerSessionRepository;
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider;
+import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetryProvider;
+import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetrySupport;
 
 public class ServerContextInstance extends JSONUtilitiesInstance implements IServerContext
 {
@@ -350,5 +352,23 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     public String getPathResourceAsString(final String path)
     {
         return PathResourceLoader.getPathResourceAsString(StringOps.requireTrimOrNull(path));
+    }
+
+    @Override
+    public ITelemetryProvider getTelemetryProvider()
+    {
+        return Objects.requireNonNull(getBeanSafely("TelemetryProvider", ITelemetryProvider.class), "TelemetryProvider is null, initialization error.");
+    }
+
+    @Override
+    public ITelemetrySupport telemetry(final String category, final Object message)
+    {
+        final ITelemetryProvider provider = getTelemetryProvider();
+
+        if (false == provider.isClosed())
+        {
+            provider.broadcast(StringOps.requireTrimOrNull(category), Objects.requireNonNull(message));
+        }
+        return this;
     }
 }

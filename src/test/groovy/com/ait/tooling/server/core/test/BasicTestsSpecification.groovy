@@ -38,6 +38,19 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     {
         expect: getPropertyByName("core.server.events.keep.alive") == "30"
     }
+    
+    def "test telemetry"()
+    {
+        setup:
+        telemetry('testing', [x: 1])
+        telemetry('testing', false)
+        telemetry('testing', 5)
+        telemetry('testing', ['Dean', 'S', 'Jones'])
+        telemetry('testing', new BinderPOJO('Rosaria', 29.99))
+        
+        expect:
+        "dean" == "dean"
+    }
 
     def "test server context crypto provider"()
     {
@@ -82,6 +95,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         String valu = json.toJSONString()
         println text
         println valu
+        //Thread.sleep(30000)
         
         expect:
         text == valu
