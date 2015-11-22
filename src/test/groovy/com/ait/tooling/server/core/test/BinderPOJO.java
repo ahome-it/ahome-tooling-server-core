@@ -21,6 +21,8 @@ public class BinderPOJO
     private String m_name = "";
 
     private double m_cost = 0d;
+    
+    private long m_time = System.currentTimeMillis();
 
     public BinderPOJO()
     {
@@ -56,5 +58,15 @@ public class BinderPOJO
     public void setCost(double cost)
     {
         m_cost = cost;
+    }
+    
+    public void setTime(long time)
+    {
+        m_time = time;
+    }
+    
+    public long getTime()
+    {
+        return m_time;
     }
 }

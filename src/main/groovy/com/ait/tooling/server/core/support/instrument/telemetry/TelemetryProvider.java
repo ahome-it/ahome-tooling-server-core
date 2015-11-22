@@ -31,121 +31,105 @@ import org.springframework.messaging.Message;
 import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.support.JSONUtilitiesInstance;
 
-public class TelemetryProvider implements ITelemetryProvider
-{
-    private static final long                  serialVersionUID = -3902901457710499217L;
+public class TelemetryProvider implements ITelemetryProvider {
+	private static final long serialVersionUID = -3902901457710499217L;
 
-    private static final Logger                s_logger         = Logger.getLogger(TelemetryProvider.class);
+	private static final Logger s_logger = Logger.getLogger(TelemetryProvider.class);
 
-    private static final JSONUtilitiesInstance JSONUTIL         = JSONUtilitiesInstance.getJSONUtilitiesInstance();
+	private static final JSONUtilitiesInstance JSONUTIL = JSONUtilitiesInstance.getJSONUtilitiesInstance();
 
-    private boolean                            m_closed         = false;
+	private boolean m_closed = false;
 
-    private final ExecutorService              m_expool         = Executors.newFixedThreadPool(25);
+	private final ExecutorService m_expool = Executors.newFixedThreadPool(25);
 
-    public TelemetryProvider()
-    {
-        s_logger.info("TelemetryProvider()");
-    }
+	public TelemetryProvider() {
+		s_logger.info("TelemetryProvider()");
+	}
 
-    @Override
-    public void close() throws IOException
-    {
-        s_logger.info("close()");
+	@Override
+	public void close() throws IOException {
+		s_logger.info("close()");
 
-        if (false == m_closed)
-        {
-            m_closed = true;
+		if (false == m_closed) {
+			m_closed = true;
 
-            m_expool.shutdownNow();
-        }
-    }
+			m_expool.shutdownNow();
+		}
+	}
 
-    @Override
-    public boolean isClosed()
-    {
-        return m_closed;
-    }
+	@Override
+	public boolean isClosed() {
+		return m_closed;
+	}
 
-    public void health()
-    {
-        broadcast("memory", new JSONObject("heap", JSONUTIL.binder().toJSONObject(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage())));
+	public void health() {
+		broadcast("health", new JSONObject("memory", getMemoryUsageObject()));
 
-        s_logger.info("health()");
-    }
+		s_logger.info("health()");
+	}
 
-    private static final Object convert(final Object message)
-    {
-        if (null != message)
-        {
-            if (message instanceof JSONObject)
-            {
-                return message;
-            }
-            if (message instanceof Map)
-            {
-                return message;
-            }
-            if (message instanceof List)
-            {
-                return message;
-            }
-            else if (message instanceof Collection)
-            {
-                return new ArrayList<Object>((Collection<?>) message);
-            }
-            else if (message instanceof Message)
-            {
-                return convert(((Message<?>) message).getPayload());
-            }
-            else if (message.getClass().isPrimitive())
-            {
-                return message;
-            }
-            else
-            {
-                JSONObject sendjson = JSONUTIL.binder().toJSONObject(message);
+	private final JSONObject getHeapMemoryUsageObject() {
+		return JSONUTIL.binder().toJSONObject(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage());
+	}
 
-                if (null == sendjson)
-                {
-                    return message;
-                }
-                return sendjson;
-            }
-        }
-        return null;
-    }
+	private final JSONObject getNonHeapMemoryUsageObject() {
+		return JSONUTIL.binder().toJSONObject(ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage());
+	}
 
-    @Override
-    public TelemetryProvider broadcast(final String category, final Object message)
-    {
-        if (false == isClosed())
-        {
-            final long timemark = System.currentTimeMillis();
+	private final JSONObject getMemoryUsageObject() {
+		return new JSONObject("heap", getHeapMemoryUsageObject()).set("non_heap", getNonHeapMemoryUsageObject());
+	}
 
-            m_expool.submit(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    if (false == isClosed())
-                    {
-                        try
-                        {
-                            final ITelemetryMessage send = new TelemetryMessage(category, convert(message), timemark);
+	private static final Object convert(final Object message) {
+		if (null != message) {
+			if (message instanceof JSONObject) {
+				return message;
+			}
+			if (message instanceof Map) {
+				return message;
+			}
+			if (message instanceof List) {
+				return message;
+			} else if (message instanceof Collection) {
+				return new ArrayList<Object>((Collection<?>) message);
+			} else if (message instanceof Message) {
+				return convert(((Message<?>) message).getPayload());
+			} else if (message.getClass().isPrimitive()) {
+				return message;
+			} else {
+				JSONObject sendjson = JSONUTIL.binder().toJSONObject(message);
 
-                            s_logger.info(send.toJSONObject().toJSONString());
+				if (null == sendjson) {
+					return message;
+				}
+				return sendjson;
+			}
+		}
+		return null;
+	}
 
-                            send.close();
-                        }
-                        catch (Exception e)
-                        {
-                            s_logger.error("broadcast()", e);
-                        }
-                    }
-                }
-            });
-        }
-        return this;
-    }
+	@Override
+	public TelemetryProvider broadcast(final String category, final Object message) {
+		if (false == isClosed()) {
+			final long timemark = System.currentTimeMillis();
+
+			m_expool.submit(new Runnable() {
+				@Override
+				public void run() {
+					if (false == isClosed()) {
+						try {
+							final ITelemetryMessage send = new TelemetryMessage(category, convert(message), timemark);
+
+							s_logger.info(send.toJSONObject().toJSONString());
+
+							send.close();
+						} catch (Exception e) {
+							s_logger.error("broadcast()", e);
+						}
+					}
+				}
+			});
+		}
+		return this;
+	}
 }

@@ -174,7 +174,7 @@ public final class JSONBinder implements Serializable
     {
         try
         {
-            return m_mapper.readValue(json.toJSONString(), claz);
+            return m_mapper.readValue(json.toJSONString(false), claz);
         }
         catch (Exception e)
         {

@@ -92,10 +92,10 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         String text = binder().toJSONString(pojo)
         BinderPOJO make = binder().bind(text, BinderPOJO)
         JSONObject json = binder().toJSONObject(make)
-        String valu = json.toJSONString()
+        String valu = json.toJSONString(false)
         println text
         println valu
-        //Thread.sleep(30000)
+        Thread.sleep(30000)
         
         expect:
         text == valu
