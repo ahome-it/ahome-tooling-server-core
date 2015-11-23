@@ -35,8 +35,7 @@ import com.ait.tooling.server.core.security.ICryptoProvider
 import com.ait.tooling.server.core.security.ISignatoryProvider
 import com.ait.tooling.server.core.security.session.IServerSessionRepository
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider
-import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetryProvider;
-import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetrySupport;
+import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetryProvider
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IPropertiesResolver
 import com.ait.tooling.server.core.support.spring.IServerContext
@@ -218,15 +217,21 @@ public trait CoreGroovyTrait implements JSONTrait
     {
         getServerContext().getPathResourceAsString(path)
     }
-    
+
     @Memoized
     public ITelemetryProvider getTelemetryProvider()
     {
         getServerContext().getTelemetryProvider()
     }
 
-    public ITelemetrySupport telemetry(String category, Object message)
+    public boolean telemetry(String category, Object message)
     {
-        getServerContext().telemetry(category, message)
+        def provider = getTelemetryProvider()
+
+        if (provider.isActive())
+        {
+            return provider.broadcast(category, message)
+        }
+        false
     }
 }

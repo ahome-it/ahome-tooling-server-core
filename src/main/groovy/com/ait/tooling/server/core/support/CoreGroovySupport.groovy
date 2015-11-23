@@ -31,7 +31,7 @@ import org.springframework.messaging.SubscribableChannel
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager
 import com.ait.tooling.server.core.json.JSONArray
 import com.ait.tooling.server.core.json.JSONObject
-import com.ait.tooling.server.core.json.binder.JSONBinder;
+import com.ait.tooling.server.core.json.binder.JSONBinder
 import com.ait.tooling.server.core.json.parser.JSONParserException
 import com.ait.tooling.server.core.json.schema.JSONSchema
 import com.ait.tooling.server.core.security.AuthorizationResult
@@ -41,7 +41,6 @@ import com.ait.tooling.server.core.security.ISignatoryProvider
 import com.ait.tooling.server.core.security.session.IServerSessionRepository
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider
 import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetryProvider
-import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetrySupport;
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IPropertiesResolver
 import com.ait.tooling.server.core.support.spring.IServerContext
@@ -356,8 +355,14 @@ public class CoreGroovySupport implements IServerContext, Closeable
     }
 
     @Override
-    public ITelemetrySupport telemetry(String category, Object message)
+    public boolean telemetry(String category, Object message)
     {
-        getServerContext().telemetry(category, message)
+        def provider = getTelemetryProvider()
+
+        if (provider.isActive())
+        {
+            return provider.broadcast(category, message)
+        }
+        false
     }
 }

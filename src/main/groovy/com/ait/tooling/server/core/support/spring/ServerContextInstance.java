@@ -42,7 +42,6 @@ import com.ait.tooling.server.core.security.ISignatoryProvider;
 import com.ait.tooling.server.core.security.session.IServerSessionRepository;
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider;
 import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetryProvider;
-import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetrySupport;
 
 public class ServerContextInstance extends JSONUtilitiesInstance implements IServerContext
 {
@@ -361,14 +360,14 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     }
 
     @Override
-    public ITelemetrySupport telemetry(final String category, final Object message)
+    public boolean telemetry(final String category, final Object message)
     {
         final ITelemetryProvider provider = getTelemetryProvider();
 
-        if (false == provider.isClosed())
+        if (provider.isActive())
         {
-            provider.broadcast(StringOps.requireTrimOrNull(category), Objects.requireNonNull(message));
+            return provider.broadcast(StringOps.requireTrimOrNull(category), Objects.requireNonNull(message));
         }
-        return this;
+        return false;
     }
 }

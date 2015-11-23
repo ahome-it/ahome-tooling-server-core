@@ -23,5 +23,7 @@ public interface ITelemetryProvider extends Serializable, Closeable
 {
     public boolean isClosed();
     
-    public ITelemetryProvider broadcast(String category, Object message);
+    public boolean isActive();
+
+    public boolean broadcast(String category, Object message);
 }

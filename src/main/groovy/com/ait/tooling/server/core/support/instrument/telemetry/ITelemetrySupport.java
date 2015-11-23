@@ -22,5 +22,5 @@ public interface ITelemetrySupport extends Serializable
 {    
     public ITelemetryProvider getTelemetryProvider();
 
-    public ITelemetrySupport telemetry(String category, Object message);
+    public boolean telemetry(String category, Object message);
 }

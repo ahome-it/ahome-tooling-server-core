@@ -19,6 +19,8 @@ package com.ait.tooling.server.core.support.instrument.telemetry;
 import java.io.Closeable;
 import java.io.Serializable;
 
+import org.springframework.messaging.Message;
+
 import com.ait.tooling.server.core.json.JSONObject;
 
 public interface ITelemetryMessage extends Serializable, Closeable
@@ -32,4 +34,6 @@ public interface ITelemetryMessage extends Serializable, Closeable
     public String getCategory();
 
     public JSONObject toJSONObject();
+    
+    public Message<JSONObject> toJSONPublishMessage();
 }

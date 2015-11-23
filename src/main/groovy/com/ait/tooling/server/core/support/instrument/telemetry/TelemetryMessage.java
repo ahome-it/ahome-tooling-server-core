@@ -17,22 +17,28 @@
 package com.ait.tooling.server.core.support.instrument.telemetry;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Objects;
+
+import org.springframework.messaging.Message;
 
 import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.server.core.json.JSONObject;
+import com.ait.tooling.server.core.pubsub.JSONMessageBuilder;
 
 public class TelemetryMessage implements ITelemetryMessage
 {
-    private static final long serialVersionUID = 5585132472596795023L;
+    private static final long       serialVersionUID = 5585132472596795023L;
 
-    private boolean           m_closed         = false;
+    private static final JSONObject SERVER_INFO      = getServerInfo();
 
-    private final long        m_timemark;
+    private boolean                 m_closed         = false;
 
-    private final String      m_category;
+    private final long              m_timemark;
 
-    private final Object      m_messages;
+    private final String            m_category;
+
+    private final Object            m_messages;
 
     public TelemetryMessage(final String category, final Object messages, final long timemark)
     {
@@ -76,6 +82,37 @@ public class TelemetryMessage implements ITelemetryMessage
     @Override
     public JSONObject toJSONObject()
     {
-        return new JSONObject("TELEMETRY", new JSONObject("category", getCategory()).set("timestamp", getTimeStamp()).set("message", getMessage()));
+        return new JSONObject("TELEMETRY", new JSONObject("category", getCategory()).set("timestamp", getTimeStamp()).set("server", SERVER_INFO).set("message", getMessage()));
+    }
+
+    private static final JSONObject getServerInfo()
+    {
+        String host;
+
+        String addr;
+
+        try
+        {
+            host = InetAddress.getLocalHost().getHostName();
+        }
+        catch (Exception e)
+        {
+            host = "localhost:unknown";
+        }
+        try
+        {
+            addr = InetAddress.getLocalHost().getHostAddress();
+        }
+        catch (Exception e)
+        {
+            addr = "127.0.0.1:unknown";
+        }
+        return new JSONObject("host", host).set("addr", addr);
+    }
+
+    @Override
+    public Message<JSONObject> toJSONPublishMessage()
+    {
+        return JSONMessageBuilder.createMessage(toJSONObject());
     }
 }

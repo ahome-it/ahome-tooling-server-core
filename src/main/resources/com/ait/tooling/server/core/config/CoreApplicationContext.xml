@@ -70,13 +70,18 @@
 		<property name="loggingLevelAsString" value="${core.server.events.logs.level}"/>
 	</bean>
 	
-	<bean id="TelemetryProvider" class="com.ait.tooling.server.core.support.instrument.telemetry.TelemetryProvider" destroy-method="close"/>
-	
+	<bean id="TelemetryProvider" class="com.ait.tooling.server.core.support.instrument.telemetry.TelemetryProvider" destroy-method="close">
+		<constructor-arg value="${core.server.telemetry.provider.active}"/>
+		<constructor-arg value="${core.server.telemetry.provider.executor.threads}"/>
+	</bean>
+		
 	<task:scheduled-tasks scheduler="TelemetryProviderScheduler">
-    	<task:scheduled ref="TelemetryProvider" method="health" fixed-delay="600000"/>
+    	<task:scheduled ref="TelemetryProvider" method="health" fixed-delay="${core.server.telemetry.provider.scheduler.health.delay}"/>
 	</task:scheduled-tasks>
 	
-	<task:scheduler id="TelemetryProviderScheduler" pool-size="10"/>
+	<task:scheduler id="TelemetryProviderScheduler" pool-size="${core.server.telemetry.provider.scheduler.pool.size}"/>
+	
+	<int:publish-subscribe-channel id="TelemetryPublishMessageChannel"/>
 
 	<context:component-scan base-package="com.ait.tooling.server.core.jmx"/>
 
