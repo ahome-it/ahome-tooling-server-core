@@ -44,6 +44,8 @@ public final class JSONBinder implements Serializable
 
     private ObjectMapper        m_mapper;
 
+    private boolean             m_strict         = false;
+
     public JSONBinder()
     {
         m_mapper = new ObjectMapper();
@@ -59,6 +61,18 @@ public final class JSONBinder implements Serializable
         m_mapper = new ObjectMapper();
 
         enable(features);
+    }
+
+    public JSONBinder setStrict(final boolean strict)
+    {
+        m_strict = strict;
+
+        return this;
+    }
+
+    public boolean isStrict()
+    {
+        return m_strict;
     }
 
     public JSONBinder configure(final MapperFeature feature, final boolean state)
@@ -174,7 +188,7 @@ public final class JSONBinder implements Serializable
     {
         try
         {
-            return m_mapper.readValue(json.toJSONString(false), claz);
+            return m_mapper.readValue(json.toJSONString(isStrict()), claz);
         }
         catch (Exception e)
         {
@@ -193,7 +207,7 @@ public final class JSONBinder implements Serializable
             {
                 final Writer writer = new FileWriter(file);
 
-                ((JSONObject) object).writeJSONString(writer);
+                ((JSONObject) object).writeJSONString(writer, isStrict());
 
                 IOUtils.closeQuietly(writer);
             }
@@ -216,7 +230,7 @@ public final class JSONBinder implements Serializable
         {
             if (object instanceof JSONObject)
             {
-                ((JSONObject) object).writeJSONString(new OutputStreamWriter(stream));
+                ((JSONObject) object).writeJSONString(new OutputStreamWriter(stream), isStrict());
             }
             else
             {
@@ -237,7 +251,7 @@ public final class JSONBinder implements Serializable
         {
             if (object instanceof JSONObject)
             {
-                ((JSONObject) object).writeJSONString(writer);
+                ((JSONObject) object).writeJSONString(writer, isStrict());
             }
             else
             {
@@ -258,7 +272,7 @@ public final class JSONBinder implements Serializable
         {
             if (object instanceof JSONObject)
             {
-                return object.toString();
+                return ((JSONObject) object).toJSONString(isStrict());
             }
             else
             {

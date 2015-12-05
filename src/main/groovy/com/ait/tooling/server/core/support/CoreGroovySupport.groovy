@@ -34,6 +34,7 @@ import com.ait.tooling.server.core.json.JSONObject
 import com.ait.tooling.server.core.json.binder.JSONBinder
 import com.ait.tooling.server.core.json.parser.JSONParserException
 import com.ait.tooling.server.core.json.schema.JSONSchema
+import com.ait.tooling.server.core.pubsub.JSONMessageBuilder
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.security.ICryptoProvider
@@ -184,6 +185,18 @@ public class CoreGroovySupport implements IServerContext, Closeable
     }
 
     @Override
+    public boolean publish(String name, JSONObject message)
+    {
+        publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message)))
+    }
+
+    @Override
+    public boolean publish(String name, JSONObject message, long timeout)
+    {
+        publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message)), timeout)
+    }
+
+    @Override
     public <T> boolean publish(String name, Message<T> message)
     {
         Objects.requireNonNull(message)
@@ -322,24 +335,6 @@ public class CoreGroovySupport implements IServerContext, Closeable
     public JSONArray jarr(Collection<?> collection)
     {
         getServerContext().jarr(Objects.requireNonNull(collection))
-    }
-
-    @Override
-    public Reader getPathResourceAsReader(String path)
-    {
-        getServerContext().getPathResourceAsReader(path)
-    }
-
-    @Override
-    public InputStream getPathResourceAsStream(String path)
-    {
-        getServerContext().getPathResourceAsStream(path)
-    }
-
-    @Override
-    public String getPathResourceAsString(String path)
-    {
-        getServerContext().getPathResourceAsString(path)
     }
 
     @Override

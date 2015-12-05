@@ -82,6 +82,21 @@ public class ServerSessionRepositoryProvider extends Activatable implements ISer
     public void close() throws IOException
     {
         setActive(false);
+        
+        for (IServerSessionRepository repository : m_repositories.values())
+        {
+            if (null != repository)
+            {
+                try
+                {
+                    repository.close();
+                }
+                catch (Exception e)
+                {
+                    logger.error("ServerSessionRepositoryProvider.close() error.", e);
+                }
+            }
+        }
     }
 
     @Override

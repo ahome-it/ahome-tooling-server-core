@@ -16,8 +16,6 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import java.io.InputStream;
-import java.io.Reader;
 import java.io.Serializable;
 import java.util.List;
 
@@ -31,6 +29,7 @@ import org.springframework.messaging.PollableChannel;
 import org.springframework.messaging.SubscribableChannel;
 
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
+import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.support.IJSONUtilities;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizer;
@@ -80,6 +79,10 @@ public interface IServerContext extends IJSONUtilities, IAuthorizer, IProperties
 
     public PollableChannel getPollableChannel(String name);
 
+    public boolean publish(String name, JSONObject message);
+
+    public boolean publish(String name, JSONObject message, long timeout);
+
     public <T> boolean publish(String name, Message<T> message);
 
     public <T> boolean publish(String name, Message<T> message, long timeout);
@@ -87,10 +90,4 @@ public interface IServerContext extends IJSONUtilities, IAuthorizer, IProperties
     public Logger logger();
 
     public String uuid();
-    
-    public String getPathResourceAsString(String path);
-    
-    public Reader getPathResourceAsReader(String path);
-
-    public InputStream getPathResourceAsStream(String path);
 }

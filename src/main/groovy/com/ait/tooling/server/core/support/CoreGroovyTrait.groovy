@@ -28,7 +28,9 @@ import org.springframework.messaging.PollableChannel
 import org.springframework.messaging.SubscribableChannel
 
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager
+import com.ait.tooling.server.core.json.JSONObject
 import com.ait.tooling.server.core.json.support.JSONTrait
+import com.ait.tooling.server.core.pubsub.JSONMessageBuilder
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.security.ICryptoProvider
@@ -156,6 +158,16 @@ public trait CoreGroovyTrait implements JSONTrait
     {
         getServerContext().getPollableChannel(Objects.requireNonNull(name))
     }
+    
+    public boolean publish(String name, JSONObject message)
+    {
+        publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message)))
+    }
+
+    public boolean publish(String name, JSONObject message, long timeout)
+    {
+        publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message)), timeout)
+    }
 
     public <T> boolean publish(String name, Message<T> message)
     {
@@ -201,21 +213,6 @@ public trait CoreGroovyTrait implements JSONTrait
     public String uuid()
     {
         getServerContext().uuid()
-    }
-
-    public Reader getPathResourceAsReader(String path)
-    {
-        getServerContext().getPathResourceAsReader(path)
-    }
-
-    public InputStream getPathResourceAsStream(String path)
-    {
-        getServerContext().getPathResourceAsStream(path)
-    }
-
-    public String getPathResourceAsString(String path)
-    {
-        getServerContext().getPathResourceAsString(path)
     }
 
     @Memoized

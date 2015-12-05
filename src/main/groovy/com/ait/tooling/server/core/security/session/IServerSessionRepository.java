@@ -16,13 +16,13 @@
 
 package com.ait.tooling.server.core.security.session;
 
-import java.io.Serializable;
+import java.io.Closeable;
 
 import org.springframework.session.SessionRepository;
 
 import com.ait.tooling.server.core.json.JSONObject;
 
-public interface IServerSessionRepository extends SessionRepository<IServerSession>, Serializable
+public interface IServerSessionRepository extends SessionRepository<IServerSession>, Closeable
 {
     public boolean isActive();
     

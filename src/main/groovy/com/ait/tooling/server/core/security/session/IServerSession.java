@@ -16,12 +16,14 @@
 
 package com.ait.tooling.server.core.security.session;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.session.ExpiringSession;
 
-public interface IServerSession extends ExpiringSession, Serializable
+import com.ait.tooling.common.api.json.JSONStringify;
+import com.ait.tooling.server.core.json.JSONObject;
+
+public interface IServerSession extends ExpiringSession, JSONStringify
 {
     public static final String CORE_SERVER_SESSION_KEY = "com.ait.tooling.server.core.security.session.Session.KEY";
 
@@ -34,4 +36,6 @@ public interface IServerSession extends ExpiringSession, Serializable
     public List<String> getRoles();
 
     public IServerSession getProxyForSession();
+    
+    public JSONObject toJSONObject();
 }
