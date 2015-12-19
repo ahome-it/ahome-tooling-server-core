@@ -41,7 +41,7 @@ sourceCompatibility = 1.8
 
 targetCompatibility = 1.8
 
-version = '1.0.135-SNAPSHOT'
+version = '1.0.136-SNAPSHOT'
 
 group = 'com.ahome-it'
 
@@ -215,10 +215,10 @@ dependencies {
     compile(group: 'commons-collections', name: 'commons-collections', version: '3.2.2')
     compile(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.1')
     compile(group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.2')
-    compile(group: 'com.google.guava', name: 'guava', version: '18.0')
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.6.3')
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.6.3')
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.6.3')
+    compile(group: 'com.google.guava', name: 'guava', version: '19.0')
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.6.4')
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.6.4')
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.6.4')
     compile(group: 'org.spockframework', name: 'spock-core', version: '1.0-groovy-2.4') {
         exclude(group: 'org.codehaus.groovy', module: 'groovy-all')
     }
@@ -230,7 +230,7 @@ dependencies {
     compile(group: 'org.python', name: 'jython', version: '2.7.0')
     compile(group: 'org.jruby', name: 'jruby-complete', version: '9.0.4.0')
     springCorePackages().each { String name ->
-        compile(group: 'org.springframework', name: name, version: '4.2.3.RELEASE')
+        compile(group: 'org.springframework', name: name, version: '4.2.4.RELEASE')
     }
     springSecurityPackages().each { String name ->
         compile(group: 'org.springframework.security', name: name, version: '4.0.3.RELEASE')
