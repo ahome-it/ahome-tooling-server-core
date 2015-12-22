@@ -17,6 +17,8 @@
 package com.ait.tooling.server.core.json.parser;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -117,6 +119,11 @@ public final class JSONParser implements Serializable
         }
     }
 
+    public Object parse(final InputStream in) throws IOException, JSONParserException
+    {
+        return parse(new InputStreamReader(in));
+    }
+
     /**
      * Parse JSON text into java object from the input source.
      *  
@@ -184,7 +191,7 @@ public final class JSONParser implements Serializable
                             case Yytoken.TYPE_VALUE:
                                 if (m_token.m_value instanceof String)
                                 {
-                                    valuesStack.addFirst((String) m_token.m_value);
+                                    valuesStack.addFirst(m_token.m_value);
                                     m_phase = S_PASSED_PAIR_KEY;
                                     statusStack.addFirst(new Integer(m_phase));
                                 }

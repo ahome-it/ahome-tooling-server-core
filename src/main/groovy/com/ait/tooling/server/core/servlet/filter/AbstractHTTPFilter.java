@@ -51,7 +51,7 @@ public abstract class AbstractHTTPFilter implements Filter, IHTTPConstants, Seri
     }
 
     @Override
-    public void init(FilterConfig config) throws ServletException
+    public void init(FilterConfig fc) throws ServletException
     {
     }
 }

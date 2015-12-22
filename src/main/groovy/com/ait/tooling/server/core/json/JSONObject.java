@@ -32,6 +32,7 @@ import java.util.Objects;
 
 import com.ait.tooling.common.api.json.JSONObjectDefinition;
 import com.ait.tooling.common.api.json.JSONType;
+import com.ait.tooling.server.core.json.binder.JSONBinder;
 
 public class JSONObject extends LinkedHashMap<String, Object>implements JSONObjectDefinition<JSONArray, JSONObject>, IJSONStreamAware
 {
@@ -340,6 +341,50 @@ public class JSONObject extends LinkedHashMap<String, Object>implements JSONObje
     public Object remove(final String key)
     {
         return super.remove(Objects.requireNonNull(key));
+    }
+
+    public JSONObject minus(final String... keys)
+    {
+        Objects.requireNonNull(keys);
+
+        for (String key : keys)
+        {
+            remove(key);
+        }
+        return this;
+    }
+
+    public JSONObject minus(final List<String> keys)
+    {
+        Objects.requireNonNull(keys);
+
+        for (String key : keys)
+        {
+            remove(key);
+        }
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T asType(final Class<T> type)
+    {
+        Objects.requireNonNull(type);
+
+        if (String.class.equals(type))
+        {
+            return (T) toJSONString();
+        }
+        if (type.isAssignableFrom(getClass()))
+        {
+            return (T) this;
+        }
+        final T valu = new JSONBinder().bind(this, type);
+
+        if (null != valu)
+        {
+            return valu;
+        }
+        throw new ClassCastException(getClass().getName() + " cannot be coerced into " + type.getName());
     }
 
     @Override

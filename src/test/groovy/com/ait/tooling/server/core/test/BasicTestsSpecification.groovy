@@ -72,6 +72,29 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         valu['name'] == "Dean"
     }
     
+    def "test JSONObject 2"()
+    {
+        setup:
+        def valu = json(count: 1L)
+        def text = valu as String
+        println text
+
+        expect:
+        valu['count'] == 1L
+    }
+    
+    def "test JSONObject 3"()
+    {
+        setup:
+        def valu = json(count: 1L, name: "Dean", last: 1.5)
+        println valu as String
+        valu - ['name', 'last']
+        println valu as String
+        
+        expect:
+        valu['count'] == 1L
+    }
+    
     def "test Keys"()
     {
         setup:
@@ -93,6 +116,9 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         BinderPOJO make = binder().bind(text, BinderPOJO)
         JSONObject json = binder().toJSONObject(make)
         String valu = json.toJSONString(false)
+        pojo = json as BinderPOJO
+        pojo.setName('Bob')
+        println pojo.getName() + pojo.getCost()
         println text
         println valu
         Thread.sleep(30000)

@@ -31,7 +31,7 @@ import java.util.Objects;
 import com.ait.tooling.common.api.json.JSONArrayDefinition;
 import com.ait.tooling.common.api.json.JSONType;
 
-public class JSONArray extends ArrayList<Object>implements JSONArrayDefinition<JSONArray, JSONObject>, IJSONStreamAware
+public class JSONArray extends ArrayList<Object> implements JSONArrayDefinition<JSONArray, JSONObject>, IJSONStreamAware
 {
     private static final String NULL_FOR_OUTPUT  = "null".intern();
 
@@ -332,6 +332,22 @@ public class JSONArray extends ArrayList<Object>implements JSONArrayDefinition<J
             return ((String) value);
         }
         return null;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public <T> T asType(final Class<T> type)
+    {
+        Objects.requireNonNull(type);
+        
+        if (String.class.equals(type))
+        {
+            return (T) toJSONString();
+        }
+        if (type.isAssignableFrom(getClass()))
+        {
+            return (T) this;
+        }
+        throw new ClassCastException(getClass().getName() + " cannot be coerced into " + type.getName());
     }
 
     @Override
