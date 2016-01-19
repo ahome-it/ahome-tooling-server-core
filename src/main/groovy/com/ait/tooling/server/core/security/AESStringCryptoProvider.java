@@ -23,8 +23,6 @@ import org.springframework.security.crypto.encrypt.TextEncryptor;
 
 public final class AESStringCryptoProvider implements IStringCryptoProvider
 {
-    private static final long   serialVersionUID = -4685221437853283705L;
-
     private final TextEncryptor m_pcrypt;
 
     public AESStringCryptoProvider(final String pass, final String salt)

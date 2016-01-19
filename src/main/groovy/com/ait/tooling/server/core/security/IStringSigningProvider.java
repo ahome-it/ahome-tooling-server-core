@@ -16,9 +16,7 @@
 
 package com.ait.tooling.server.core.security;
 
-import java.io.Serializable;
-
-public interface IStringSigningProvider extends Serializable
+public interface IStringSigningProvider
 {
     public static final String HMAC_ALGORITHM = "HmacSHA256";
 

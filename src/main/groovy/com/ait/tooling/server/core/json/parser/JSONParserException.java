@@ -28,9 +28,16 @@ public class JSONParserException extends Exception
 
     private int               m_errorType;
 
-    private Object            m_unexpectedObject;
+    private Object            m_unexpectedObject         = null;
 
-    private int               m_position;
+    private int               m_position                 = -1;
+
+    public JSONParserException(final Exception e)
+    {
+        super(e);
+
+        m_errorType = ERROR_UNEXPECTED_EXCEPTION;
+    }
 
     public JSONParserException(final int errorType)
     {
@@ -81,6 +88,7 @@ public class JSONParserException extends Exception
         m_unexpectedObject = unexpectedObject;
     }
 
+    @Override
     public String toString()
     {
         final StringBuilder sb = new StringBuilder();

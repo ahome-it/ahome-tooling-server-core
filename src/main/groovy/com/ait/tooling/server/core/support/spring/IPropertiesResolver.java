@@ -16,9 +16,7 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import java.io.Serializable;
-
-public interface IPropertiesResolver extends Serializable
+public interface IPropertiesResolver
 {
     public String getPropertyByName(String name);
 

@@ -28,9 +28,7 @@ import com.ait.tooling.common.api.java.util.IHTTPConstants;
 
 public class SimpleKeyStringSigningProvider implements IStringSigningProvider
 {
-    private static final long   serialVersionUID = -1854517777122265790L;
-
-    private static final Logger logger           = Logger.getLogger(SimpleKeyStringSigningProvider.class);
+    private static final Logger logger = Logger.getLogger(SimpleKeyStringSigningProvider.class);
 
     private final SecretKeySpec m_secret;
 

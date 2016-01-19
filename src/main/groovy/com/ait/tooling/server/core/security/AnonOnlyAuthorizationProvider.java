@@ -21,8 +21,6 @@ import java.util.List;
 
 public class AnonOnlyAuthorizationProvider implements IAuthorizationProvider
 {
-    private static final long serialVersionUID = -1550272083884800529L;
-
     @Override
     public void close() throws IOException
     {

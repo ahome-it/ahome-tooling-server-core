@@ -21,8 +21,6 @@ import java.util.Objects;
 
 public class JSONObjectReplacerStack implements IJSONObjectReplacer
 {
-    private static final long                    serialVersionUID = -2154939786807874692L;
-
     private final ArrayList<IJSONObjectReplacer> m_list           = new ArrayList<IJSONObjectReplacer>();
 
     public JSONObjectReplacerStack()

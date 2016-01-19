@@ -16,10 +16,8 @@
 
 package com.ait.tooling.server.core.security;
 
-import java.io.Serializable;
-
 import com.ait.tooling.common.api.hash.IHasher;
 
-public interface ISHA512HashProvider extends IHasher, Serializable
+public interface ISHA512HashProvider extends IHasher
 {
 }

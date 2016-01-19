@@ -18,14 +18,13 @@ package com.ait.tooling.server.core.test
 
 import com.ait.tooling.server.core.json.JSONObject
 import com.ait.tooling.server.core.support.CoreGroovyTrait
-import com.ait.tooling.server.core.support.spring.IServerContext
 import com.ait.tooling.server.core.support.spring.testing.IServerCoreTesting.TestingOps
 import com.ait.tooling.server.core.support.spring.testing.spock.ServerCoreSpecification
 
 class BasicTestsSpecification extends ServerCoreSpecification implements CoreGroovyTrait
 {
     def setupSpec()
-    {        
+    {
         TestingOps.setupServerCoreDefault(["classpath:/com/ait/tooling/server/core/test/ApplicationContext.xml", "classpath:/com/ait/tooling/server/core/config/CoreApplicationContext.xml"])
     }
 
@@ -38,7 +37,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     {
         expect: getPropertyByName("core.server.events.keep.alive") == "30"
     }
-    
+
     def "test telemetry"()
     {
         setup:
@@ -47,7 +46,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         telemetry('testing', 5)
         telemetry('testing', ['Dean', 'S', 'Jones'])
         telemetry('testing', new BinderPOJO('Rosaria', 29.99))
-        
+
         expect:
         "dean" == "dean"
     }
@@ -62,7 +61,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         getCryptoProvider().decrypt(text) == "ok"
         getCryptoProvider().decrypt(text) != text
     }
-    
+
     def "test JSONObject"()
     {
         setup:
@@ -71,7 +70,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         expect:
         valu['name'] == "Dean"
     }
-    
+
     def "test JSONObject 2"()
     {
         setup:
@@ -82,7 +81,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         expect:
         valu['count'] == 1L
     }
-    
+
     def "test JSONObject 3"()
     {
         setup:
@@ -90,11 +89,11 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         println valu as String
         valu - ['name', 'last']
         println valu as String
-        
+
         expect:
         valu['count'] == 1L
     }
-    
+
     def "test Keys"()
     {
         setup:
@@ -102,11 +101,35 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         String salt = getCryptoProvider().getRandomSalt()
         println pass
         println salt
-        
+
         expect:
         getCryptoProvider().isPassValid(pass) == true
     }
-    
+
+    def "test chars"()
+    {
+        setup:
+        def i = "11" as Integer
+        println i + 2
+        File file = new File("/tmp/chars")
+        if (file.exists())
+        {
+            file.delete()
+        }
+        file.createNewFile()
+        Writer writer = new BufferedWriter(new FileWriter(file))
+        println "w0 " + IOTest.w0(10000000, writer, json(count: 1, name: "Dean", last: 1.5d, flag: false))
+        println "w1 " + IOTest.w1(10000000, writer, json(count: 1, name: "Dean", last: 1.5d, flag: false))
+        println "w2 " + IOTest.w2(10000000, writer, json(count: 1, name: "Dean", last: 1.5d, flag: false))
+        println "w3 " + IOTest.w3(10000000, writer, json(count: 1, name: "Dean", last: 1.5d, flag: false))
+        println "w4 " + IOTest.w4(10000000, writer, json(count: 1, name: "Dean", last: 1.5d, flag: false))
+        println "r0 " + IOTest.r0(10000000, writer, json(count: 1, name: "Dean", last: 1.5d, flag: false))
+        println "r1 " + IOTest.r1(10000000, writer, json(count: 1, name: "Dean", last: 1.5d, flag: false))
+        
+        expect:
+        "dean" == "dean"
+    }
+
     def "test binder"()
     {
         setup:
@@ -118,11 +141,11 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         String valu = json.toJSONString(false)
         pojo = json as BinderPOJO
         pojo.setName('Bob')
-        println pojo.getName() + pojo.getCost()
+        println binder().toJSONString(pojo)
         println text
         println valu
-        Thread.sleep(30000)
-        
+        //Thread.sleep(30000)
+
         expect:
         text == valu
     }

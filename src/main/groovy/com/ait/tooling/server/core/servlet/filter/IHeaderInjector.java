@@ -16,15 +16,13 @@
 
 package com.ait.tooling.server.core.servlet.filter;
 
-import java.io.Serializable;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ait.tooling.common.api.java.util.IHTTPConstants;
 import com.ait.tooling.server.core.json.JSONObject;
 
-public interface IHeaderInjector extends IHTTPConstants, Serializable
+public interface IHeaderInjector extends IHTTPConstants
 {
     public void config(JSONObject config);
     

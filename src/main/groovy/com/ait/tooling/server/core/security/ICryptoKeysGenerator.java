@@ -16,13 +16,11 @@
 
 package com.ait.tooling.server.core.security;
 
-import java.io.Serializable;
-
-public interface ICryptoKeysGenerator extends Serializable
+public interface ICryptoKeysGenerator
 {
     public String getRandomPass();
 
     public String getRandomSalt();
-    
+
     public boolean isPassValid(String pass);
 }

@@ -17,8 +17,7 @@
 package com.ait.tooling.server.core.security;
 
 import java.io.Closeable;
-import java.io.Serializable;
 
-public interface ICryptoProvider extends ICryptoKeysGenerator, IStringSigningProvider, IStringCryptoProvider, IBCryptHashProvider, ISHA512HashProvider, Closeable, Serializable
+public interface ICryptoProvider extends ICryptoKeysGenerator, IStringSigningProvider, IStringCryptoProvider, IBCryptHashProvider, ISHA512HashProvider, Closeable
 {
 }

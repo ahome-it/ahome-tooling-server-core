@@ -16,9 +16,7 @@
 
 package com.ait.tooling.server.core.security;
 
-import java.io.Serializable;
-
-public interface IBCryptHashProvider extends Serializable
+public interface IBCryptHashProvider
 {
     public static final int DEFAULT_STRENGTH = 10;
 

@@ -23,9 +23,7 @@ import com.ait.tooling.server.core.json.JSONObject;
 
 public class XContentTypeProtectionHeaderInjector implements IHeaderInjector
 {
-    private static final long serialVersionUID = -1470510695367516509L;
-
-    private boolean           m_enabled        = true;
+    private boolean m_enabled = true;
 
     public XContentTypeProtectionHeaderInjector()
     {

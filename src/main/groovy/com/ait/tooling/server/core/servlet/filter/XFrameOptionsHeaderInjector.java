@@ -27,11 +27,9 @@ import com.ait.tooling.server.core.json.JSONObject;
 
 public class XFrameOptionsHeaderInjector implements IHeaderInjector
 {
-    private static final long         serialVersionUID = 91295120174972203L;
+    private static final List<String> PREFIXES  = Arrays.asList("DENY", "SAMEORIGIN", "ALLOW-FROM ");
 
-    private static final List<String> PREFIXES         = Arrays.asList("DENY", "SAMEORIGIN", "ALLOW-FROM ");
-
-    private String                    m_options        = "DENY";
+    private String                    m_options = "DENY";
 
     public XFrameOptionsHeaderInjector()
     {

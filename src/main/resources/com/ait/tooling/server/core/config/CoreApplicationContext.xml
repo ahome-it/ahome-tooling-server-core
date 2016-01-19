@@ -38,7 +38,7 @@
 		<property name="buildServerBuild" value="@GRADLE_BUILD_SERVER_BUILD@"/>
 		<property name="buildModuleVersion" value="@GRADLE_BUILD_ARTIFACT_ID@-@GRADLE_BUILD_MODULE_VERSION@.jar"/>
 	</bean>
-	
+		
 	<bean id="CorePropertiesResolver" class="com.ait.tooling.server.core.support.spring.CorePropertiesResolver" destroy-method="close"/>
 
 	<bean id="BuildDescriptorProvider" class="com.ait.tooling.server.core.support.spring.BuildDescriptorProvider" destroy-method="close"/>
@@ -73,6 +73,7 @@
 	<bean id="TelemetryProvider" class="com.ait.tooling.server.core.support.instrument.telemetry.TelemetryProvider" destroy-method="close">
 		<constructor-arg value="${core.server.telemetry.provider.active}"/>
 		<constructor-arg value="${core.server.telemetry.provider.executor.threads}"/>
+		<constructor-arg value="${core.server.telemetry.provider.logs.enabled}"/>
 	</bean>
 		
 	<task:scheduled-tasks scheduler="TelemetryProviderScheduler">

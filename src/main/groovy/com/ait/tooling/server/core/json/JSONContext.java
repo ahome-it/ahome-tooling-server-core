@@ -18,8 +18,6 @@ package com.ait.tooling.server.core.json;
 
 public class JSONContext implements IJSONContext
 {
-    private static final long   serialVersionUID = -7792131315336611481L;
-
     private IJSONObjectReplacer m_obreplacer;
 
     private IJSONArrayReplacer  m_arreplacer;

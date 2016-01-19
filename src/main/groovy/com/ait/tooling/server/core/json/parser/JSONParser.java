@@ -20,8 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.Serializable;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Map;
 
@@ -34,48 +33,45 @@ import com.ait.tooling.server.core.json.JSONObject;
  * 
  * @author FangYidong<fangyidong@yahoo.com.cn>
  */
-public final class JSONParser implements Serializable
+public final class JSONParser
 {
-    private static final long serialVersionUID    = 2655437411589599545L;
+    public static final int S_INIT              = 0;
 
-    public static final int   S_INIT              = 0;
+    public static final int S_IN_FINISHED_VALUE = 1;                       // string,number,boolean,null,object,array
 
-    public static final int   S_IN_FINISHED_VALUE = 1;                       // string,number,boolean,null,object,array
+    public static final int S_IN_OBJECT         = 2;
 
-    public static final int   S_IN_OBJECT         = 2;
+    public static final int S_IN_ARRAY          = 3;
 
-    public static final int   S_IN_ARRAY          = 3;
+    public static final int S_PASSED_PAIR_KEY   = 4;
 
-    public static final int   S_PASSED_PAIR_KEY   = 4;
+    public static final int S_IN_PAIR_VALUE     = 5;
 
-    public static final int   S_IN_PAIR_VALUE     = 5;
+    public static final int S_END               = 6;
 
-    public static final int   S_END               = 6;
+    public static final int S_IN_ERROR          = -1;
 
-    public static final int   S_IN_ERROR          = -1;
+    private Yylex           m_lexer             = new Yylex((Reader) null);
 
-    private Yylex             m_lexer             = new Yylex((Reader) null);
+    private Yytoken         m_token             = null;
 
-    private Yytoken           m_token             = null;
-
-    private int               m_phase             = S_INIT;
+    private int             m_phase             = S_INIT;
 
     public JSONParser()
     {
     }
 
-    private int peekStatus(LinkedList<Object> statusStack)
+    private int peekStatus(ArrayDeque<Integer> statusStack)
     {
         if (statusStack.size() == 0) return -1;
-        Integer status = (Integer) statusStack.getFirst();
-        return status.intValue();
+        return statusStack.getFirst();
     }
 
     /**
      *  Reset the parser to the initial state without resetting the underlying reader.
      *
      */
-    public void reset()
+    private void reset()
     {
         m_token = null;
 
@@ -89,7 +85,7 @@ public final class JSONParser implements Serializable
      * @throws IOException
      * @throws JSONParserException
      */
-    public void reset(Reader in)
+    private void reset(Reader in)
     {
         m_lexer.yyreset(in);
 
@@ -99,29 +95,66 @@ public final class JSONParser implements Serializable
     /**
      * @return The position of the beginning of the current token.
      */
-    public int getPosition()
+    private int getPosition()
     {
         return m_lexer.getPosition();
     }
 
-    public Object parse(final String s) throws JSONParserException
+    public JSONObject parse(final String in) throws JSONParserException
     {
+        Object result = null;
+
         try
         {
-            return parse(new NoSyncStringReader(s));
+            result = parse_(new NoSyncStringReader(in));
         }
-        catch (IOException ie)
+        catch (IOException e)
         {
-            /*
-             * Actually it will never happen.
-             */
-            throw new JSONParserException(-1, JSONParserException.ERROR_UNEXPECTED_EXCEPTION, ie);
+            throw new JSONParserException(e);
         }
+        if (result instanceof JSONObject)
+        {
+            return ((JSONObject) result);
+        }
+        return null;
     }
 
-    public Object parse(final InputStream in) throws IOException, JSONParserException
+    public JSONObject parse(final InputStream in) throws JSONParserException
     {
-        return parse(new InputStreamReader(in));
+        Object result = null;
+
+        try
+        {
+            result = parse_(new InputStreamReader(in));
+        }
+        catch (IOException e)
+        {
+            throw new JSONParserException(e);
+        }
+        if (result instanceof JSONObject)
+        {
+            return ((JSONObject) result);
+        }
+        return null;
+    }
+
+    public JSONObject parse(final Reader in) throws JSONParserException
+    {
+        Object result = null;
+
+        try
+        {
+            result = parse_(in);
+        }
+        catch (IOException e)
+        {
+            throw new JSONParserException(e);
+        }
+        if (result instanceof JSONObject)
+        {
+            return ((JSONObject) result);
+        }
+        return null;
     }
 
     /**
@@ -140,13 +173,13 @@ public final class JSONParser implements Serializable
      * @throws JSONParserException
      */
     @SuppressWarnings("unchecked")
-    public Object parse(final Reader in) throws IOException, JSONParserException
+    private Object parse_(final Reader in) throws IOException, JSONParserException
     {
         reset(in);
 
-        final LinkedList<Object> statusStack = new LinkedList<Object>();
+        final ArrayDeque<Integer> statusStack = new ArrayDeque<Integer>();
 
-        final LinkedList<Object> valuesStack = new LinkedList<Object>();
+        final ArrayDeque<Object> valuesStack = new ArrayDeque<Object>();
 
         try
         {
@@ -161,17 +194,17 @@ public final class JSONParser implements Serializable
                         {
                             case Yytoken.TYPE_VALUE:
                                 m_phase = S_IN_FINISHED_VALUE;
-                                statusStack.addFirst(new Integer(m_phase));
+                                statusStack.addFirst(m_phase);
                                 valuesStack.addFirst(m_token.m_value);
                                 break;
                             case Yytoken.TYPE_LEFT_BRACE:
                                 m_phase = S_IN_OBJECT;
-                                statusStack.addFirst(new Integer(m_phase));
+                                statusStack.addFirst(m_phase);
                                 valuesStack.addFirst(new JSONObject());
                                 break;
                             case Yytoken.TYPE_LEFT_SQUARE:
                                 m_phase = S_IN_ARRAY;
-                                statusStack.addFirst(new Integer(m_phase));
+                                statusStack.addFirst(m_phase);
                                 valuesStack.addFirst(new JSONArray());
                                 break;
                             default:
@@ -193,7 +226,7 @@ public final class JSONParser implements Serializable
                                 {
                                     valuesStack.addFirst(m_token.m_value);
                                     m_phase = S_PASSED_PAIR_KEY;
-                                    statusStack.addFirst(new Integer(m_phase));
+                                    statusStack.addFirst(m_phase);
                                 }
                                 else
                                 {
@@ -237,7 +270,7 @@ public final class JSONParser implements Serializable
                                 List<Object> newArray = new JSONArray();
                                 parent.put(key, newArray);
                                 m_phase = S_IN_ARRAY;
-                                statusStack.addFirst(new Integer(m_phase));
+                                statusStack.addFirst(m_phase);
                                 valuesStack.addFirst(newArray);
                                 break;
                             case Yytoken.TYPE_LEFT_BRACE:
@@ -247,7 +280,7 @@ public final class JSONParser implements Serializable
                                 Map<String, Object> newObject = new JSONObject();
                                 parent.put(key, newObject);
                                 m_phase = S_IN_OBJECT;
-                                statusStack.addFirst(new Integer(m_phase));
+                                statusStack.addFirst(m_phase);
                                 valuesStack.addFirst(newObject);
                                 break;
                             default:
@@ -281,7 +314,7 @@ public final class JSONParser implements Serializable
                                 Map<String, Object> newObject = new JSONObject();
                                 val.add(newObject);
                                 m_phase = S_IN_OBJECT;
-                                statusStack.addFirst(new Integer(m_phase));
+                                statusStack.addFirst(m_phase);
                                 valuesStack.addFirst(newObject);
                                 break;
                             case Yytoken.TYPE_LEFT_SQUARE:
@@ -289,7 +322,7 @@ public final class JSONParser implements Serializable
                                 List<Object> newArray = new JSONArray();
                                 val.add(newArray);
                                 m_phase = S_IN_ARRAY;
-                                statusStack.addFirst(new Integer(m_phase));
+                                statusStack.addFirst(m_phase);
                                 valuesStack.addFirst(newArray);
                                 break;
                             default:

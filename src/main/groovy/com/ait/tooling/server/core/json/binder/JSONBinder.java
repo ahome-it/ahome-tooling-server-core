@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.Serializable;
 import java.io.Writer;
 import java.net.URL;
 import java.util.List;
@@ -36,15 +35,13 @@ import com.ait.tooling.server.core.json.parser.JSONParser;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public final class JSONBinder implements Serializable
+public final class JSONBinder
 {
-    private static final long   serialVersionUID = 274974455359363594L;
-
-    private static final Logger logger           = Logger.getLogger(JSONBinder.class);
+    private static final Logger logger   = Logger.getLogger(JSONBinder.class);
 
     private ObjectMapper        m_mapper;
 
-    private boolean             m_strict         = false;
+    private boolean             m_strict = false;
 
     public JSONBinder()
     {

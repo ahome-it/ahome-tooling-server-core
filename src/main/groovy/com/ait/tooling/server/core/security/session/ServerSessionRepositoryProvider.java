@@ -36,11 +36,9 @@ import com.ait.tooling.common.api.types.Activatable;
 @ManagedResource
 public class ServerSessionRepositoryProvider extends Activatable implements IServerSessionRepositoryProvider, BeanFactoryAware
 {
-    private static final long                                     serialVersionUID = -4351465993846157349L;
+    private static final Logger                                   logger         = Logger.getLogger(ServerSessionRepositoryProvider.class);
 
-    private static final Logger                                   logger           = Logger.getLogger(ServerSessionRepositoryProvider.class);
-
-    private final LinkedHashMap<String, IServerSessionRepository> m_repositories   = new LinkedHashMap<String, IServerSessionRepository>();
+    private final LinkedHashMap<String, IServerSessionRepository> m_repositories = new LinkedHashMap<String, IServerSessionRepository>();
 
     public ServerSessionRepositoryProvider()
     {
@@ -82,7 +80,7 @@ public class ServerSessionRepositoryProvider extends Activatable implements ISer
     public void close() throws IOException
     {
         setActive(false);
-        
+
         for (IServerSessionRepository repository : m_repositories.values())
         {
             if (null != repository)

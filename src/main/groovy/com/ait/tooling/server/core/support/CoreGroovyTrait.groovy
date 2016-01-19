@@ -158,7 +158,7 @@ public trait CoreGroovyTrait implements JSONTrait
     {
         getServerContext().getPollableChannel(Objects.requireNonNull(name))
     }
-    
+
     public boolean publish(String name, JSONObject message)
     {
         publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message)))
@@ -167,6 +167,16 @@ public trait CoreGroovyTrait implements JSONTrait
     public boolean publish(String name, JSONObject message, long timeout)
     {
         publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message)), timeout)
+    }
+
+    public boolean publish(String name, JSONObject message, Map<String, ?> headers)
+    {
+        publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message), Objects.requireNonNull(headers)));
+    }
+
+    public boolean publish(String name, JSONObject message, Map<String, ?> headers, long timeout)
+    {
+        publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message), Objects.requireNonNull(headers)), timeout);
     }
 
     public <T> boolean publish(String name, Message<T> message)
@@ -228,6 +238,17 @@ public trait CoreGroovyTrait implements JSONTrait
         if (provider.isActive())
         {
             return provider.broadcast(category, message)
+        }
+        false
+    }
+
+    public boolean telemetry(String category, List<String> tags, Object message)
+    {
+        def provider = getTelemetryProvider()
+
+        if (provider.isActive())
+        {
+            return provider.broadcast(category, tags, message)
         }
         false
     }

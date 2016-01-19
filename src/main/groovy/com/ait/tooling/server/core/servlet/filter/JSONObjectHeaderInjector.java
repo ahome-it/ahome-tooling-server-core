@@ -21,18 +21,25 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ait.tooling.server.core.json.JSONObject;
 
-public class XSSProtectionHeaderInjector implements IHeaderInjector
+public class JSONObjectHeaderInjector implements IHeaderInjector
 {
-    private boolean m_enabled = true;
+    private boolean    m_enabled = true;
 
-    public XSSProtectionHeaderInjector()
+    private JSONObject m_headers = null;
+
+    public JSONObjectHeaderInjector()
     {
         this(true);
     }
 
-    public XSSProtectionHeaderInjector(final boolean enabled)
+    public JSONObjectHeaderInjector(final boolean enabled)
     {
         setEnabled(enabled);
+    }
+
+    public JSONObjectHeaderInjector(JSONObject headers)
+    {
+        this(true);
     }
 
     public boolean isEnabled()
@@ -40,11 +47,23 @@ public class XSSProtectionHeaderInjector implements IHeaderInjector
         return m_enabled;
     }
 
-    public XSSProtectionHeaderInjector setEnabled(final boolean enabled)
+    public JSONObjectHeaderInjector setEnabled(final boolean enabled)
     {
         m_enabled = enabled;
 
         return this;
+    }
+
+    public JSONObjectHeaderInjector setHeaders(final JSONObject headers)
+    {
+        m_headers = headers;
+
+        return this;
+    }
+
+    public JSONObject getHeaders()
+    {
+        return m_headers;
     }
 
     @Override
@@ -52,7 +71,11 @@ public class XSSProtectionHeaderInjector implements IHeaderInjector
     {
         if (isEnabled())
         {
-            response.setHeader(X_XSS_PROTECTION_HEADER, "1; mode=block");
+            final JSONObject headers = getHeaders();
+
+            if (null != headers)
+            {
+            }
         }
     }
 

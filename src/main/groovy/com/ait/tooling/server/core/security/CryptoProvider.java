@@ -24,8 +24,6 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 @ManagedResource
 public final class CryptoProvider implements ICryptoProvider
 {
-    private static final long                    serialVersionUID = -685446946283005169L;
-
     private final AESStringCryptoProvider        m_pcrypt;
 
     private final SimpleBCryptHashProvider       m_bcrypt;

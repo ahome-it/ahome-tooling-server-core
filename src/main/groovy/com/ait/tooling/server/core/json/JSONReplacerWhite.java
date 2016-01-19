@@ -21,8 +21,6 @@ import java.util.Objects;
 
 public class JSONReplacerWhite extends AbstractJSONKeysObjectReplacer
 {
-    private static final long serialVersionUID = -8773323741386211024L;
-
     public JSONReplacerWhite()
     {
         super(true);

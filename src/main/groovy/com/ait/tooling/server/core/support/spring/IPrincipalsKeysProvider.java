@@ -16,10 +16,9 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import java.io.Serializable;
 import java.util.List;
 
-public interface IPrincipalsKeysProvider extends Serializable
+public interface IPrincipalsKeysProvider
 {
     public List<String> getPrincipalsKeys();
 }

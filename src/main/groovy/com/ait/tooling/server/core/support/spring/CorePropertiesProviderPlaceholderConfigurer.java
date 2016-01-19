@@ -16,14 +16,10 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import java.io.Serializable;
-
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
-public class CorePropertiesProviderPlaceholderConfigurer extends PropertySourcesPlaceholderConfigurer implements Serializable
+public class CorePropertiesProviderPlaceholderConfigurer extends PropertySourcesPlaceholderConfigurer
 {
-    private static final long serialVersionUID = -6733043232569981085L;
-
     public CorePropertiesProviderPlaceholderConfigurer()
     {
     }

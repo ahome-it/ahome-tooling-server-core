@@ -41,7 +41,7 @@ sourceCompatibility = 1.8
 
 targetCompatibility = 1.8
 
-version = '1.0.137-SNAPSHOT'
+version = '1.0.140-SNAPSHOT'
 
 group = 'com.ahome-it'
 
@@ -198,7 +198,7 @@ configurations {
 }
 
 dependencies {
-    compile(group: 'com.ahome-it', name: 'ahome-tooling-common', version: '1.0.90-RELEASE')
+    compile(group: 'com.ahome-it', name: 'ahome-tooling-common', version: '1.0.140-RELEASE')
     compile(group: 'log4j', name: 'log4j', version: '1.2.17')
     compile(group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.12')
     compile(group: 'org.slf4j', name: 'jul-to-slf4j', version: '1.7.12')
@@ -216,17 +216,17 @@ dependencies {
     compile(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.1')
     compile(group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.2')
     compile(group: 'com.google.guava', name: 'guava', version: '19.0')
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.6.4')
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.6.4')
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.6.4')
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.7.0')
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.7.0')
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.7.0')
     compile(group: 'org.spockframework', name: 'spock-core', version: '1.0-groovy-2.4') {
         exclude(group: 'org.codehaus.groovy', module: 'groovy-all')
     }
     compile(group: 'org.gebish', name: 'geb-core', version: '0.12.2') {
         exclude(group: 'org.codehaus.groovy', module: 'groovy-all')
     }
-    compile(group: 'org.seleniumhq.selenium', name: 'selenium-api', version: '2.48.2')
-    compile(group: 'org.seleniumhq.selenium', name: 'selenium-support', version: '2.48.2')
+    compile(group: 'org.seleniumhq.selenium', name: 'selenium-api', version: '2.49.0')
+    compile(group: 'org.seleniumhq.selenium', name: 'selenium-support', version: '2.49.0')
     compile(group: 'org.python', name: 'jython', version: '2.7.0')
     compile(group: 'org.jruby', name: 'jruby-complete', version: '9.0.4.0')
     springCorePackages().each { String name ->
@@ -236,12 +236,12 @@ dependencies {
         compile(group: 'org.springframework.security', name: name, version: '4.0.3.RELEASE')
     }
     springIntegrationPackages().each { String name ->
-        compile(group: 'org.springframework.integration', name: name, version: '4.2.1.RELEASE')
+        compile(group: 'org.springframework.integration', name: name, version: '4.2.4.RELEASE')
     }
-    compile(group: 'org.springframework.integration', name: 'spring-integration-groovy', version: '4.2.1.RELEASE') {
+    compile(group: 'org.springframework.integration', name: 'spring-integration-groovy', version: '4.2.4.RELEASE') {
         exclude(group: 'org.codehaus.groovy', module: 'groovy-all')
     }
-    compile(group: 'org.springframework.integration', name: 'spring-integration-java-dsl', version: '1.1.0.RELEASE')
+    compile(group: 'org.springframework.integration', name: 'spring-integration-java-dsl', version: '1.1.1.RELEASE')
     compile(group: 'org.springframework.session', name: 'spring-session', version: '1.0.2.RELEASE')
     compile(group: 'org.springframework.statemachine', name: 'spring-statemachine-core', version: '1.0.1.RELEASE')
     compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.5', classifier: 'indy')

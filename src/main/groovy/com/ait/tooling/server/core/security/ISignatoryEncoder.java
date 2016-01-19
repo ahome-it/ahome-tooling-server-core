@@ -16,9 +16,7 @@
 
 package com.ait.tooling.server.core.security;
 
-import java.io.Serializable;
-
-public interface ISignatoryEncoder extends Serializable
+public interface ISignatoryEncoder
 {
     public String encodeBytes(byte[] src) throws Exception;
 }

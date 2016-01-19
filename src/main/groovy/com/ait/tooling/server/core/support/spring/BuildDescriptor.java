@@ -21,8 +21,6 @@ import com.ait.tooling.server.core.json.JSONObject;
 
 public final class BuildDescriptor implements IBuildDescriptor
 {
-    private static final long   serialVersionUID           = -3928507050821510619L;
-
     private static final String UNKNOWN                    = "unknown".intern();
 
     private final String        m_name_space;

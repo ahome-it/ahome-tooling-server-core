@@ -16,7 +16,6 @@
 
 package com.ait.tooling.server.core.support.spring.testing;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,10 +29,8 @@ import com.ait.tooling.server.core.support.spring.ServerContextInstance;
 @SuppressWarnings("deprecation")
 public interface IServerCoreTesting
 {
-    public static class TestingOps implements Serializable
+    public static class TestingOps
     {
-        private static final long   serialVersionUID = -7046252747020669594L;
-
         public static final void setupServerCoreLogging() throws Exception
         {
             setupServerCoreLogging("classpath:testing-log4j.xml");
@@ -53,9 +50,9 @@ public interface IServerCoreTesting
         {
             final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(locations, false);
 
-            final ServerContextInstance instance = ServerContextInstance.getServerContextInstance();
+            ServerContextInstance instance = ServerContextInstance.getServerContextInstance();
 
-            instance.setApplicationContext(context);
+            ServerContextInstance.setApplicationContext(context);
 
             context.refresh();
 
@@ -97,7 +94,7 @@ public interface IServerCoreTesting
                     context.close();
                 }
             }
-            ServerContextInstance.getServerContextInstance().setApplicationContext(null);
+            ServerContextInstance.setApplicationContext(null);
         }
 
         protected TestingOps()

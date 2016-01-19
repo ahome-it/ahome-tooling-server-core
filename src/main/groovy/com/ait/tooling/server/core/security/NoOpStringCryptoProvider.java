@@ -18,8 +18,6 @@ package com.ait.tooling.server.core.security;
 
 public final class NoOpStringCryptoProvider implements IStringCryptoProvider
 {
-    private static final long serialVersionUID = 3716150557966785317L;
-
     @Override
     public final String encrypt(final String text)
     {

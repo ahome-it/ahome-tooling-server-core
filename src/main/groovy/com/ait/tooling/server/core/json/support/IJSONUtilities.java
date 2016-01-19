@@ -16,9 +16,8 @@
 
 package com.ait.tooling.server.core.json.support;
 
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,7 @@ import com.ait.tooling.server.core.json.binder.JSONBinder;
 import com.ait.tooling.server.core.json.parser.JSONParserException;
 import com.ait.tooling.server.core.json.schema.JSONSchema;
 
-public interface IJSONUtilities extends Serializable
+public interface IJSONUtilities
 {
     public JSONObject json();
 
@@ -45,7 +44,9 @@ public interface IJSONUtilities extends Serializable
 
     public JSONObject jsonParse(String string) throws JSONParserException;
 
-    public JSONObject jsonParse(Reader reader) throws IOException, JSONParserException;
+    public JSONObject jsonParse(Reader reader) throws JSONParserException;
+    
+    public JSONObject jsonParse(InputStream stream) throws JSONParserException;
 
     public JSONArray jarr();
 
@@ -58,6 +59,6 @@ public interface IJSONUtilities extends Serializable
     public JSONArray jarr(String name, Object value);
 
     public JSONArray jarr(Collection<?> collection);
-    
+
     public JSONBinder binder();
 }

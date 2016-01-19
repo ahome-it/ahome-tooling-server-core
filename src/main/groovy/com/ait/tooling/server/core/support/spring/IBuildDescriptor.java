@@ -16,11 +16,9 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import java.io.Serializable;
-
 import com.ait.tooling.server.core.json.JSONObject;
 
-public interface IBuildDescriptor extends Serializable
+public interface IBuildDescriptor
 {
     public String getNameSpace();
 

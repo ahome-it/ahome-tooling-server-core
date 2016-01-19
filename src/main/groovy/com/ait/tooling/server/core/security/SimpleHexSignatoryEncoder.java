@@ -20,8 +20,6 @@ import org.apache.commons.codec.binary.Hex;
 
 public class SimpleHexSignatoryEncoder implements ISignatoryEncoder
 {
-    private static final long serialVersionUID = -2664156739712347477L;
-
     @Override
     public String encodeBytes(final byte[] src) throws Exception
     {

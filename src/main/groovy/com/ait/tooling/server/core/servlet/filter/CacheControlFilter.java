@@ -23,9 +23,7 @@ import org.apache.log4j.Logger;
 
 public class CacheControlFilter extends HeaderInjectorFilter
 {
-    private static final long   serialVersionUID = -3522876567429582625L;
-
-    private static final Logger logger           = Logger.getLogger(CacheControlFilter.class);
+    private static final Logger logger = Logger.getLogger(CacheControlFilter.class);
 
     public CacheControlFilter()
     {

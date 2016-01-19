@@ -16,7 +16,6 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 
@@ -26,10 +25,8 @@ import org.springframework.messaging.support.MessageBuilder;
 
 import com.ait.tooling.server.core.json.JSONObject;
 
-public class JSONMessageBuilder implements Serializable
+public class JSONMessageBuilder
 {
-    private static final long serialVersionUID = -3822701727220242634L;
-
     protected JSONMessageBuilder()
     {
     }
@@ -53,7 +50,7 @@ public class JSONMessageBuilder implements Serializable
     {
         return createMessage(new JSONObject(Objects.requireNonNull(payload)), Objects.requireNonNull(headers));
     }
-    
+
     public static final Message<JSONObject> createMessage(final Map<String, ?> payload, final MessageHeaders headers)
     {
         return createMessage(new JSONObject(Objects.requireNonNull(payload)), Objects.requireNonNull(headers));

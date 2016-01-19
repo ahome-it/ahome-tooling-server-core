@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
-@SuppressWarnings("serial")
 public abstract class AbstractJSONKeysObjectReplacer implements IJSONObjectKeysReplacer
 {
     private boolean               m_mode;

@@ -33,11 +33,9 @@ import com.ait.tooling.common.api.java.util.StringOps;
 
 public final class SignatoryProvider implements ISignatoryProvider, BeanFactoryAware
 {
-    private static final long                       serialVersionUID = -5082259404633490568L;
+    private static final Logger                     logger        = Logger.getLogger(SignatoryProvider.class);
 
-    private static final Logger                     logger           = Logger.getLogger(SignatoryProvider.class);
-
-    private final LinkedHashMap<String, ISignatory> m_signatories    = new LinkedHashMap<String, ISignatory>();
+    private final LinkedHashMap<String, ISignatory> m_signatories = new LinkedHashMap<String, ISignatory>();
 
     public SignatoryProvider()
     {

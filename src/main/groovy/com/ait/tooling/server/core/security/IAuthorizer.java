@@ -16,10 +16,9 @@
 
 package com.ait.tooling.server.core.security;
 
-import java.io.Serializable;
 import java.util.List;
 
-public interface IAuthorizer extends Serializable
+public interface IAuthorizer
 {
     public static final int E_IS_VALIDATED = 0;
 

@@ -16,7 +16,7 @@
 
 package com.ait.tooling.server.core.json.support;
 
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,9 +33,7 @@ import com.ait.tooling.server.core.json.schema.JSONSchema;
 
 public class JSONUtilitiesInstance implements IJSONUtilities
 {
-    private static final long                  serialVersionUID = 5967727052776606210L;
-
-    private static final JSONUtilitiesInstance INSTANCE         = new JSONUtilitiesInstance();
+    private static final JSONUtilitiesInstance INSTANCE = new JSONUtilitiesInstance();
 
     public static final JSONUtilitiesInstance getJSONUtilitiesInstance()
     {
@@ -99,29 +97,19 @@ public class JSONUtilitiesInstance implements IJSONUtilities
     @Override
     public final JSONObject jsonParse(final String string) throws JSONParserException
     {
-        Objects.requireNonNull(string);
-
-        final Object result = new JSONParser().parse(string);
-
-        if ((null != result) && (result instanceof JSONObject))
-        {
-            return ((JSONObject) result);
-        }
-        return null;
+        return new JSONParser().parse(Objects.requireNonNull(string));
     }
 
     @Override
-    public final JSONObject jsonParse(final Reader reader) throws IOException, JSONParserException
+    public final JSONObject jsonParse(final Reader reader) throws JSONParserException
     {
-        Objects.requireNonNull(reader);
+        return new JSONParser().parse(Objects.requireNonNull(reader));
+    }
 
-        final Object result = new JSONParser().parse(reader);
-
-        if ((null != result) && (result instanceof JSONObject))
-        {
-            return ((JSONObject) result);
-        }
-        return null;
+    @Override
+    public final JSONObject jsonParse(final InputStream stream) throws JSONParserException
+    {
+        return new JSONParser().parse(Objects.requireNonNull(stream));
     }
 
     @Override

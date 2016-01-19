@@ -29,13 +29,15 @@ import com.ait.tooling.server.core.support.CoreGroovySupport
 
 @CompileStatic
 public class TelemetryProvider extends CoreGroovySupport implements ITelemetryProvider
-{
-    private static final long              serialVersionUID = -3902901457710499217L
+{    
+    private final List<String>             m_notags = []
+    
+    private boolean                        m_closed = false
 
-    private boolean                        m_closed         = false
-
-    private boolean                        m_active         = false
-
+    private boolean                        m_active = false
+    
+    private boolean                        m_islogs = false
+    
     private final ExecutorService          m_expool
 
     public TelemetryProvider()
@@ -52,12 +54,19 @@ public class TelemetryProvider extends CoreGroovySupport implements ITelemetryPr
     {
         this(true, pool)
     }
-
+    
     public TelemetryProvider(final boolean active, final int pool)
+    {
+        this(active, pool, false)
+    }
+
+    public TelemetryProvider(final boolean active, final int pool, final boolean logs)
     {
         final int safe = Math.min(Math.max(pool, 1), 512)
 
         logger().info("TelemetryProvider(${active},${pool}:${safe})")
+        
+        m_islogs = logs
 
         m_active = active
 
@@ -99,17 +108,20 @@ public class TelemetryProvider extends CoreGroovySupport implements ITelemetryPr
         }
     }
 
-    protected JSONObject getHeapMemoryUsageObject()
+    @Override
+    public JSONObject getHeapMemoryUsageObject()
     {
         binder().toJSONObject(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage())
     }
 
-    protected JSONObject getOffHeapMemoryUsageObject()
+    @Override
+    public JSONObject getOffHeapMemoryUsageObject()
     {
         binder().toJSONObject(ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage())
     }
 
-    protected JSONObject getMemoryUsageObject()
+    @Override
+    public JSONObject getMemoryUsageObject()
     {
         json(heap: getHeapMemoryUsageObject(), off_heap: getOffHeapMemoryUsageObject())
     }
@@ -158,9 +170,20 @@ public class TelemetryProvider extends CoreGroovySupport implements ITelemetryPr
     @Override
     public boolean broadcast(final String category, final Object message)
     {
+        broadcast_message(category, m_notags, message)
+    }
+
+    @Override
+    public boolean broadcast(final String category, final List<String> tags, final Object message)
+    {
+        broadcast_message(category, tags.unique(false), message)
+    }
+
+    private final boolean broadcast_message(final String category, final List<String> tags, final Object message)
+    {
         if (isActive())
         {
-            final long timemark = System.currentTimeMillis()
+            def time = System.currentTimeMillis()
 
             m_expool.submit {
 
@@ -168,12 +191,14 @@ public class TelemetryProvider extends CoreGroovySupport implements ITelemetryPr
                 {
                     try
                     {
-                        def send = new TelemetryMessage(category, convert(message), timemark)
+                        def send = new TelemetryMessage(category, tags, convert(message), time)
 
                         publish('TelemetryPublishMessageChannel', send.toJSONPublishMessage())
 
-                        // logger().info(send.toJSONObject().toJSONString())
-
+                        if (m_islogs)
+                        {
+                            logger().info(send.toJSONObject().toJSONString())
+                        }
                         send.close()
                     }
                     catch (Exception e)

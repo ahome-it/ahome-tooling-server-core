@@ -26,8 +26,6 @@ import com.ait.tooling.server.core.json.JSONObject;
 
 public class CacheControlHeaderInjector implements IHeaderInjector
 {
-    private static final long   serialVersionUID   = -4772252783294648222L;
-
     private static final Logger logger             = Logger.getLogger(CacheControlHeaderInjector.class);
 
     private String              m_dont_cache_regex = null;

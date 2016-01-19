@@ -23,9 +23,7 @@ import org.apache.log4j.Logger;
 
 public class StrictTransportFilter extends HeaderInjectorFilter
 {
-    private static final long   serialVersionUID         = -4578897779521715272L;
-
-    private static final Logger logger                   = Logger.getLogger(StrictTransportFilter.class);
+    private static final Logger logger = Logger.getLogger(StrictTransportFilter.class);
 
     public StrictTransportFilter()
     {

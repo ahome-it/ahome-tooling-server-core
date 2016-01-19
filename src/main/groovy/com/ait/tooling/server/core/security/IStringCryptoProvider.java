@@ -16,9 +16,7 @@
 
 package com.ait.tooling.server.core.security;
 
-import java.io.Serializable;
-
-public interface IStringCryptoProvider extends Serializable
+public interface IStringCryptoProvider
 {
     public String encrypt(String text);
 

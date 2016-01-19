@@ -21,8 +21,6 @@ import java.util.Objects;
 
 public class JSONReplacerBlack extends AbstractJSONKeysObjectReplacer
 {
-    private static final long serialVersionUID = -1620524482987552561L;
-
     public JSONReplacerBlack()
     {
         super(false);

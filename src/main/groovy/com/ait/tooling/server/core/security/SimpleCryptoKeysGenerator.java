@@ -25,8 +25,6 @@ import org.apache.commons.lang.RandomStringUtils;
 
 public class SimpleCryptoKeysGenerator implements ICryptoKeysGenerator
 {
-    private static final long serialVersionUID = 8605396298931990555L;
-
     public SimpleCryptoKeysGenerator()
     {
     }

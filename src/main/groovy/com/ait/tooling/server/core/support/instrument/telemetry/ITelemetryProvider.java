@@ -17,13 +17,23 @@
 package com.ait.tooling.server.core.support.instrument.telemetry;
 
 import java.io.Closeable;
-import java.io.Serializable;
+import java.util.List;
 
-public interface ITelemetryProvider extends Serializable, Closeable
+import com.ait.tooling.server.core.json.JSONObject;
+
+public interface ITelemetryProvider extends Closeable
 {
     public boolean isClosed();
-    
+
     public boolean isActive();
 
     public boolean broadcast(String category, Object message);
+    
+    public boolean broadcast(String category, List<String> tags, Object message);
+
+    public JSONObject getHeapMemoryUsageObject();
+
+    public JSONObject getOffHeapMemoryUsageObject();
+
+    public JSONObject getMemoryUsageObject();
 }

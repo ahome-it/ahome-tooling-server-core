@@ -35,11 +35,9 @@ import com.ait.tooling.common.api.java.util.StringOps;
 
 public class HeaderInjectorFilter extends AbstractHTTPFilter
 {
-    private static final long                serialVersionUID = -594659105484316769L;
+    private static final Logger              logger      = Logger.getLogger(HeaderInjectorFilter.class);
 
-    private static final Logger              logger           = Logger.getLogger(HeaderInjectorFilter.class);
-
-    private final ArrayList<IHeaderInjector> m_injectors      = new ArrayList<IHeaderInjector>();
+    private final ArrayList<IHeaderInjector> m_injectors = new ArrayList<IHeaderInjector>();
 
     public HeaderInjectorFilter()
     {
@@ -102,7 +100,7 @@ public class HeaderInjectorFilter extends AbstractHTTPFilter
             }
         }
     }
-    
+
     public final List<IHeaderInjector> getInjectors()
     {
         return Collections.unmodifiableList(m_injectors);
@@ -144,7 +142,7 @@ public class HeaderInjectorFilter extends AbstractHTTPFilter
                     final HeaderInjectorParser parser = new HeaderInjectorParser();
 
                     parser.parse(in);
-                    
+
                     addHeaderInjectors(parser.getInjectors());
                 }
                 catch (Throwable t)

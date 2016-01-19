@@ -16,8 +16,6 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-import java.io.Serializable;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -31,11 +29,9 @@ import org.springframework.messaging.MessagingException;
 import com.ait.tooling.server.core.logging.ICoreLoggingOperations;
 
 @ManagedResource
-public class CorePublishSubscribeLoggingService implements ICoreLoggingOperations, Serializable
+public class CorePublishSubscribeLoggingService implements ICoreLoggingOperations
 {
-    private static final long serialVersionUID = 5154374919398530876L;
-
-    private final Logger      m_logger         = Logger.getLogger(getClass());
+    private final Logger m_logger = Logger.getLogger(getClass());
 
     public CorePublishSubscribeLoggingService(final PublishSubscribeChannel channel)
     {

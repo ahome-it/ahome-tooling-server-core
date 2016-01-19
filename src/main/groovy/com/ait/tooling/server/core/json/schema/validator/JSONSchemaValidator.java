@@ -16,14 +16,10 @@
 
 package com.ait.tooling.server.core.json.schema.validator;
 
-import java.io.Serializable;
-
 import com.ait.tooling.server.core.json.schema.JSONSchema;
 
-public class JSONSchemaValidator implements Serializable
+public class JSONSchemaValidator
 {
-    private static final long                      serialVersionUID = -4687210265066089404L;
-
     private final JSONSchemaValidatorConfiguration m_config;
 
     public JSONSchemaValidator()

@@ -21,7 +21,6 @@ package com.ait.tooling.server.core.jmx;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.lang.management.ManagementFactory;
 import java.rmi.registry.LocateRegistry;
 import java.util.HashMap;
@@ -35,10 +34,8 @@ import org.apache.log4j.Logger;
 
 import com.ait.tooling.common.api.java.util.StringOps;
 
-public class JMXAgent implements Closeable, Serializable
+public class JMXAgent implements Closeable
 {
-    private static final long        serialVersionUID = 8623940170140191821L;
-
     private static final int         DEFAULT_JMX_PORT = 3000;
 
     private static final Logger      logger           = Logger.getLogger(JMXAgent.class);

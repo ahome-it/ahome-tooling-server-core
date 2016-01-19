@@ -16,10 +16,9 @@
 
 package com.ait.tooling.server.core.security;
 
-import java.io.Serializable;
 import java.util.List;
 
-public interface IPrincipal extends Serializable
+public interface IPrincipal
 {
     public String getId();
     

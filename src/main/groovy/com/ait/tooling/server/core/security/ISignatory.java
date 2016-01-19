@@ -19,14 +19,13 @@ package com.ait.tooling.server.core.security;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.io.Serializable;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.Map;
 
 import com.ait.tooling.common.api.types.INamed;
 
-public interface ISignatory extends INamed, Serializable
+public interface ISignatory extends INamed
 {
     public Map<String, Object> getProperties();
 

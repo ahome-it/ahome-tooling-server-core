@@ -17,6 +17,7 @@
 package com.ait.tooling.server.core.support.spring;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -29,7 +30,6 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.messaging.SubscribableChannel;
 
-import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.support.JSONUtilitiesInstance;
@@ -45,17 +45,15 @@ import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetryProvid
 
 public class ServerContextInstance extends JSONUtilitiesInstance implements IServerContext
 {
-    private static final long                          serialVersionUID    = 8451400323005323866L;
+    private static ApplicationContext                  APPCONTEXT   = null;
 
-    private static ApplicationContext                  APPLICATION_CONTEXT = null;
+    private final static AnonOnlyAuthorizationProvider DEFAULT_AUTH = new AnonOnlyAuthorizationProvider();
 
-    private final static AnonOnlyAuthorizationProvider DEFAULT_AUTH        = new AnonOnlyAuthorizationProvider();
+    private final static DefaultPrincipalsKeysProvider DEFAULT_KEYS = new DefaultPrincipalsKeysProvider();
 
-    private final static DefaultPrincipalsKeysProvider DEFAULT_KEYS        = new DefaultPrincipalsKeysProvider();
+    private final static ServerContextInstance         INSTANCE     = new ServerContextInstance();
 
-    private final static ServerContextInstance         INSTANCE            = new ServerContextInstance();
-
-    private final Logger                               m_logger            = Logger.getLogger(getClass());
+    private final Logger                               m_logger     = Logger.getLogger(getClass());
 
     @Override
     public final IServerContext getServerContext()
@@ -72,15 +70,15 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     {
     }
 
-    public final void setApplicationContext(final ApplicationContext context)
+    public static final void setApplicationContext(final ApplicationContext context)
     {
-        APPLICATION_CONTEXT = context;
+        APPCONTEXT = context;
     }
 
     @Override
     public final ApplicationContext getApplicationContext()
     {
-        return Objects.requireNonNull(APPLICATION_CONTEXT, "ApplicationContext is null, initialization error.");
+        return Objects.requireNonNull(APPCONTEXT, "ApplicationContext is null, initialization error.");
     }
 
     @Override
@@ -312,6 +310,18 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     }
 
     @Override
+    public boolean publish(final String name, final JSONObject message, final Map<String, ?> headers)
+    {
+        return publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message), Objects.requireNonNull(headers)));
+    }
+
+    @Override
+    public boolean publish(final String name, final JSONObject message, final Map<String, ?> headers, final long timeout)
+    {
+        return publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message), Objects.requireNonNull(headers)), timeout);
+    }
+
+    @Override
     public final <T> boolean publish(final String name, final Message<T> message)
     {
         final MessageChannel channel = getMessageChannel(Objects.requireNonNull(name));
@@ -360,7 +370,19 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
 
         if (provider.isActive())
         {
-            return provider.broadcast(StringOps.requireTrimOrNull(category), Objects.requireNonNull(message));
+            return provider.broadcast(Objects.requireNonNull(category), Objects.requireNonNull(message));
+        }
+        return false;
+    }
+    
+    @Override
+    public boolean telemetry(final String category, final List<String> tags, final Object message)
+    {
+        final ITelemetryProvider provider = getTelemetryProvider();
+
+        if (provider.isActive())
+        {
+            return provider.broadcast(Objects.requireNonNull(category), Objects.requireNonNull(tags), Objects.requireNonNull(message));
         }
         return false;
     }

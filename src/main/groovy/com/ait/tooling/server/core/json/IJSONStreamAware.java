@@ -17,10 +17,9 @@
 package com.ait.tooling.server.core.json;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.Writer;
 
-public interface IJSONStreamAware extends Serializable
+public interface IJSONStreamAware
 {
     public void writeJSONString(Writer out) throws IOException;
 

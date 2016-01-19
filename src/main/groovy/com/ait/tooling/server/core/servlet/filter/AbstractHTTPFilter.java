@@ -17,7 +17,6 @@
 package com.ait.tooling.server.core.servlet.filter;
 
 import java.io.IOException;
-import java.io.Serializable;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -30,8 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ait.tooling.common.api.java.util.IHTTPConstants;
 
-@SuppressWarnings("serial")
-public abstract class AbstractHTTPFilter implements Filter, IHTTPConstants, Serializable
+public abstract class AbstractHTTPFilter implements Filter, IHTTPConstants
 {
     public abstract void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException;
 

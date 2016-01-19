@@ -16,8 +16,6 @@
 
 package com.ait.tooling.server.core.pubsub;
 
-import java.io.Serializable;
-
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
@@ -31,10 +29,8 @@ import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.parser.JSONParser;
 import com.ait.tooling.server.core.json.parser.JSONParserException;
 
-public class SimpleJMSMessageConverter extends SimpleMessageConverter implements Serializable
+public class SimpleJMSMessageConverter extends SimpleMessageConverter
 {
-    private static final long serialVersionUID = -6570676625594626343L;
-
     public SimpleJMSMessageConverter()
     {
     }

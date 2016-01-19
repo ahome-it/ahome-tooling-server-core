@@ -17,14 +17,17 @@
 package com.ait.tooling.server.core.support.spring;
 
 import java.io.Closeable;
-import java.io.Serializable;
 import java.util.List;
 
-public interface IBuildDescriptorProvider extends Closeable, Serializable
+import com.ait.tooling.server.core.json.JSONObject;
+
+public interface IBuildDescriptorProvider extends Closeable
 {
     public List<String> getBuildDescriptorNames();
 
     public List<IBuildDescriptor> getBuildDescriptors();
 
     public IBuildDescriptor getBuildDescriptor(String name);
+    
+    public JSONObject toJSONObject();
 }

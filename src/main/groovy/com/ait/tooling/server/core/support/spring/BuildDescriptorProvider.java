@@ -31,15 +31,15 @@ import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.ait.tooling.common.api.java.util.StringOps;
+import com.ait.tooling.server.core.json.JSONArray;
+import com.ait.tooling.server.core.json.JSONObject;
 
 @ManagedResource
 public class BuildDescriptorProvider implements IBuildDescriptorProvider, BeanFactoryAware
 {
-    private static final long                             serialVersionUID = -2989587698018544105L;
+    private static final Logger                           logger        = Logger.getLogger(BuildDescriptorProvider.class);
 
-    private static final Logger                           logger           = Logger.getLogger(BuildDescriptorProvider.class);
-
-    private final LinkedHashMap<String, IBuildDescriptor> m_descriptors    = new LinkedHashMap<String, IBuildDescriptor>();
+    private final LinkedHashMap<String, IBuildDescriptor> m_descriptors = new LinkedHashMap<String, IBuildDescriptor>();
 
     public BuildDescriptorProvider()
     {
@@ -104,5 +104,17 @@ public class BuildDescriptorProvider implements IBuildDescriptorProvider, BeanFa
     @Override
     public void close() throws IOException
     {
+    }
+
+    @Override
+    public JSONObject toJSONObject()
+    {
+        final JSONArray list = new JSONArray();
+
+        for (IBuildDescriptor descriptor : m_descriptors.values())
+        {
+            list.add(descriptor.toJSONObject());
+        }
+        return new JSONObject("build_descriptor_list", list);
     }
 }

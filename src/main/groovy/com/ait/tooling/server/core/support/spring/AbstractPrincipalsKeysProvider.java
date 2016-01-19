@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-@SuppressWarnings("serial")
 public abstract class AbstractPrincipalsKeysProvider implements IPrincipalsKeysProvider
 {
     private final ArrayList<String> m_list = new ArrayList<String>();

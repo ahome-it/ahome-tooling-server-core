@@ -17,10 +17,9 @@
 package com.ait.tooling.server.core.security.session;
 
 import java.io.Closeable;
-import java.io.Serializable;
 import java.util.List;
 
-public interface IServerSessionRepositoryProvider extends Serializable, Closeable
+public interface IServerSessionRepositoryProvider extends Closeable
 {
     public boolean isActive();
 

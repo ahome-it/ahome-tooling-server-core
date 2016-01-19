@@ -16,11 +16,13 @@
 
 package com.ait.tooling.server.core.support.instrument.telemetry;
 
-import java.io.Serializable;
+import java.util.List;
 
-public interface ITelemetrySupport extends Serializable
-{    
+public interface ITelemetrySupport
+{
     public ITelemetryProvider getTelemetryProvider();
 
     public boolean telemetry(String category, Object message);
+
+    public boolean telemetry(String category, List<String> tags, Object message);
 }

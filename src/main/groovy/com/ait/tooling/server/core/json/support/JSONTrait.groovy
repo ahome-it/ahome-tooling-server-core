@@ -25,7 +25,6 @@ import com.ait.tooling.server.core.json.parser.JSONParser
 import com.ait.tooling.server.core.json.parser.JSONParserException
 import com.ait.tooling.server.core.json.schema.JSONSchema
 
-
 @CompileStatic
 public trait JSONTrait
 {
@@ -74,34 +73,17 @@ public trait JSONTrait
 
     public JSONObject jsonParse(final String string) throws JSONParserException
     {
-        Objects.requireNonNull(string)
-
-        final Object result = new JSONParser().parse(string)
-
-        if ((null != result) && (result instanceof JSONObject))
-        {
-            ((JSONObject) result)
-        }
-        else
-        {
-            null
-        }
+        new JSONParser().parse(Objects.requireNonNull(string))
     }
 
-    public JSONObject jsonParse(final Reader reader) throws IOException, JSONParserException
+    public JSONObject jsonParse(final Reader reader) throws JSONParserException
     {
-        Objects.requireNonNull(reader)
+        new JSONParser().parse(Objects.requireNonNull(reader))
+    }
 
-        final Object result = new JSONParser().parse(reader)
-
-        if ((null != result) && (result instanceof JSONObject))
-        {
-            ((JSONObject) result)
-        }
-        else
-        {
-            null
-        }
+    public JSONObject jsonParse(final InputStream stream) throws JSONParserException
+    {
+        new JSONParser().parse(Objects.requireNonNull(stream))
     }
 
     public JSONArray jarr()

@@ -16,8 +16,8 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -39,7 +39,7 @@ import com.ait.tooling.server.core.security.session.IServerSessionRepository;
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider;
 import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetrySupport;
 
-public interface IServerContext extends IJSONUtilities, IAuthorizer, IPropertiesResolver, ITelemetrySupport, Serializable
+public interface IServerContext extends IJSONUtilities, IAuthorizer, IPropertiesResolver, ITelemetrySupport
 {
     public IServerContext getServerContext();
 
@@ -82,6 +82,10 @@ public interface IServerContext extends IJSONUtilities, IAuthorizer, IProperties
     public boolean publish(String name, JSONObject message);
 
     public boolean publish(String name, JSONObject message, long timeout);
+
+    public boolean publish(String name, JSONObject message, Map<String, ?> headers);
+
+    public boolean publish(String name, JSONObject message, Map<String, ?> headers, long timeout);
 
     public <T> boolean publish(String name, Message<T> message);
 

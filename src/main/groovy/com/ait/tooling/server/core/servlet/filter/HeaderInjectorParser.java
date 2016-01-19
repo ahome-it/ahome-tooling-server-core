@@ -19,7 +19,6 @@ package com.ait.tooling.server.core.servlet.filter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,13 +29,11 @@ import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.parser.JSONParser;
 
-public class HeaderInjectorParser implements Serializable
+public class HeaderInjectorParser
 {
-    private static final long                serialVersionUID = -8416682419502671850L;
+    private static final Logger              logger      = Logger.getLogger(HeaderInjectorParser.class);
 
-    private static final Logger              logger           = Logger.getLogger(HeaderInjectorParser.class);
-
-    private final ArrayList<IHeaderInjector> m_injectors      = new ArrayList<IHeaderInjector>();
+    private final ArrayList<IHeaderInjector> m_injectors = new ArrayList<IHeaderInjector>();
 
     public HeaderInjectorParser()
     {
@@ -70,12 +67,10 @@ public class HeaderInjectorParser implements Serializable
     {
         try
         {
-            final Object object = new JSONParser().parse(in);
+            final JSONObject json = new JSONParser().parse(in);
 
-            if (object instanceof JSONObject)
+            if (null != json)
             {
-                final JSONObject json = ((JSONObject) object);
-
                 for (String type : json.keys())
                 {
                     type = StringOps.toTrimOrNull(type);

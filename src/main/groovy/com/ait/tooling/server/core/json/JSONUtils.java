@@ -17,7 +17,6 @@
 package com.ait.tooling.server.core.json;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -28,38 +27,41 @@ import java.util.Map;
 
 import com.ait.tooling.common.server.io.NoSyncStringBuilderWriter;
 
-public final class JSONUtils implements Serializable
+public final class JSONUtils
 {
-    private static final long       serialVersionUID = 3288785652806173792L;
+    private static final String     NULL_FOR_OUTPUT = "null".intern();
 
-    private static final String     NULL_FOR_OUTPUT  = "null".intern();
+    private final static BigDecimal BIG_DECIMAL_MAX = BigDecimal.valueOf(Double.MAX_VALUE);
 
-    private final static BigDecimal BIG_DECIMAL_MAX  = BigDecimal.valueOf(Double.MAX_VALUE);
+    private final static BigDecimal BIG_DECIMAL_MIN = BigDecimal.valueOf(Double.MIN_VALUE);
 
-    private final static BigDecimal BIG_DECIMAL_MIN  = BigDecimal.valueOf(Double.MIN_VALUE);
+    private final static BigInteger BIG_INTEGER_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
 
-    private final static BigInteger BIG_INTEGER_MAX  = BigInteger.valueOf(Integer.MAX_VALUE);
+    private final static BigInteger BIG_INTEGER_MIN = BigInteger.valueOf(Integer.MIN_VALUE);
 
-    private final static BigInteger BIG_INTEGER_MIN  = BigInteger.valueOf(Integer.MIN_VALUE);
+    private final static BigInteger BIG_INTLONG_MAX = BigInteger.valueOf(Long.MAX_VALUE);
 
-    private final static BigInteger BIG_INTLONG_MAX  = BigInteger.valueOf(Long.MAX_VALUE);
+    private final static BigInteger BIG_INTLONG_MIN = BigInteger.valueOf(Long.MIN_VALUE);
 
-    private final static BigInteger BIG_INTLONG_MIN  = BigInteger.valueOf(Long.MIN_VALUE);
+    private final static BigDecimal BIG_DEC_INT_MAX = BigDecimal.valueOf(Integer.MAX_VALUE);
 
-    private final static BigDecimal BIG_DEC_INT_MAX  = BigDecimal.valueOf(Integer.MAX_VALUE);
+    private final static BigDecimal BIG_DEC_INT_MIN = BigDecimal.valueOf(Integer.MIN_VALUE);
 
-    private final static BigDecimal BIG_DEC_INT_MIN  = BigDecimal.valueOf(Integer.MIN_VALUE);
+    private final static BigDecimal BIG_DEC_LONGMAX = BigDecimal.valueOf(Long.MAX_VALUE);
 
-    private final static BigDecimal BIG_DEC_LONGMAX  = BigDecimal.valueOf(Long.MAX_VALUE);
+    private final static BigDecimal BIG_DEC_LONGMIN = BigDecimal.valueOf(Long.MIN_VALUE);
 
-    private final static BigDecimal BIG_DEC_LONGMIN  = BigDecimal.valueOf(Long.MIN_VALUE);
+    private final static BigInteger BIG_INT_DEC_MAX = BIG_DECIMAL_MAX.toBigInteger();
 
-    private final static BigInteger BIG_INT_DEC_MAX  = BIG_DECIMAL_MAX.toBigInteger();
-
-    private final static BigInteger BIG_INT_DEC_MIN  = BIG_DECIMAL_MIN.toBigInteger();
+    private final static BigInteger BIG_INT_DEC_MIN = BIG_DECIMAL_MIN.toBigInteger();
 
     protected JSONUtils()
     {
+    }
+
+    public static final <T> T NULL()
+    {
+        return null;
     }
 
     public static final String toJSONString(final Object value, final boolean strict)
@@ -106,63 +108,63 @@ public final class JSONUtils implements Serializable
 
             return;
         }
-        if (value instanceof Integer)
+        if (value instanceof Number)
         {
-            out.write(value.toString());
-
-            return;
-        }
-        if (value instanceof Long)
-        {
-            if (strict)
+            if (value instanceof Double)
             {
-                final Integer thunk = asInteger(value);
+                final Double dval = ((Double) value);
 
-                if (null != thunk)
-                {
-                    out.write(thunk.toString());
-                }
-                else
+                if (isDoubleInfiniteOrNan(dval))
                 {
                     out.write(NULL_FOR_OUTPUT);
                 }
+                else
+                {
+                    out.write(dval.toString());
+                }
+                return;
             }
-            else
+            if (value instanceof Integer)
             {
                 out.write(value.toString());
-            }
-            return;
-        }
-        if (value instanceof Double)
-        {
-            final Double dval = ((Double) value);
 
-            if (isDoubleInfiniteOrNan(dval))
-            {
-                out.write(NULL_FOR_OUTPUT);
+                return;
             }
-            else
+            if (value instanceof Long)
             {
-                out.write(dval.toString());
-            }
-            return;
-        }
-        if (value instanceof Float)
-        {
-            final Float fval = ((Float) value);
+                if (strict)
+                {
+                    final Integer thunk = asInteger(value);
 
-            if (isFloatInfiniteOrNan(fval))
-            {
-                out.write(NULL_FOR_OUTPUT);
+                    if (null != thunk)
+                    {
+                        out.write(thunk.toString());
+                    }
+                    else
+                    {
+                        out.write(NULL_FOR_OUTPUT);
+                    }
+                }
+                else
+                {
+                    out.write(value.toString());
+                }
+                return;
             }
-            else
+            if (value instanceof Float)
             {
-                out.write(fval.toString());
+                final Float fval = ((Float) value);
+
+                if (isFloatInfiniteOrNan(fval))
+                {
+                    out.write(NULL_FOR_OUTPUT);
+                }
+                else
+                {
+                    out.write(fval.toString());
+                }
+                return;
             }
-            return;
-        }
-        if (value instanceof Number)
-        {
             final Number nval = asNumber(value);
 
             if (null != nval)

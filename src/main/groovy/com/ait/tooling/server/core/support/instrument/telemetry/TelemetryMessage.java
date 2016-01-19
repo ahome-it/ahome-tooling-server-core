@@ -18,6 +18,7 @@ package com.ait.tooling.server.core.support.instrument.telemetry;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.List;
 import java.util.Objects;
 
 import org.springframework.messaging.Message;
@@ -28,25 +29,27 @@ import com.ait.tooling.server.core.pubsub.JSONMessageBuilder;
 
 public class TelemetryMessage implements ITelemetryMessage
 {
-    private static final long       serialVersionUID = 5585132472596795023L;
+    private static final JSONObject SERVER_INFO = getServerInfo();
 
-    private static final JSONObject SERVER_INFO      = getServerInfo();
-
-    private boolean                 m_closed         = false;
+    private boolean                 m_closed    = false;
 
     private final long              m_timemark;
 
     private final String            m_category;
 
+    private final List<String>      m_tagslist;
+
     private final Object            m_messages;
 
-    public TelemetryMessage(final String category, final Object messages, final long timemark)
+    public TelemetryMessage(final String category, final List<String> tagslist, final Object messages, final long timemark)
     {
         m_timemark = timemark;
 
         m_category = StringOps.requireTrimOrNull(category);
 
         m_messages = Objects.requireNonNull(messages);
+
+        m_tagslist = Objects.requireNonNull(tagslist);
     }
 
     @Override
@@ -80,9 +83,15 @@ public class TelemetryMessage implements ITelemetryMessage
     }
 
     @Override
+    public List<String> getTagsList()
+    {
+        return m_tagslist;
+    }
+
+    @Override
     public JSONObject toJSONObject()
     {
-        return new JSONObject("TELEMETRY", new JSONObject("category", getCategory()).set("timestamp", getTimeStamp()).set("server", SERVER_INFO).set("message", getMessage()));
+        return new JSONObject("TELEMETRY", new JSONObject("category", getCategory()).set("tags", getTagsList()).set("timestamp", getTimeStamp()).set("server", SERVER_INFO).set("message", getMessage()));
     }
 
     private static final JSONObject getServerInfo()

@@ -23,9 +23,7 @@ import com.ait.tooling.server.core.json.JSONObject;
 
 public class StrictTransportHeaderInjector implements IHeaderInjector
 {
-    private static final long serialVersionUID = -1227112847904791513L;
-
-    private boolean           m_always         = true;
+    private boolean m_always = true;
 
     public StrictTransportHeaderInjector()
     {

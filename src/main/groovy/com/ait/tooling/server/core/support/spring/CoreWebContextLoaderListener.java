@@ -16,8 +16,6 @@
 
 package com.ait.tooling.server.core.support.spring;
 
-import java.io.Serializable;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
@@ -25,11 +23,9 @@ import org.apache.log4j.Logger;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
 
-public class CoreWebContextLoaderListener extends ContextLoaderListener implements Serializable
+public class CoreWebContextLoaderListener extends ContextLoaderListener
 {
-    private static final long   serialVersionUID = -4326074193461352464L;
-
-    private static final Logger logger           = Logger.getLogger(CoreWebContextLoaderListener.class);
+    private static final Logger logger = Logger.getLogger(CoreWebContextLoaderListener.class);
 
     @Override
     public void contextInitialized(final ServletContextEvent event)
@@ -58,7 +54,7 @@ public class CoreWebContextLoaderListener extends ContextLoaderListener implemen
 
         super.customizeContext(sc, context);
 
-        ServerContextInstance.getServerContextInstance().setApplicationContext(context);
+        ServerContextInstance.setApplicationContext(context);
 
         logger.info("CoreWebContextLoaderListener.customizeContext() COMPLETE");
     }

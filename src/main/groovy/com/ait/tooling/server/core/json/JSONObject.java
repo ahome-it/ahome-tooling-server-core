@@ -36,7 +36,9 @@ import com.ait.tooling.server.core.json.binder.JSONBinder;
 
 public class JSONObject extends LinkedHashMap<String, Object>implements JSONObjectDefinition<JSONArray, JSONObject>, IJSONStreamAware
 {
-    private static final long serialVersionUID = -6811236788038367702L;
+    private static final long   serialVersionUID = -6811236788038367702L;
+
+    private static final char[] FLUSH_KEY_ARRAY  = { '"', ':' };
 
     public JSONObject()
     {
@@ -44,7 +46,7 @@ public class JSONObject extends LinkedHashMap<String, Object>implements JSONObje
 
     public JSONObject(final Map<String, ?> map)
     {
-        putAll(Objects.requireNonNull(map));
+        super(map);
     }
 
     public JSONObject(final List<?> list)
@@ -123,13 +125,12 @@ public class JSONObject extends LinkedHashMap<String, Object>implements JSONObje
 
     static final void writeJSONString(final Map<?, ?> map, final Writer out, final IJSONContext context, final boolean strict) throws IOException
     {
-        Objects.requireNonNull(out);
-
         // Caution - DO NOT make the mistake that this would be faster iterating through the keys - keys is twice as slow!  DSJ
 
         boolean first = true;
 
-        final Iterator<?> iter = map.entrySet().iterator();
+        @SuppressWarnings("unchecked")
+        final Iterator<Entry<String, Object>> iter = ((Map<String, Object>) map).entrySet().iterator();
 
         out.write('{');
 
@@ -141,9 +142,9 @@ public class JSONObject extends LinkedHashMap<String, Object>implements JSONObje
         }
         while (iter.hasNext())
         {
-            final Entry<?, ?> entry = (Entry<?, ?>) iter.next();
+            final Entry<String, Object> entry = iter.next();
 
-            final String name = Objects.requireNonNull(entry.getKey().toString());
+            final String name = entry.getKey();
 
             if (null == name)
             {
@@ -172,7 +173,7 @@ public class JSONObject extends LinkedHashMap<String, Object>implements JSONObje
 
             JSONUtils.escape(name, out);
 
-            out.write("\":");
+            out.write(FLUSH_KEY_ARRAY, 0, 2);
 
             JSONUtils.writeJSONString(valu, out, context, strict);
         }
@@ -316,7 +317,7 @@ public class JSONObject extends LinkedHashMap<String, Object>implements JSONObje
         {
             return ((Boolean) object);
         }
-        return null;
+        return JSONUtils.NULL();
     }
 
     @Override

@@ -17,10 +17,9 @@
 package com.ait.tooling.server.core.security;
 
 import java.io.Closeable;
-import java.io.Serializable;
 import java.util.List;
 
-public interface ISignatoryProvider extends Serializable, Closeable
+public interface ISignatoryProvider extends Closeable
 {
     public List<String> getSignatoryNames();
 

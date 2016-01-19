@@ -57,6 +57,13 @@ public class JSONArray extends ArrayList<Object> implements JSONArrayDefinition<
 
         return this;
     }
+    
+    public final JSONArray push(Object value)
+    {
+        add(Objects.requireNonNull(value));
+
+        return this;
+    }
 
     public final void dumpClassNames(final PrintWriter out)
     {
@@ -295,7 +302,7 @@ public class JSONArray extends ArrayList<Object> implements JSONArrayDefinition<
         {
             return ((Boolean) value);
         }
-        return null;
+        return JSONUtils.NULL();
     }
 
     @Override

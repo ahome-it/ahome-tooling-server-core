@@ -16,9 +16,7 @@
 
 package com.ait.tooling.server.core.json;
 
-import java.io.Serializable;
-
-public interface IJSONReplacerUtil extends Serializable
+public interface IJSONReplacerUtil
 {
     public static final Object UNDEFINED = new Object();
 }

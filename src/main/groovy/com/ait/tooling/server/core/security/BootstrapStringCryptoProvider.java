@@ -28,9 +28,7 @@ import com.ait.tooling.common.api.java.util.StringOps;
 
 public final class BootstrapStringCryptoProvider implements IStringCryptoProvider
 {
-    private static final long   serialVersionUID = 4273253574607136261L;
-
-    private static final Logger logger           = Logger.getLogger(BootstrapStringCryptoProvider.class);
+    private static final Logger logger = Logger.getLogger(BootstrapStringCryptoProvider.class);
 
     private final TextEncryptor m_pcrypt;
 

@@ -16,16 +16,13 @@
 
 package com.ait.tooling.server.core.json.schema.validator;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class JSONSchemaValidatorContext implements Serializable
+public class JSONSchemaValidatorContext
 {
-    private static final long       serialVersionUID = -1662152131463743053L;
-
-    private final ArrayList<String> m_messages       = new ArrayList<String>();
+    private final ArrayList<String> m_messages = new ArrayList<String>();
 
     public JSONSchemaValidatorContext()
     {

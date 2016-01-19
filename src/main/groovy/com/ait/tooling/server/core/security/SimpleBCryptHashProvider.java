@@ -22,8 +22,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public final class SimpleBCryptHashProvider implements IBCryptHashProvider
 {
-    private static final long           serialVersionUID = 3577452527013554959L;
-
     private final BCryptPasswordEncoder m_bcrypt;
 
     public SimpleBCryptHashProvider()

@@ -30,11 +30,9 @@ import com.ait.tooling.common.api.java.util.StringOps;
 
 public class CorePropertiesResolver implements IPropertiesResolver, BeanFactoryAware, Closeable
 {
-    private static final long                   serialVersionUID = -737012952384203522L;
-
     private ConfigurableBeanFactory             m_factory;
 
-    private final LinkedHashMap<String, String> m_docache        = new LinkedHashMap<String, String>();
+    private final LinkedHashMap<String, String> m_docache = new LinkedHashMap<String, String>();
 
     public CorePropertiesResolver()
     {

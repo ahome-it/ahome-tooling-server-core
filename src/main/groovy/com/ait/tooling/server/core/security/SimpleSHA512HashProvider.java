@@ -27,11 +27,9 @@ import com.ait.tooling.common.api.java.util.IHTTPConstants;
 
 public final class SimpleSHA512HashProvider implements ISHA512HashProvider
 {
-    private static final long   serialVersionUID = 2933676216247643844L;
+    private static final Logger logger   = Logger.getLogger(SimpleSHA512HashProvider.class);
 
-    private static final Logger logger           = Logger.getLogger(SimpleSHA512HashProvider.class);
-
-    private final Hasher        m_hasher         = new Hasher(this);
+    private final Hasher        m_hasher = new Hasher(this);
 
     public SimpleSHA512HashProvider()
     {

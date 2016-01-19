@@ -36,11 +36,9 @@ import com.ait.tooling.server.core.security.IStringCryptoProvider;
 
 public final class CoreEncryptedPropertiesProviderPlaceholderConfigurer extends CorePropertiesProviderPlaceholderConfigurer implements ICoreLoggingOperations
 {
-    private static final long serialVersionUID = 3571385011409361222L;
+    private Level   m_levels = Level.OFF;
 
-    private Level             m_levels         = Level.OFF;
-
-    private boolean           m_onsave         = false;
+    private boolean m_onsave = false;
 
     public CoreEncryptedPropertiesProviderPlaceholderConfigurer(final IStringCryptoProvider crypto, final String prefix)
     {

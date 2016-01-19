@@ -16,11 +16,9 @@
 
 package com.ait.tooling.server.core.jmx.management;
 
-import java.io.Serializable;
-
 import com.ait.tooling.server.core.logging.ICoreLoggingOperations;
 
-public interface ICoreServerManager extends ICoreLoggingOperations, Serializable
+public interface ICoreServerManager extends ICoreLoggingOperations
 {
     public boolean isRunning();
 }

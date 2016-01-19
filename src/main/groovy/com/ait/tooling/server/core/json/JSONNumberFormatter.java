@@ -18,15 +18,13 @@ package com.ait.tooling.server.core.json;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.Serializable;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Objects;
 
-@SuppressWarnings("serial")
-public abstract class JSONNumberFormatter implements Serializable
+public abstract class JSONNumberFormatter
 {
-    private transient ThreadLocal<NumberFormat> m_format;
+    private ThreadLocal<NumberFormat> m_format;
 
     public JSONNumberFormatter()
     {

@@ -22,8 +22,6 @@ import com.ait.tooling.common.api.java.util.IHTTPConstants;
 
 public final class DefaultPrincipalsKeysProvider extends AbstractPrincipalsKeysProvider implements IHTTPConstants
 {
-    private static final long serialVersionUID = -620810050712727145L;
-
     public DefaultPrincipalsKeysProvider()
     {
         super(Arrays.asList(X_USER_ID_HEADER, X_SESSION_ID_HEADER, X_CLIENT_UUID_HEADER, X_SESSION_UUID_HEADER, X_XSRF_TOKEN_HEADER));
