@@ -33,17 +33,17 @@ public trait JSONTrait
         new JSONObject()
     }
 
-    public  JSONObject json(final Map<String, ?> map)
+    public JSONObject json(Map<String, ?> map)
     {
         new JSONObject(Objects.requireNonNull(map))
     }
 
-    public JSONObject json(final String name, final Object value)
+    public JSONObject json(String name, Object value)
     {
         new JSONObject(Objects.requireNonNull(name), value)
     }
 
-    public JSONObject json(final Collection<?> collection)
+    public JSONObject json(Collection<?> collection)
     {
         Objects.requireNonNull(collection)
 
@@ -61,27 +61,27 @@ public trait JSONTrait
         }
     }
 
-    public JSONObject json(final List<?> list)
+    public JSONObject json(List<?> list)
     {
         new JSONObject(Objects.requireNonNull(list))
     }
 
-    public  JSONSchema jsonSchema(final Map<String, ?> schema)
+    public JSONSchema jsonSchema(Map<String, ?> schema)
     {
         JSONSchema.cast(json(Objects.requireNonNull(schema)))
     }
 
-    public JSONObject jsonParse(final String string) throws JSONParserException
+    public JSONObject jsonParse(String string) throws JSONParserException
     {
         new JSONParser().parse(Objects.requireNonNull(string))
     }
 
-    public JSONObject jsonParse(final Reader reader) throws JSONParserException
+    public JSONObject jsonParse(Reader reader) throws JSONParserException
     {
         new JSONParser().parse(Objects.requireNonNull(reader))
     }
 
-    public JSONObject jsonParse(final InputStream stream) throws JSONParserException
+    public JSONObject jsonParse(InputStream stream) throws JSONParserException
     {
         new JSONParser().parse(Objects.requireNonNull(stream))
     }
@@ -91,7 +91,7 @@ public trait JSONTrait
         new JSONArray()
     }
 
-    public JSONArray jarr(final JSONObject object)
+    public JSONArray jarr(JSONObject object)
     {
         Objects.requireNonNull(object)
 
@@ -102,19 +102,19 @@ public trait JSONTrait
         list
     }
 
-    public JSONArray jarr(final List<?> list)
+    public JSONArray jarr(List<?> list)
     {
         new JSONArray(Objects.requireNonNull(list))
     }
 
-    public JSONArray jarr(final Map<String, ?> map)
+    public JSONArray jarr(Map<String, ?> map)
     {
-        jarr(new JSONObject(Objects.requireNonNull(map)))
+        jarr(json(Objects.requireNonNull(map)))
     }
 
     public JSONArray jarr(final String name, final Object value)
     {
-        jarr(new JSONObject(Objects.requireNonNull(name), value))
+        jarr(json(Objects.requireNonNull(name), value))
     }
 
     public JSONArray jarr(final Collection<?> collection)
@@ -127,7 +127,7 @@ public trait JSONTrait
         }
         else if (collection instanceof Map)
         {
-            jarr((Map<String, ?>) collection);
+            jarr((Map<String, ?>) collection)
         }
         else
         {

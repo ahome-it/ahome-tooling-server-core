@@ -30,6 +30,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.messaging.SubscribableChannel;
 
+import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.support.JSONUtilitiesInstance;
@@ -385,5 +386,17 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
             return provider.broadcast(Objects.requireNonNull(category), Objects.requireNonNull(tags), Objects.requireNonNull(message));
         }
         return false;
+    }
+
+    @Override
+    public String toTrimOrNull(final String string)
+    {
+        return StringOps.toTrimOrNull(string);
+    }
+
+    @Override
+    public String toTrimOrElse(final String string, final String otherwise)
+    {
+        return StringOps.toTrimOrElse(string, otherwise);
     }
 }

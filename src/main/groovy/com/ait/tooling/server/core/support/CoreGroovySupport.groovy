@@ -28,6 +28,7 @@ import org.springframework.messaging.MessageChannel
 import org.springframework.messaging.PollableChannel
 import org.springframework.messaging.SubscribableChannel
 
+import com.ait.tooling.common.api.java.util.StringOps
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager
 import com.ait.tooling.server.core.json.JSONArray
 import com.ait.tooling.server.core.json.JSONObject
@@ -200,13 +201,13 @@ public class CoreGroovySupport implements IServerContext, Closeable
     @Override
     public boolean publish(String name, JSONObject message, Map<String, ?> headers)
     {
-        publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message), Objects.requireNonNull(headers)));
+        publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message), Objects.requireNonNull(headers)))
     }
 
     @Override
     public boolean publish(String name, JSONObject message, Map<String, ?> headers, long timeout)
     {
-        publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message), Objects.requireNonNull(headers)), timeout);
+        publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message), Objects.requireNonNull(headers)), timeout)
     }
 
     @Override
@@ -305,19 +306,19 @@ public class CoreGroovySupport implements IServerContext, Closeable
     @Override
     public JSONObject jsonParse(final String string) throws JSONParserException
     {
-        new JSONParser().parse(Objects.requireNonNull(string));
+        new JSONParser().parse(Objects.requireNonNull(string))
     }
 
     @Override
     public JSONObject jsonParse(final Reader reader) throws JSONParserException
     {
-        new JSONParser().parse(Objects.requireNonNull(reader));
+        new JSONParser().parse(Objects.requireNonNull(reader))
     }
 
     @Override
     public JSONObject jsonParse(final InputStream stream) throws JSONParserException
     {
-        new JSONParser().parse(Objects.requireNonNull(stream));
+        new JSONParser().parse(Objects.requireNonNull(stream))
     }
 
     @Override
@@ -379,7 +380,7 @@ public class CoreGroovySupport implements IServerContext, Closeable
         }
         false
     }
-    
+
     @Override
     public boolean telemetry(String category, List<String> tags, Object message)
     {
@@ -390,5 +391,17 @@ public class CoreGroovySupport implements IServerContext, Closeable
             return provider.broadcast(category, tags, message)
         }
         false
+    }
+
+    @Override
+    public String toTrimOrNull(final String string)
+    {
+        StringOps.toTrimOrNull(string)
+    }
+
+    @Override
+    public String toTrimOrElse(final String string, final String otherwise)
+    {
+        StringOps.toTrimOrElse(string, otherwise)
     }
 }

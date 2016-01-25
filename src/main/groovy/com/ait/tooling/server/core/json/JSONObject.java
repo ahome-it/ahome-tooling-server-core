@@ -97,30 +97,17 @@ public class JSONObject extends LinkedHashMap<String, Object>implements JSONObje
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public JSONObject accumulate(final String ikey, final Object value)
+    public JSONObject asClassNames()
     {
-        final String name = Objects.requireNonNull(ikey);
+        final JSONObject json = new JSONObject();
 
-        final Object found = get(name);
-
-        if (null == found)
+        for (String name : keys())
         {
-            put(name, value);
-        }
-        else if (found instanceof List)
-        {
-            ((List<Object>) found).add(value);
-        }
-        else
-        {
-            final JSONArray array = new JSONArray(2);
+            final Object object = get(name);
 
-            array.add(found);
-
-            array.add(value);
+            json.put(name, (null == object) ? "null" : object.getClass().getName());
         }
-        return this;
+        return json;
     }
 
     static final void writeJSONString(final Map<?, ?> map, final Writer out, final IJSONContext context, final boolean strict) throws IOException

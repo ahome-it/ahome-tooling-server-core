@@ -94,4 +94,8 @@ public interface IServerContext extends IJSONUtilities, IAuthorizer, IProperties
     public Logger logger();
 
     public String uuid();
+
+    public String toTrimOrNull(String string);
+
+    public String toTrimOrElse(String string, String otherwise);
 }

@@ -45,7 +45,7 @@ public interface IJSONUtilities
     public JSONObject jsonParse(String string) throws JSONParserException;
 
     public JSONObject jsonParse(Reader reader) throws JSONParserException;
-    
+
     public JSONObject jsonParse(InputStream stream) throws JSONParserException;
 
     public JSONArray jarr();

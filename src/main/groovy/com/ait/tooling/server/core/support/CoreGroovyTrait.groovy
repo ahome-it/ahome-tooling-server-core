@@ -27,6 +27,7 @@ import org.springframework.messaging.MessageChannel
 import org.springframework.messaging.PollableChannel
 import org.springframework.messaging.SubscribableChannel
 
+import com.ait.tooling.common.api.java.util.StringOps
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager
 import com.ait.tooling.server.core.json.JSONObject
 import com.ait.tooling.server.core.json.support.JSONTrait
@@ -171,12 +172,12 @@ public trait CoreGroovyTrait implements JSONTrait
 
     public boolean publish(String name, JSONObject message, Map<String, ?> headers)
     {
-        publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message), Objects.requireNonNull(headers)));
+        publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message), Objects.requireNonNull(headers)))
     }
 
     public boolean publish(String name, JSONObject message, Map<String, ?> headers, long timeout)
     {
-        publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message), Objects.requireNonNull(headers)), timeout);
+        publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message), Objects.requireNonNull(headers)), timeout)
     }
 
     public <T> boolean publish(String name, Message<T> message)
@@ -251,5 +252,15 @@ public trait CoreGroovyTrait implements JSONTrait
             return provider.broadcast(category, tags, message)
         }
         false
+    }
+
+    public String toTrimOrNull(final String string)
+    {
+        StringOps.toTrimOrNull(string)
+    }
+
+    public String toTrimOrElse(String string, String otherwise)
+    {
+        StringOps.toTrimOrElse(string, otherwise)
     }
 }

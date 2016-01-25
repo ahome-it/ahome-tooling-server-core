@@ -106,6 +106,21 @@ public class JSONArray extends ArrayList<Object> implements JSONArrayDefinition<
             }
         }
     }
+    
+    public JSONArray asClassNames()
+    {
+        final int size = size();
+        
+        final JSONArray jarr = new JSONArray(size);
+
+        for (int i = 0; i < size; i++)
+        {
+            final Object object = get(i);
+            
+            jarr.add((null == object) ? "null" : object.getClass().getName());
+        }
+        return jarr;
+    }
 
     static final void writeJSONString(final List<?> list, final Writer out, final IJSONContext context, final boolean strict) throws IOException
     {
