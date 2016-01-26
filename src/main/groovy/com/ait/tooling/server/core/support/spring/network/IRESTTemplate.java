@@ -21,7 +21,7 @@ import java.util.Map;
 import com.ait.tooling.common.api.java.util.IHTTPConstants;
 import com.ait.tooling.server.core.json.JSONObject;
 
-public interface IRESTTemplate extends IHTTPProxyAware<IRESTTemplate>, IHTTPConstants
+public interface IRESTTemplate extends IHTTPConstants
 {
     public IRESTResponse get(String path);
 

@@ -42,7 +42,7 @@ import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetryProvid
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IPropertiesResolver
 import com.ait.tooling.server.core.support.spring.IServerContext
-import com.ait.tooling.server.core.support.spring.ServerContextInstance
+import com.ait.tooling.server.core.support.spring.network.ICoreNetworkProvider
 
 @CompileStatic
 public trait CoreGroovyTrait implements JSONTrait
@@ -50,7 +50,7 @@ public trait CoreGroovyTrait implements JSONTrait
     @Memoized
     public IServerContext getServerContext()
     {
-        ServerContextInstance.getServerContextInstance().getServerContext()
+        CoreGroovySupport.getCoreGroovySupport()
     }
 
     @Memoized
@@ -114,9 +114,9 @@ public trait CoreGroovyTrait implements JSONTrait
     }
 
     @Memoized
-    public IServerSessionRepository getServerSessionRepository(String domain_name)
+    public IServerSessionRepository getServerSessionRepository(String domain)
     {
-        getServerSessionRepositoryProvider().getServerSessionRepository(Objects.requireNonNull(domain_name))
+        getServerSessionRepositoryProvider().getServerSessionRepository(Objects.requireNonNull(domain))
     }
 
     public AuthorizationResult isAuthorized(Object target, List<String> roles)
@@ -134,6 +134,12 @@ public trait CoreGroovyTrait implements JSONTrait
     public ISignatoryProvider getSignatoryProvider()
     {
         getServerContext().getSignatoryProvider()
+    }
+
+    @Memoized
+    public ICoreNetworkProvider getCoreNetworkProvider()
+    {
+        getServerContext().getCoreNetworkProvider()
     }
 
     @Memoized
@@ -182,28 +188,12 @@ public trait CoreGroovyTrait implements JSONTrait
 
     public <T> boolean publish(String name, Message<T> message)
     {
-        Objects.requireNonNull(message)
-
-        MessageChannel channel = getMessageChannel(Objects.requireNonNull(name))
-
-        if (channel)
-        {
-            return channel.send(message)
-        }
-        throw new IllegalArgumentException("MessageChannel ${name} does not exist.")
+        getServerContext().publish(Objects.requireNonNull(name), Objects.requireNonNull(message))
     }
 
     public <T> boolean publish(String name, Message<T> message, long timeout)
     {
-        Objects.requireNonNull(message)
-
-        MessageChannel channel = getMessageChannel(Objects.requireNonNull(name))
-
-        if (channel)
-        {
-            return channel.send(message, timeout)
-        }
-        throw new IllegalArgumentException("MessageChannel ${name} does not exist.")
+        getServerContext().publish(Objects.requireNonNull(name), Objects.requireNonNull(message), timeout)
     }
 
     public boolean containsBean(String name)
@@ -234,27 +224,15 @@ public trait CoreGroovyTrait implements JSONTrait
 
     public boolean telemetry(String category, Object message)
     {
-        def provider = getTelemetryProvider()
-
-        if (provider.isActive())
-        {
-            return provider.broadcast(category, message)
-        }
-        false
+        getServerContext().telemetry(Objects.requireNonNull(category), Objects.requireNonNull(message))
     }
 
     public boolean telemetry(String category, List<String> tags, Object message)
     {
-        def provider = getTelemetryProvider()
-
-        if (provider.isActive())
-        {
-            return provider.broadcast(category, tags, message)
-        }
-        false
+        getServerContext().telemetry(Objects.requireNonNull(category), Objects.requireNonNull(tags), Objects.requireNonNull(message))
     }
 
-    public String toTrimOrNull(final String string)
+    public String toTrimOrNull(String string)
     {
         StringOps.toTrimOrNull(string)
     }

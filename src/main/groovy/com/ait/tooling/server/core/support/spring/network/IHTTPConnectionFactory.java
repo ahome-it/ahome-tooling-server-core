@@ -16,17 +16,6 @@
 
 package com.ait.tooling.server.core.support.spring.network;
 
-import java.util.List;
-
-public interface IHTTPProxyAware<T extends IHTTPProxyAware<T>>
+public interface IHTTPConnectionFactory
 {
-    public T addHTTPProxy(IHTTPProxy proxy);
-
-    public T removeHTTPProxy(IHTTPProxy proxy);
-
-    public T setHTTPProxies(IHTTPProxy... proxies);
-
-    public T setHTTPProxies(List<IHTTPProxy> proxies);
-
-    public List<IHTTPProxy> getHTTPProxies();
 }

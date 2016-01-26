@@ -38,6 +38,7 @@ import com.ait.tooling.server.core.security.ISignatoryProvider;
 import com.ait.tooling.server.core.security.session.IServerSessionRepository;
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider;
 import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetrySupport;
+import com.ait.tooling.server.core.support.spring.network.ICoreNetworkProvider;
 
 public interface IServerContext extends IJSONUtilities, IAuthorizer, IPropertiesResolver, ITelemetrySupport
 {
@@ -59,7 +60,7 @@ public interface IServerContext extends IJSONUtilities, IAuthorizer, IProperties
 
     public IServerSessionRepositoryProvider getServerSessionRepositoryProvider();
 
-    public IServerSessionRepository getServerSessionRepository(String domain_name);
+    public IServerSessionRepository getServerSessionRepository(String domain);
 
     public ICoreServerManager getCoreServerManager();
 
@@ -70,6 +71,8 @@ public interface IServerContext extends IJSONUtilities, IAuthorizer, IProperties
     public ICryptoProvider getCryptoProvider();
 
     public ISignatoryProvider getSignatoryProvider();
+
+    public ICoreNetworkProvider getCoreNetworkProvider();
 
     public MessageChannel getMessageChannel(String name);
 

@@ -33,7 +33,6 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager
 import com.ait.tooling.server.core.json.JSONArray
 import com.ait.tooling.server.core.json.JSONObject
 import com.ait.tooling.server.core.json.binder.JSONBinder
-import com.ait.tooling.server.core.json.parser.JSONParser
 import com.ait.tooling.server.core.json.parser.JSONParserException
 import com.ait.tooling.server.core.json.schema.JSONSchema
 import com.ait.tooling.server.core.pubsub.JSONMessageBuilder
@@ -48,6 +47,7 @@ import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IPropertiesResolver
 import com.ait.tooling.server.core.support.spring.IServerContext
 import com.ait.tooling.server.core.support.spring.ServerContextInstance
+import com.ait.tooling.server.core.support.spring.network.ICoreNetworkProvider
 
 @CompileStatic
 public class CoreGroovySupport implements IServerContext, Closeable
@@ -139,9 +139,9 @@ public class CoreGroovySupport implements IServerContext, Closeable
     }
 
     @Memoized
-    public IServerSessionRepository getServerSessionRepository(String domain_name)
+    public IServerSessionRepository getServerSessionRepository(String domain)
     {
-        getServerSessionRepositoryProvider().getServerSessionRepository(Objects.requireNonNull(domain_name))
+        getServerSessionRepositoryProvider().getServerSessionRepository(Objects.requireNonNull(domain))
     }
 
     @Override
@@ -160,6 +160,12 @@ public class CoreGroovySupport implements IServerContext, Closeable
     public ISignatoryProvider getSignatoryProvider()
     {
         getServerContext().getSignatoryProvider()
+    }
+
+    @Memoized
+    public ICoreNetworkProvider getCoreNetworkProvider()
+    {
+        getServerContext().getCoreNetworkProvider()
     }
 
     @Memoized
@@ -213,13 +219,11 @@ public class CoreGroovySupport implements IServerContext, Closeable
     @Override
     public <T> boolean publish(String name, Message<T> message)
     {
-        Objects.requireNonNull(message)
-
-        MessageChannel channel = getMessageChannel(Objects.requireNonNull(name))
+        def channel = getMessageChannel(Objects.requireNonNull(name))
 
         if (channel)
         {
-            return channel.send(message)
+            return channel.send(Objects.requireNonNull(message))
         }
         throw new IllegalArgumentException("MessageChannel ${name} does not exist.")
     }
@@ -227,13 +231,11 @@ public class CoreGroovySupport implements IServerContext, Closeable
     @Override
     public <T> boolean publish(String name, Message<T> message, long timeout)
     {
-        Objects.requireNonNull(message)
-
-        MessageChannel channel = getMessageChannel(Objects.requireNonNull(name))
+        def channel = getMessageChannel(Objects.requireNonNull(name))
 
         if (channel)
         {
-            return channel.send(message, timeout)
+            return channel.send(Objects.requireNonNull(message), timeout)
         }
         throw new IllegalArgumentException("MessageChannel ${name} does not exist.")
     }
@@ -304,21 +306,21 @@ public class CoreGroovySupport implements IServerContext, Closeable
     }
 
     @Override
-    public JSONObject jsonParse(final String string) throws JSONParserException
+    public JSONObject jsonParse(String string) throws JSONParserException
     {
-        new JSONParser().parse(Objects.requireNonNull(string))
+        getServerContext().jsonParse(Objects.requireNonNull(string))
     }
 
     @Override
-    public JSONObject jsonParse(final Reader reader) throws JSONParserException
+    public JSONObject jsonParse(Reader reader) throws JSONParserException
     {
-        new JSONParser().parse(Objects.requireNonNull(reader))
+        getServerContext().jsonParse(Objects.requireNonNull(reader))
     }
 
     @Override
-    public JSONObject jsonParse(final InputStream stream) throws JSONParserException
+    public JSONObject jsonParse(InputStream stream) throws JSONParserException
     {
-        new JSONParser().parse(Objects.requireNonNull(stream))
+        getServerContext().jsonParse(Objects.requireNonNull(stream))
     }
 
     @Override
@@ -376,7 +378,7 @@ public class CoreGroovySupport implements IServerContext, Closeable
 
         if (provider.isActive())
         {
-            return provider.broadcast(category, message)
+            return provider.broadcast(Objects.requireNonNull(category), Objects.requireNonNull(message))
         }
         false
     }
@@ -388,19 +390,19 @@ public class CoreGroovySupport implements IServerContext, Closeable
 
         if (provider.isActive())
         {
-            return provider.broadcast(category, tags, message)
+            return provider.broadcast(Objects.requireNonNull(category), Objects.requireNonNull(tags), Objects.requireNonNull(message))
         }
         false
     }
 
     @Override
-    public String toTrimOrNull(final String string)
+    public String toTrimOrNull(String string)
     {
         StringOps.toTrimOrNull(string)
     }
 
     @Override
-    public String toTrimOrElse(final String string, final String otherwise)
+    public String toTrimOrElse(String string, String otherwise)
     {
         StringOps.toTrimOrElse(string, otherwise)
     }

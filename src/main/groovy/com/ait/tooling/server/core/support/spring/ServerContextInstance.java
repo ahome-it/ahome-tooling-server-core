@@ -43,6 +43,7 @@ import com.ait.tooling.server.core.security.ISignatoryProvider;
 import com.ait.tooling.server.core.security.session.IServerSessionRepository;
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider;
 import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetryProvider;
+import com.ait.tooling.server.core.support.spring.network.ICoreNetworkProvider;
 
 public class ServerContextInstance extends JSONUtilitiesInstance implements IServerContext
 {
@@ -216,9 +217,9 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     }
 
     @Override
-    public final IServerSessionRepository getServerSessionRepository(final String domain_name)
+    public final IServerSessionRepository getServerSessionRepository(final String domain)
     {
-        return getServerSessionRepositoryProvider().getServerSessionRepository(Objects.requireNonNull(domain_name));
+        return getServerSessionRepositoryProvider().getServerSessionRepository(Objects.requireNonNull(domain));
     }
 
     @Override
@@ -243,6 +244,12 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     public final ISignatoryProvider getSignatoryProvider()
     {
         return Objects.requireNonNull(getBeanSafely("SignatoryProvider", ISignatoryProvider.class), "SignatoryProvider is null, initialization error.");
+    }
+
+    @Override
+    public ICoreNetworkProvider getCoreNetworkProvider()
+    {
+        return Objects.requireNonNull(getBeanSafely("CoreNetworkProvider", ICoreNetworkProvider.class), "CoreNetworkProvider is null, initialization error.");
     }
 
     private final CorePropertiesResolver getCorePropertiesResolver()
@@ -375,7 +382,7 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
         }
         return false;
     }
-    
+
     @Override
     public boolean telemetry(final String category, final List<String> tags, final Object message)
     {

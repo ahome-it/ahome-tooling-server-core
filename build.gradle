@@ -390,6 +390,7 @@ def List<String> springIntegrationPackages() {
         'spring-integration-mail',
         'spring-integration-file',
         'spring-integration-http',
+        'spring-integration-amqp',
         'spring-integration-event',
         'spring-integration-stream',
         'spring-integration-security',

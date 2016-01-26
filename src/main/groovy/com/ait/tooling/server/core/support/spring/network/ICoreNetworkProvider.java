@@ -16,11 +16,9 @@
 
 package com.ait.tooling.server.core.support.spring.network;
 
-import org.springframework.http.client.ClientHttpRequestFactory;
-
-public interface INetProvider extends IHTTPProxyAware<INetProvider>
+public interface ICoreNetworkProvider extends IHTTPProxyAware<ICoreNetworkProvider>
 {
-    public IRESTTemplate getRESTTemplate(String host);
+    public IRESTTemplate getRESTTemplate();
 
-    public IRESTTemplate getRESTTemplate(String host, ClientHttpRequestFactory factory);
+    public IRESTTemplate getRESTTemplate(IHTTPConnectionFactory factory);
 }
