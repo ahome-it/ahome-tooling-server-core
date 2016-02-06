@@ -16,69 +16,165 @@
 
 package com.ait.tooling.server.core.support.spring.network;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+
+import com.ait.tooling.server.core.json.JSONObject;
+import com.ait.tooling.server.core.json.parser.JSONParser;
+import com.ait.tooling.server.core.json.parser.JSONParserException;
 
 public class CoreNetworkProvider implements ICoreNetworkProvider
 {
-    private List<IHTTPProxy> m_proxies = new ArrayList<>(0);
-
-    public CoreNetworkProvider()
-    {
-    }
-
     @Override
-    public ICoreNetworkProvider setHTTPProxies(final IHTTPProxy... proxies)
+    public IRESTResponse get(String path)
     {
-        return setHTTPProxies(Arrays.asList(proxies));
-    }
-
-    @Override
-    public ICoreNetworkProvider setHTTPProxies(final List<IHTTPProxy> proxies)
-    {
-        m_proxies = new ArrayList<>(Objects.requireNonNull(proxies));
-
-        return this;
-    }
-
-    @Override
-    public IRESTTemplate getRESTTemplate()
-    {
+        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public IRESTTemplate getRESTTemplate(IHTTPConnectionFactory factory)
+    public IRESTResponse get(String path, HTTPHeaders headers)
     {
+        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public List<IHTTPProxy> getHTTPProxies()
+    public IRESTResponse get(String path, Map<String, String> params)
     {
-        return Collections.unmodifiableList(m_proxies);
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
-    public ICoreNetworkProvider addHTTPProxy(final IHTTPProxy proxy)
+    public IRESTResponse get(String path, Map<String, String> params, HTTPHeaders headers)
     {
-        if (false == m_proxies.contains(Objects.requireNonNull(proxy)))
-        {
-            m_proxies.add(proxy);
-        }
-        return this;
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
-    public ICoreNetworkProvider removeHTTPProxy(final IHTTPProxy proxy)
+    public IRESTResponse put(String path, JSONObject body)
     {
-        if (m_proxies.contains(Objects.requireNonNull(proxy)))
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IRESTResponse put(String path, JSONObject body, HTTPHeaders headers)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IRESTResponse post(String path, JSONObject body)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IRESTResponse post(String path, JSONObject body, HTTPHeaders headers)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IRESTResponse patch(String path, JSONObject body)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IRESTResponse patch(String path, JSONObject body, HTTPHeaders headers)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IRESTResponse delete(String path, JSONObject body)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IRESTResponse delete(String path, JSONObject body, HTTPHeaders headers)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    protected static class CoreRestResponse implements IRESTResponse
+    {
+        private final int         m_code;
+
+        private final String      m_body;
+
+        private final HTTPHeaders m_head;
+
+        private JSONObject        m_json;
+
+        public CoreRestResponse(final ResponseEntity<String> resp)
         {
-            m_proxies.remove(proxy);
+            this(resp.getStatusCode().value(), (resp.hasBody() ? resp.getBody() : ""), new HTTPHeaders(Collections.unmodifiableMap(resp.getHeaders())));
         }
-        return this;
+
+        public CoreRestResponse(final int code, final String body, final HTTPHeaders head)
+        {
+            m_code = code;
+
+            m_body = body;
+
+            m_head = head;
+        }
+
+        @Override
+        public int code()
+        {
+            return m_code;
+        }
+
+        @Override
+        public String body()
+        {
+            return m_body;
+        }
+
+        @Override
+        public JSONObject json()
+        {
+            if (null != m_json)
+            {
+                return m_json;
+            }
+            try
+            {
+                final String body = body();
+
+                if ((null == body) || (body.isEmpty()))
+                {
+                    return null;
+                }
+                return (m_json = (new JSONParser().parse(body)));
+            }
+            catch (JSONParserException e)
+            {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        public HTTPHeaders headers()
+        {
+            return m_head;
+        }
     }
 }

@@ -25,4 +25,6 @@ public interface IRESTResponse
     public String body();
 
     public JSONObject json();
+    
+    public HTTPHeaders headers();
 }

@@ -16,9 +16,33 @@
 
 package com.ait.tooling.server.core.support.spring.network;
 
-public interface ICoreNetworkProvider extends IHTTPProxyAware<ICoreNetworkProvider>
-{
-    public IRESTTemplate getRESTTemplate();
+import java.util.Map;
 
-    public IRESTTemplate getRESTTemplate(IHTTPConnectionFactory factory);
+import com.ait.tooling.server.core.json.JSONObject;
+
+public interface ICoreNetworkProvider
+{
+    public IRESTResponse get(String path);
+
+    public IRESTResponse get(String path, HTTPHeaders headers);
+
+    public IRESTResponse get(String path, Map<String, String> params);
+
+    public IRESTResponse get(String path, Map<String, String> params, HTTPHeaders headers);
+
+    public IRESTResponse put(String path, JSONObject body);
+
+    public IRESTResponse put(String path, JSONObject body, HTTPHeaders headers);
+
+    public IRESTResponse post(String path, JSONObject body);
+
+    public IRESTResponse post(String path, JSONObject body, HTTPHeaders headers);
+
+    public IRESTResponse patch(String path, JSONObject body);
+
+    public IRESTResponse patch(String path, JSONObject body, HTTPHeaders headers);
+
+    public IRESTResponse delete(String path, JSONObject body);
+
+    public IRESTResponse delete(String path, JSONObject body, HTTPHeaders headers);
 }

@@ -16,11 +16,26 @@
 
 package com.ait.tooling.server.core.support.spring.network;
 
+import java.util.List;
 import java.util.Map;
 
-import com.ait.tooling.common.api.java.util.IHTTPConstants;
+import org.springframework.http.HttpHeaders;
 
-public interface IHTTPHeaders extends IHTTPConstants
+public class HTTPHeaders extends HttpHeaders
 {
-    public Map<String, ?> getHeaders();
+    private static final long serialVersionUID = -7217466640722875327L;
+
+    HTTPHeaders(HttpHeaders head)
+    {
+        putAll(head);
+    }
+
+    public HTTPHeaders()
+    {
+    }
+
+    public HTTPHeaders(Map<String, List<String>> head)
+    {
+        putAll(head);
+    }
 }

@@ -41,7 +41,7 @@ sourceCompatibility = 1.8
 
 targetCompatibility = 1.8
 
-version = '1.0.140-SNAPSHOT'
+version = '1.0.141-SNAPSHOT'
 
 group = 'com.ahome-it'
 
@@ -241,7 +241,7 @@ dependencies {
     compile(group: 'org.springframework.integration', name: 'spring-integration-groovy', version: '4.2.4.RELEASE') {
         exclude(group: 'org.codehaus.groovy', module: 'groovy-all')
     }
-    compile(group: 'org.springframework.integration', name: 'spring-integration-java-dsl', version: '1.1.1.RELEASE')
+    compile(group: 'org.springframework.integration', name: 'spring-integration-java-dsl', version: '1.1.2.RELEASE')
     compile(group: 'org.springframework.session', name: 'spring-session', version: '1.0.2.RELEASE')
     compile(group: 'org.springframework.statemachine', name: 'spring-statemachine-core', version: '1.0.1.RELEASE')
     compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.5', classifier: 'indy')
