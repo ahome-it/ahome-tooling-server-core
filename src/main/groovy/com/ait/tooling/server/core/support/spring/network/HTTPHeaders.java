@@ -16,14 +16,18 @@
 
 package com.ait.tooling.server.core.support.spring.network;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 public class HTTPHeaders extends HttpHeaders
 {
-    private static final long serialVersionUID = -7217466640722875327L;
+    private static final long     serialVersionUID = -7217466640722875327L;
+
+    public static List<MediaType> JSON_MEDIA_TYPE  = Arrays.asList(MediaType.APPLICATION_JSON);
 
     HTTPHeaders(HttpHeaders head)
     {
@@ -37,5 +41,16 @@ public class HTTPHeaders extends HttpHeaders
     public HTTPHeaders(Map<String, List<String>> head)
     {
         putAll(head);
+    }
+
+    public HTTPHeaders doRESTHeaders()
+    {
+        List<MediaType> list = getAccept();
+
+        if ((null == list) || (list.isEmpty()))
+        {
+            setAccept(JSON_MEDIA_TYPE);
+        }
+        return this;
     }
 }

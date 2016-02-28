@@ -19,7 +19,10 @@ package com.ait.tooling.server.core.support.spring.network;
 import java.util.Collections;
 import java.util.Map;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.parser.JSONParser;
@@ -30,85 +33,73 @@ public class CoreNetworkProvider implements ICoreNetworkProvider
     @Override
     public IRESTResponse get(String path)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.GET, new HttpEntity<String>(new HTTPHeaders().doRESTHeaders()), String.class));
     }
 
     @Override
     public IRESTResponse get(String path, HTTPHeaders headers)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.GET, new HttpEntity<String>(headers.doRESTHeaders()), String.class));
     }
 
     @Override
-    public IRESTResponse get(String path, Map<String, String> params)
+    public IRESTResponse get(String path, Map<String, ?> params)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.GET, new HttpEntity<String>(new HTTPHeaders().doRESTHeaders()), String.class, params));
     }
 
     @Override
-    public IRESTResponse get(String path, Map<String, String> params, HTTPHeaders headers)
+    public IRESTResponse get(String path, Map<String, ?> params, HTTPHeaders headers)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.GET, new HttpEntity<String>(headers.doRESTHeaders()), String.class, params));
     }
 
     @Override
     public IRESTResponse put(String path, JSONObject body)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.PUT, new HttpEntity<String>(body.toJSONString(), new HTTPHeaders().doRESTHeaders()), String.class));
     }
 
     @Override
     public IRESTResponse put(String path, JSONObject body, HTTPHeaders headers)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.PUT, new HttpEntity<String>(body.toJSONString(), headers.doRESTHeaders()), String.class));
     }
 
     @Override
     public IRESTResponse post(String path, JSONObject body)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.POST, new HttpEntity<String>(body.toJSONString(), new HTTPHeaders().doRESTHeaders()), String.class));
     }
 
     @Override
     public IRESTResponse post(String path, JSONObject body, HTTPHeaders headers)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.POST, new HttpEntity<String>(body.toJSONString(), headers.doRESTHeaders()), String.class));
     }
 
     @Override
     public IRESTResponse patch(String path, JSONObject body)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.PATCH, new HttpEntity<String>(body.toJSONString(), new HTTPHeaders().doRESTHeaders()), String.class));
     }
 
     @Override
     public IRESTResponse patch(String path, JSONObject body, HTTPHeaders headers)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.PATCH, new HttpEntity<String>(body.toJSONString(), headers.doRESTHeaders()), String.class));
     }
 
     @Override
     public IRESTResponse delete(String path, JSONObject body)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.DELETE, new HttpEntity<String>(body.toJSONString(), new HTTPHeaders().doRESTHeaders()), String.class));
     }
 
     @Override
     public IRESTResponse delete(String path, JSONObject body, HTTPHeaders headers)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.DELETE, new HttpEntity<String>(body.toJSONString(), headers.doRESTHeaders()), String.class));
     }
 
     protected static class CoreRestResponse implements IRESTResponse
@@ -123,7 +114,7 @@ public class CoreNetworkProvider implements ICoreNetworkProvider
 
         public CoreRestResponse(final ResponseEntity<String> resp)
         {
-            this(resp.getStatusCode().value(), (resp.hasBody() ? resp.getBody() : ""), new HTTPHeaders(Collections.unmodifiableMap(resp.getHeaders())));
+            this(resp.getStatusCode().value(), (resp.hasBody() ? resp.getBody() : null), new HTTPHeaders(Collections.unmodifiableMap(resp.getHeaders())));
         }
 
         public CoreRestResponse(final int code, final String body, final HTTPHeaders head)

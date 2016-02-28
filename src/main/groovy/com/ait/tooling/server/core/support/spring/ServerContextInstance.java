@@ -16,14 +16,20 @@
 
 package com.ait.tooling.server.core.support.spring;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+import javax.script.ScriptEngine;
+
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -35,6 +41,7 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.support.JSONUtilitiesInstance;
 import com.ait.tooling.server.core.pubsub.JSONMessageBuilder;
+import com.ait.tooling.server.core.scripting.Scripting;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 import com.ait.tooling.server.core.security.AuthorizationResult;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
@@ -405,5 +412,35 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     public String toTrimOrElse(final String string, final String otherwise)
     {
         return StringOps.toTrimOrElse(string, otherwise);
+    }
+
+    @Override
+    public ScriptEngine scripting(final Scripting type)
+    {
+        return type.getScriptEngine();
+    }
+
+    @Override
+    public ScriptEngine scripting(final Scripting type, final ClassLoader loader)
+    {
+        return type.getScriptEngine(Objects.requireNonNull(loader));
+    }
+
+    @Override
+    public Resource resource(final String location)
+    {
+        return getApplicationContext().getResource(Objects.requireNonNull(location));
+    }
+
+    @Override
+    public Reader reader(final String location) throws IOException
+    {
+        final Resource resource = resource(Objects.requireNonNull(location));
+
+        if (null != resource)
+        {
+            return new InputStreamReader(resource.getInputStream());
+        }
+        return null;
     }
 }

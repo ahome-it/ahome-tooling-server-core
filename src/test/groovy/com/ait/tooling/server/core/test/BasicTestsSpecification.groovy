@@ -16,7 +16,10 @@
 
 package com.ait.tooling.server.core.test
 
+import javax.script.ScriptEngine
+
 import com.ait.tooling.server.core.json.JSONObject
+import com.ait.tooling.server.core.scripting.Scripting
 import com.ait.tooling.server.core.support.CoreGroovyTrait
 import com.ait.tooling.server.core.support.spring.testing.IServerCoreTesting.TestingOps
 import com.ait.tooling.server.core.support.spring.testing.spock.ServerCoreSpecification
@@ -104,6 +107,79 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
 
         expect:
         getCryptoProvider().isPassValid(pass) == true
+    }
+    
+    def "test JS Reader"()
+    {
+        setup:
+        Reader rsrc = reader('classpath:/com/ait/tooling/server/core/test/test.js')
+        rsrc.eachLine { line ->
+            println line
+        }
+        rsrc.close()
+
+        expect:
+        "dean" == "dean"
+    }
+    
+    def "test JS Script"()
+    {
+        setup:
+        Reader rsrc = reader('classpath:/com/ait/tooling/server/core/test/test.js')
+        ScriptEngine engine = scripting(Scripting.JAVASCRIPT)
+        engine.eval(rsrc)
+        rsrc.close()
+        println "JavaScript " + engine.get('x')
+        engine.eval('increment_x()')
+        println "JavaScript " + engine.get('x')
+       
+        expect:
+        "dean" == "dean"
+    }
+    
+    def "test Python Script"()
+    {
+        setup:
+        Reader rsrc = reader('classpath:/com/ait/tooling/server/core/test/test.py')
+        ScriptEngine engine = scripting(Scripting.PYTHON)
+        engine.eval(rsrc)
+        rsrc.close()
+        println "Python " + engine.get('x')
+        engine.eval('increment_x()')
+        println "Python " + engine.get('x')
+       
+        expect:
+        "dean" == "dean"
+    }
+    
+    def "test Groovy Script"()
+    {
+        setup:
+        Reader rsrc = reader('classpath:/com/ait/tooling/server/core/test/test.gy')
+        ScriptEngine engine = scripting(Scripting.GROOVY)
+        engine.eval(rsrc)
+        rsrc.close()
+        println "Groovy " + engine.get('x')
+        engine.eval('increment_x()')
+        println "Groovy " + engine.get('x')
+       
+        expect:
+        "dean" == "dean"
+    }
+    
+    def "test Ruby Script"()
+    {
+        setup:
+        Reader rsrc = reader('classpath:/com/ait/tooling/server/core/test/test.rb')
+        ScriptEngine engine = scripting(Scripting.RUBY)
+        engine.eval(rsrc)
+        rsrc.close()
+        println "Ruby " + engine.get('x')
+        engine.eval('increment_x()')
+        println "Ruby " + engine.get('x')
+       
+        expect:
+        "dean" == "dean"
     }
 
     def "test chars"()

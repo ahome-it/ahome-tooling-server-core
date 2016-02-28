@@ -19,8 +19,11 @@ package com.ait.tooling.server.core.support
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 
+import javax.script.ScriptEngine
+
 import org.springframework.context.ApplicationContext
 import org.springframework.core.env.Environment
+import org.springframework.core.io.Resource
 import org.springframework.integration.channel.PublishSubscribeChannel
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
@@ -32,6 +35,7 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager
 import com.ait.tooling.server.core.json.JSONObject
 import com.ait.tooling.server.core.json.support.JSONTrait
 import com.ait.tooling.server.core.pubsub.JSONMessageBuilder
+import com.ait.tooling.server.core.scripting.Scripting
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.security.ICryptoProvider
@@ -240,5 +244,25 @@ public trait CoreGroovyTrait implements JSONTrait
     public String toTrimOrElse(String string, String otherwise)
     {
         StringOps.toTrimOrElse(string, otherwise)
+    }
+    
+    public ScriptEngine scripting(Scripting type)
+    {
+        type.getScriptEngine()
+    }
+
+    public ScriptEngine scripting(Scripting type, ClassLoader loader)
+    {
+        type.getScriptEngine(Objects.requireNonNull(loader))
+    }
+    
+    public Resource resource(String location)
+    {
+        getServerContext().resource(Objects.requireNonNull(location))
+    }
+    
+    public Reader reader(String location) throws IOException
+    {
+        getServerContext().reader(Objects.requireNonNull(location))
     }
 }

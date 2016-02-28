@@ -16,12 +16,17 @@
 
 package com.ait.tooling.server.core.support.spring;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.List;
 import java.util.Map;
+
+import javax.script.ScriptEngine;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -31,6 +36,7 @@ import org.springframework.messaging.SubscribableChannel;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.support.IJSONUtilities;
+import com.ait.tooling.server.core.scripting.Scripting;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizer;
 import com.ait.tooling.server.core.security.ICryptoProvider;
@@ -101,4 +107,12 @@ public interface IServerContext extends IJSONUtilities, IAuthorizer, IProperties
     public String toTrimOrNull(String string);
 
     public String toTrimOrElse(String string, String otherwise);
+    
+    public ScriptEngine scripting(Scripting type);
+    
+    public ScriptEngine scripting(Scripting type, ClassLoader loader);
+    
+    public Resource resource(String location);
+    
+    public Reader reader(String location) throws IOException;
 }

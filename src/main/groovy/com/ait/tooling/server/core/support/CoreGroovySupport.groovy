@@ -19,9 +19,12 @@ package com.ait.tooling.server.core.support
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 
+import javax.script.ScriptEngine
+
 import org.apache.log4j.Logger
 import org.springframework.context.ApplicationContext
 import org.springframework.core.env.Environment
+import org.springframework.core.io.Resource
 import org.springframework.integration.channel.PublishSubscribeChannel
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
@@ -36,6 +39,7 @@ import com.ait.tooling.server.core.json.binder.JSONBinder
 import com.ait.tooling.server.core.json.parser.JSONParserException
 import com.ait.tooling.server.core.json.schema.JSONSchema
 import com.ait.tooling.server.core.pubsub.JSONMessageBuilder
+import com.ait.tooling.server.core.scripting.Scripting
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.security.ICryptoProvider
@@ -405,5 +409,29 @@ public class CoreGroovySupport implements IServerContext, Closeable
     public String toTrimOrElse(String string, String otherwise)
     {
         StringOps.toTrimOrElse(string, otherwise)
+    }
+
+    @Override
+    public ScriptEngine scripting(Scripting type)
+    {
+        type.getScriptEngine()
+    }
+
+    @Override
+    public ScriptEngine scripting(Scripting type, ClassLoader loader)
+    {
+        type.getScriptEngine(Objects.requireNonNull(loader))
+    }
+
+    @Override
+    public Resource resource(String location)
+    {
+        getServerContext().resource(Objects.requireNonNull(location))
+    }
+    
+    @Override
+    public Reader reader(String location) throws IOException
+    {
+        getServerContext().reader(Objects.requireNonNull(location))
     }
 }

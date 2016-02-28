@@ -26,9 +26,9 @@ public interface ICoreNetworkProvider
 
     public IRESTResponse get(String path, HTTPHeaders headers);
 
-    public IRESTResponse get(String path, Map<String, String> params);
+    public IRESTResponse get(String path, Map<String, ?> params);
 
-    public IRESTResponse get(String path, Map<String, String> params, HTTPHeaders headers);
+    public IRESTResponse get(String path, Map<String, ?> params, HTTPHeaders headers);
 
     public IRESTResponse put(String path, JSONObject body);
 
