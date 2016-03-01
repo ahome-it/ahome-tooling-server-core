@@ -50,7 +50,7 @@ sourceCompatibility = 1.8
 
 targetCompatibility = 1.8
 
-version = '1.0.145-SNAPSHOT'
+version = '1.0.146-SNAPSHOT'
 
 group = 'com.ahome-it'
 
@@ -272,8 +272,6 @@ dependencies {
     compile(group: 'info.cukes', name:'cucumber-groovy', version: '1.2.4') {
         exclude(group: 'org.codehaus.groovy', module: 'groovy-all')
     }
-    //compile 'org.apache.cxf:cxf-tools-wsdlto-databinding-jaxb:3.1.5'
-    //compile 'org.apache.cxf:cxf-tools-wsdlto-frontend-jaxws:3.1.5'
     testCompile(group: 'log4j', name: 'log4j', version: '1.2.17')
     testCompile(group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.12')
     testCompile(group: 'org.slf4j', name: 'jul-to-slf4j', version: '1.7.12')
