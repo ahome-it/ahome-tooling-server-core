@@ -81,7 +81,7 @@ public abstract class HTTPServletBase extends HttpServlet implements IRateLimite
 
     protected final static IServerContext getServerContext()
     {
-        return ServerContextInstance.getServerContextInstance().getServerContext();
+        return ServerContextInstance.getServerContextInstance();
     }
 
     protected void doNoCache(final HttpServletResponse response)

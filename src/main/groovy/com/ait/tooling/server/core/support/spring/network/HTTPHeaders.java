@@ -16,12 +16,22 @@
 
 package com.ait.tooling.server.core.support.spring.network;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+
+import com.ait.tooling.common.api.java.util.function.Predicate;
 
 public class HTTPHeaders extends HttpHeaders
 {
@@ -29,23 +39,117 @@ public class HTTPHeaders extends HttpHeaders
 
     public static List<MediaType> JSON_MEDIA_TYPE  = Arrays.asList(MediaType.APPLICATION_JSON);
 
-    HTTPHeaders(HttpHeaders head)
+    HTTPHeaders(final HttpHeaders head)
     {
-        putAll(head);
+        addAllHeaders(head);
     }
 
     public HTTPHeaders()
     {
     }
 
-    public HTTPHeaders(Map<String, List<String>> head)
+    public HTTPHeaders(final Map<String, List<String>> head)
     {
-        putAll(head);
+        addAllHeaders(head);
+    }
+
+    public HTTPHeaders addAllHeaders(final Map<String, List<String>> head)
+    {
+        Objects.requireNonNull(head);
+
+        if (false == head.isEmpty())
+        {
+            putAll(head);
+        }
+        return this;
+    }
+
+    public HTTPHeaders(final HttpServletRequest request)
+    {
+        final Enumeration<String> names = request.getHeaderNames();
+
+        final HashMap<String, List<String>> head = new HashMap<String, List<String>>();
+
+        while (names.hasMoreElements())
+        {
+            final String name = names.nextElement();
+
+            if (null != name)
+            {
+                final Enumeration<String> vals = request.getHeaders(name);
+
+                if (null != vals)
+                {
+                    final ArrayList<String> list = new ArrayList<String>(1);
+
+                    while (vals.hasMoreElements())
+                    {
+                        final String valu = vals.nextElement();
+
+                        if (null != valu)
+                        {
+                            list.add(valu);
+                        }
+                    }
+                    if (false == list.isEmpty())
+                    {
+                        head.put(name, list);
+                    }
+                }
+            }
+        }
+        addAllHeaders(head);
+    }
+
+    public HTTPHeaders setHttpServletResponse(final HttpServletResponse response)
+    {
+        for (String name : keySet())
+        {
+            for (String valu : get(name))
+            {
+                response.addHeader(name, valu);
+            }
+        }
+        return this;
+    }
+
+    public HTTPHeaders setHttpServletResponse(final HttpServletResponse response, final Predicate<String> good)
+    {
+        for (String name : keySet())
+        {
+            if (good.test(name))
+            {
+                for (String valu : get(name))
+                {
+                    response.addHeader(name, valu);
+                }
+            }
+        }
+        return this;
+    }
+
+    public HTTPHeaders setHttpServletResponse(final HttpServletResponse response, final Collection<String> send, final Collection<String> dont)
+    {
+        for (String name : keySet())
+        {
+            if ((null != dont) && (dont.contains(name)))
+            {
+                continue;
+            }
+            if ((null == send) || (send.contains(name)))
+            {
+                for (String valu : get(name))
+                {
+                    response.addHeader(name, valu);
+                }
+            }
+        }
+        return this;
     }
 
     public HTTPHeaders doRESTHeaders()
     {
-        List<MediaType> list = getAccept();
+        final List<MediaType> list = getAccept();
 
         if ((null == list) || (list.isEmpty()))
         {

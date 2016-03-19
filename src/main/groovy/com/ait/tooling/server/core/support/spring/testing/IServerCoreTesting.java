@@ -59,6 +59,13 @@ public interface IServerCoreTesting
             return instance;
         }
 
+        public static final void setupServerCoreDefault(final String... locations) throws Exception
+        {
+            setupServerCoreLogging();
+
+            setupServerCoreContext(locations);
+        }
+
         public static final void setupServerCoreDefault(final List<String> locations) throws Exception
         {
             setupServerCoreLogging();
@@ -89,10 +96,7 @@ public interface IServerCoreTesting
 
             if (null != context)
             {
-                if (context.isActive())
-                {
-                    context.close();
-                }
+                context.close();
             }
             ServerContextInstance.setApplicationContext(null);
         }

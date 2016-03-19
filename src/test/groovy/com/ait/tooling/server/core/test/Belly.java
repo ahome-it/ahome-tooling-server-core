@@ -14,26 +14,15 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.support.instrument.telemetry;
+package com.ait.tooling.server.core.test;
 
-import java.io.Closeable;
-import java.util.List;
+import cucumber.api.java.en.Given;
 
-import com.ait.tooling.server.core.json.JSONObject;
-
-public interface ITelemetryProvider extends Closeable
+public class Belly
 {
-    public boolean isClosed();
-
-    public boolean isActive();
-
-    public boolean broadcast(String category, Object message);
-    
-    public boolean broadcast(String category, List<String> tags, Object message);
-
-    public JSONObject getHeapMemoryUsageObject();
-
-    public JSONObject getOffHeapMemoryUsageObject();
-
-    public JSONObject getMemoryUsageObject();
+    @Given("^I have (\\d+) cukes in my belly$")
+    public void I_have_cukes_in_my_belly(int cukes) throws Throwable
+    {
+        System.out.println("How many cukes " + cukes);
+    }
 }

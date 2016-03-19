@@ -30,19 +30,7 @@ public interface ICoreNetworkProvider
 
     public IRESTResponse get(String path, Map<String, ?> params, HTTPHeaders headers);
 
-    public IRESTResponse put(String path, JSONObject body);
-
-    public IRESTResponse put(String path, JSONObject body, HTTPHeaders headers);
-
     public IRESTResponse post(String path, JSONObject body);
 
     public IRESTResponse post(String path, JSONObject body, HTTPHeaders headers);
-
-    public IRESTResponse patch(String path, JSONObject body);
-
-    public IRESTResponse patch(String path, JSONObject body, HTTPHeaders headers);
-
-    public IRESTResponse delete(String path, JSONObject body);
-
-    public IRESTResponse delete(String path, JSONObject body, HTTPHeaders headers);
 }

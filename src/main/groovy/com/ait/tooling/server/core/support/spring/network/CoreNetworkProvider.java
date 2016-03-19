@@ -19,6 +19,7 @@ package com.ait.tooling.server.core.support.spring.network;
 import java.util.Collections;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -31,86 +32,52 @@ import com.ait.tooling.server.core.json.parser.JSONParserException;
 public class CoreNetworkProvider implements ICoreNetworkProvider
 {
     @Override
-    public IRESTResponse get(String path)
+    public IRESTResponse get(final String path)
     {
         return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.GET, new HttpEntity<String>(new HTTPHeaders().doRESTHeaders()), String.class));
     }
 
     @Override
-    public IRESTResponse get(String path, HTTPHeaders headers)
+    public IRESTResponse get(final String path, final HTTPHeaders headers)
     {
         return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.GET, new HttpEntity<String>(headers.doRESTHeaders()), String.class));
     }
 
     @Override
-    public IRESTResponse get(String path, Map<String, ?> params)
+    public IRESTResponse get(final String path, final Map<String, ?> params)
     {
         return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.GET, new HttpEntity<String>(new HTTPHeaders().doRESTHeaders()), String.class, params));
     }
 
     @Override
-    public IRESTResponse get(String path, Map<String, ?> params, HTTPHeaders headers)
+    public IRESTResponse get(final String path, final Map<String, ?> params, final HTTPHeaders headers)
     {
         return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.GET, new HttpEntity<String>(headers.doRESTHeaders()), String.class, params));
     }
 
     @Override
-    public IRESTResponse put(String path, JSONObject body)
-    {
-        return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.PUT, new HttpEntity<String>(body.toJSONString(), new HTTPHeaders().doRESTHeaders()), String.class));
-    }
-
-    @Override
-    public IRESTResponse put(String path, JSONObject body, HTTPHeaders headers)
-    {
-        return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.PUT, new HttpEntity<String>(body.toJSONString(), headers.doRESTHeaders()), String.class));
-    }
-
-    @Override
-    public IRESTResponse post(String path, JSONObject body)
+    public IRESTResponse post(final String path, final JSONObject body)
     {
         return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.POST, new HttpEntity<String>(body.toJSONString(), new HTTPHeaders().doRESTHeaders()), String.class));
     }
 
     @Override
-    public IRESTResponse post(String path, JSONObject body, HTTPHeaders headers)
+    public IRESTResponse post(final String path, final JSONObject body, final HTTPHeaders headers)
     {
         return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.POST, new HttpEntity<String>(body.toJSONString(), headers.doRESTHeaders()), String.class));
     }
 
-    @Override
-    public IRESTResponse patch(String path, JSONObject body)
-    {
-        return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.PATCH, new HttpEntity<String>(body.toJSONString(), new HTTPHeaders().doRESTHeaders()), String.class));
-    }
-
-    @Override
-    public IRESTResponse patch(String path, JSONObject body, HTTPHeaders headers)
-    {
-        return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.PATCH, new HttpEntity<String>(body.toJSONString(), headers.doRESTHeaders()), String.class));
-    }
-
-    @Override
-    public IRESTResponse delete(String path, JSONObject body)
-    {
-        return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.DELETE, new HttpEntity<String>(body.toJSONString(), new HTTPHeaders().doRESTHeaders()), String.class));
-    }
-
-    @Override
-    public IRESTResponse delete(String path, JSONObject body, HTTPHeaders headers)
-    {
-        return new CoreRestResponse(new RestTemplate().exchange(path, HttpMethod.DELETE, new HttpEntity<String>(body.toJSONString(), headers.doRESTHeaders()), String.class));
-    }
-
     protected static class CoreRestResponse implements IRESTResponse
     {
-        private final int         m_code;
+        private static final Logger logger = Logger.getLogger(CoreRestResponse.class);
 
-        private final String      m_body;
+        private final int           m_code;
 
-        private final HTTPHeaders m_head;
+        private final String        m_body;
 
-        private JSONObject        m_json;
+        private final HTTPHeaders   m_head;
+
+        private JSONObject          m_json;
 
         public CoreRestResponse(final ResponseEntity<String> resp)
         {
@@ -139,7 +106,7 @@ public class CoreNetworkProvider implements ICoreNetworkProvider
         }
 
         @Override
-        public JSONObject json()
+        public synchronized JSONObject json()
         {
             if (null != m_json)
             {
@@ -157,7 +124,7 @@ public class CoreNetworkProvider implements ICoreNetworkProvider
             }
             catch (JSONParserException e)
             {
-                e.printStackTrace();
+                logger.error("Error parsing JSON", e);
             }
             return null;
         }

@@ -46,7 +46,6 @@ import com.ait.tooling.server.core.security.ICryptoProvider
 import com.ait.tooling.server.core.security.ISignatoryProvider
 import com.ait.tooling.server.core.security.session.IServerSessionRepository
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider
-import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetryProvider
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IPropertiesResolver
 import com.ait.tooling.server.core.support.spring.IServerContext
@@ -79,7 +78,13 @@ public class CoreGroovySupport implements IServerContext, Closeable
     @Memoized
     public IServerContext getServerContext()
     {
-        ServerContextInstance.getServerContextInstance().getServerContext()
+        ServerContextInstance.getServerContextInstance()
+    }
+    
+    @Memoized
+    public boolean isApplicationContextInitialized()
+    {
+        getServerContext().isApplicationContextInitialized()
     }
 
     @Memoized
@@ -367,36 +372,6 @@ public class CoreGroovySupport implements IServerContext, Closeable
     public JSONBinder binder()
     {
         getServerContext().binder()
-    }
-
-    @Memoized
-    public ITelemetryProvider getTelemetryProvider()
-    {
-        getServerContext().getTelemetryProvider()
-    }
-
-    @Override
-    public boolean telemetry(String category, Object message)
-    {
-        def provider = getTelemetryProvider()
-
-        if (provider.isActive())
-        {
-            return provider.broadcast(Objects.requireNonNull(category), Objects.requireNonNull(message))
-        }
-        false
-    }
-
-    @Override
-    public boolean telemetry(String category, List<String> tags, Object message)
-    {
-        def provider = getTelemetryProvider()
-
-        if (provider.isActive())
-        {
-            return provider.broadcast(Objects.requireNonNull(category), Objects.requireNonNull(tags), Objects.requireNonNull(message))
-        }
-        false
     }
 
     @Override

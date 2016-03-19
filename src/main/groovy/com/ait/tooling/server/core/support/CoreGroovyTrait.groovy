@@ -42,7 +42,6 @@ import com.ait.tooling.server.core.security.ICryptoProvider
 import com.ait.tooling.server.core.security.ISignatoryProvider
 import com.ait.tooling.server.core.security.session.IServerSessionRepository
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider
-import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetryProvider
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IPropertiesResolver
 import com.ait.tooling.server.core.support.spring.IServerContext
@@ -55,6 +54,12 @@ public trait CoreGroovyTrait implements JSONTrait
     public IServerContext getServerContext()
     {
         CoreGroovySupport.getCoreGroovySupport()
+    }
+    
+    @Memoized
+    public boolean isApplicationContextInitialized()
+    {
+        getServerContext().isApplicationContextInitialized()
     }
 
     @Memoized
@@ -219,23 +224,7 @@ public trait CoreGroovyTrait implements JSONTrait
     {
         getServerContext().uuid()
     }
-
-    @Memoized
-    public ITelemetryProvider getTelemetryProvider()
-    {
-        getServerContext().getTelemetryProvider()
-    }
-
-    public boolean telemetry(String category, Object message)
-    {
-        getServerContext().telemetry(Objects.requireNonNull(category), Objects.requireNonNull(message))
-    }
-
-    public boolean telemetry(String category, List<String> tags, Object message)
-    {
-        getServerContext().telemetry(Objects.requireNonNull(category), Objects.requireNonNull(tags), Objects.requireNonNull(message))
-    }
-
+    
     public String toTrimOrNull(String string)
     {
         StringOps.toTrimOrNull(string)

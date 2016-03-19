@@ -49,7 +49,6 @@ import com.ait.tooling.server.core.security.ICryptoProvider;
 import com.ait.tooling.server.core.security.ISignatoryProvider;
 import com.ait.tooling.server.core.security.session.IServerSessionRepository;
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider;
-import com.ait.tooling.server.core.support.instrument.telemetry.ITelemetryProvider;
 import com.ait.tooling.server.core.support.spring.network.ICoreNetworkProvider;
 
 public class ServerContextInstance extends JSONUtilitiesInstance implements IServerContext
@@ -64,12 +63,6 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
 
     private final Logger                               m_logger     = Logger.getLogger(getClass());
 
-    @Override
-    public final IServerContext getServerContext()
-    {
-        return this;
-    }
-
     public static final ServerContextInstance getServerContextInstance()
     {
         return INSTANCE;
@@ -82,6 +75,12 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     public static final void setApplicationContext(final ApplicationContext context)
     {
         APPCONTEXT = context;
+    }
+
+    @Override
+    public boolean isApplicationContextInitialized()
+    {
+        return (null != APPCONTEXT);
     }
 
     @Override
@@ -370,36 +369,6 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     public Logger logger()
     {
         return m_logger;
-    }
-
-    @Override
-    public ITelemetryProvider getTelemetryProvider()
-    {
-        return Objects.requireNonNull(getBeanSafely("TelemetryProvider", ITelemetryProvider.class), "TelemetryProvider is null, initialization error.");
-    }
-
-    @Override
-    public boolean telemetry(final String category, final Object message)
-    {
-        final ITelemetryProvider provider = getTelemetryProvider();
-
-        if (provider.isActive())
-        {
-            return provider.broadcast(Objects.requireNonNull(category), Objects.requireNonNull(message));
-        }
-        return false;
-    }
-
-    @Override
-    public boolean telemetry(final String category, final List<String> tags, final Object message)
-    {
-        final ITelemetryProvider provider = getTelemetryProvider();
-
-        if (provider.isActive())
-        {
-            return provider.broadcast(Objects.requireNonNull(category), Objects.requireNonNull(tags), Objects.requireNonNull(message));
-        }
-        return false;
     }
 
     @Override

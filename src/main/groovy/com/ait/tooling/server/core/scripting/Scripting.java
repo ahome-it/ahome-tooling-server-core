@@ -17,15 +17,21 @@
 package com.ait.tooling.server.core.scripting;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
+import org.apache.log4j.Logger;
+
+import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.common.api.types.IStringValued;
 
 public enum Scripting implements IStringValued
 {
     GROOVY("groovy"), JAVASCRIPT("javascript"), PYTHON("python"), RUBY("ruby");
+
+    private static final Logger logger = Logger.getLogger(Scripting.class);
 
     static
     {
@@ -34,9 +40,9 @@ public enum Scripting implements IStringValued
 
     private final String m_value;
 
-    private Scripting(String value)
+    private Scripting(final String value)
     {
-        m_value = value;
+        m_value = StringOps.requireTrimOrNull(value);
     }
 
     @Override
@@ -58,37 +64,55 @@ public enum Scripting implements IStringValued
 
     public final ScriptEngine getScriptEngine(final ClassLoader loader)
     {
-        return getScriptEngine(getValue(), loader);
+        return getScriptEngine(getValue(), Objects.requireNonNull(loader));
     }
 
     public static final ScriptEngine getScriptEngine(final String name)
     {
-        return new ScriptEngineManager().getEngineByName(name);
+        return new ScriptEngineManager().getEngineByName(StringOps.requireTrimOrNull(name));
     }
 
     public static final ScriptEngine getScriptEngine(final String name, final ClassLoader loader)
     {
-        return new ScriptEngineManager(loader).getEngineByName(name);
+        return new ScriptEngineManager(Objects.requireNonNull(loader)).getEngineByName(StringOps.requireTrimOrNull(name));
     }
 
-    public static final void setPythonImportSite(final boolean site)
+    public static final boolean setPythonImportSite(final boolean site)
     {
-        setPythonOptions("importSite", site);
+        return setPythonOptions("importSite", site);
     }
 
-    private static final void setPythonOptions(final String name, final Object value)
+    public static final boolean setPythonOptions(String name, final Object value)
     {
+        name = StringOps.requireTrimOrNull(name);
+
         try
         {
             final Class<?> options = Class.forName("org.python.core.Options");
 
+            if (null == options)
+            {
+                logger.warn("Can't find Python options org.python.core.Options");
+
+                return false;
+            }
             final Field field = options.getDeclaredField(name);
 
+            if (null == field)
+            {
+                logger.error("Can't find Python options org.python.core.Options static field: " + name);
+
+                return false;
+            }
             field.set(null, value);
+
+            return true;
         }
         catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e)
         {
-            e.printStackTrace();
+            logger.error("Error setting Python options org.python.core.Options", e);
+
+            return false;
         }
     }
 }
