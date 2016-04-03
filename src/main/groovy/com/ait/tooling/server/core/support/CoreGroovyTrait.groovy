@@ -55,7 +55,7 @@ public trait CoreGroovyTrait implements JSONTrait
     {
         CoreGroovySupport.getCoreGroovySupport()
     }
-    
+
     @Memoized
     public boolean isApplicationContextInitialized()
     {
@@ -146,9 +146,9 @@ public trait CoreGroovyTrait implements JSONTrait
     }
 
     @Memoized
-    public ICoreNetworkProvider getCoreNetworkProvider()
+    public ICoreNetworkProvider network()
     {
-        getServerContext().getCoreNetworkProvider()
+        getServerContext().network()
     }
 
     @Memoized
@@ -224,7 +224,7 @@ public trait CoreGroovyTrait implements JSONTrait
     {
         getServerContext().uuid()
     }
-    
+
     public String toTrimOrNull(String string)
     {
         StringOps.toTrimOrNull(string)
@@ -234,7 +234,17 @@ public trait CoreGroovyTrait implements JSONTrait
     {
         StringOps.toTrimOrElse(string, otherwise)
     }
-    
+
+    public <T> T requireNonNull(T object)
+    {
+        Objects.requireNonNull(object)
+    }
+
+    public <T> T requireNonNull(T object, String message)
+    {
+        Objects.requireNonNull(object, message)
+    }
+
     public ScriptEngine scripting(Scripting type)
     {
         type.getScriptEngine()
@@ -244,12 +254,12 @@ public trait CoreGroovyTrait implements JSONTrait
     {
         type.getScriptEngine(Objects.requireNonNull(loader))
     }
-    
+
     public Resource resource(String location)
     {
         getServerContext().resource(Objects.requireNonNull(location))
     }
-    
+
     public Reader reader(String location) throws IOException
     {
         getServerContext().reader(Objects.requireNonNull(location))

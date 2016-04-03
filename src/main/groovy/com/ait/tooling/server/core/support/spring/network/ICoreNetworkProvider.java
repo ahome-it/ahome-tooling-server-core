@@ -16,21 +16,29 @@
 
 package com.ait.tooling.server.core.support.spring.network;
 
-import java.util.Map;
+import java.io.Closeable;
 
 import com.ait.tooling.server.core.json.JSONObject;
 
-public interface ICoreNetworkProvider
+import wslite.soap.SOAPClient;
+
+public interface ICoreNetworkProvider extends Closeable
 {
     public IRESTResponse get(String path);
 
     public IRESTResponse get(String path, HTTPHeaders headers);
 
-    public IRESTResponse get(String path, Map<String, ?> params);
+    public IRESTResponse get(String path, PathParameters params);
 
-    public IRESTResponse get(String path, Map<String, ?> params, HTTPHeaders headers);
+    public IRESTResponse get(String path, PathParameters params, HTTPHeaders headers);
 
     public IRESTResponse post(String path, JSONObject body);
 
     public IRESTResponse post(String path, JSONObject body, HTTPHeaders headers);
+
+    public IRESTResponse post(String path, JSONObject body, PathParameters params);
+
+    public IRESTResponse post(String path, JSONObject body, PathParameters params, HTTPHeaders headers);
+
+    public SOAPClient soap(String path);
 }

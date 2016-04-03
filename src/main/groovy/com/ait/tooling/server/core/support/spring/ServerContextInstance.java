@@ -86,7 +86,7 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     @Override
     public final ApplicationContext getApplicationContext()
     {
-        return Objects.requireNonNull(APPCONTEXT, "ApplicationContext is null, initialization error.");
+        return requireNonNull(APPCONTEXT, "ApplicationContext is null, initialization error.");
     }
 
     @Override
@@ -253,9 +253,9 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     }
 
     @Override
-    public ICoreNetworkProvider getCoreNetworkProvider()
+    public final ICoreNetworkProvider network()
     {
-        return Objects.requireNonNull(getBeanSafely("CoreNetworkProvider", ICoreNetworkProvider.class), "CoreNetworkProvider is null, initialization error.");
+        return Objects.requireNonNull(getBeanSafely("NetworkProvider", ICoreNetworkProvider.class), "NetworkProvider is null, initialization error.");
     }
 
     private final CorePropertiesResolver getCorePropertiesResolver()
@@ -381,6 +381,18 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     public String toTrimOrElse(final String string, final String otherwise)
     {
         return StringOps.toTrimOrElse(string, otherwise);
+    }
+    
+    @Override
+    public <T> T requireNonNull(final T object)
+    {
+        return Objects.requireNonNull(object);
+    }
+    
+    @Override
+    public <T> T requireNonNull(final T object, final String message)
+    {
+        return Objects.requireNonNull(object, message);
     }
 
     @Override

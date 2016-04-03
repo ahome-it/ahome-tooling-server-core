@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.test;
+package com.ait.tooling.server.core.support.spring.testing.cucumber;
 
-import com.ait.tooling.server.core.support.spring.testing.cucumber.ServerCoreCucumberFeature;
+import com.ait.tooling.server.core.support.CoreGroovySupport;
 
-import cucumber.api.java.en.Given;
-
-public class Belly extends ServerCoreCucumberFeature
+public abstract class ServerCoreCucumberFeature extends CoreGroovySupport
 {
-    @Given("^I have (\\d+) cukes in my belly$")
-    public void I_have_cukes_in_my_belly(int cukes) throws Throwable
-    {
-        logger().info("How many cukes " + cukes);
-    }
 }

@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.test;
+package com.ait.tooling.server.core.support.spring.testing.cucumber;
 
-import com.ait.tooling.server.core.support.spring.testing.cucumber.ServerCoreCucumberFeature;
+import org.junit.runner.RunWith;
 
-import cucumber.api.java.en.Given;
+import com.ait.tooling.server.core.support.CoreGroovySupport;
+import com.ait.tooling.server.core.support.spring.testing.IServerCoreTesting;
 
-public class Belly extends ServerCoreCucumberFeature
+import cucumber.api.CucumberOptions;
+import cucumber.api.junit.Cucumber;
+
+@RunWith(Cucumber.class)
+@CucumberOptions(plugin = { "json" })
+public abstract class ServerCoreCucumberTest extends CoreGroovySupport implements IServerCoreTesting
 {
-    @Given("^I have (\\d+) cukes in my belly$")
-    public void I_have_cukes_in_my_belly(int cukes) throws Throwable
+    public static final CoreGroovySupport support()
     {
-        logger().info("How many cukes " + cukes);
+        return getCoreGroovySupport();
     }
 }

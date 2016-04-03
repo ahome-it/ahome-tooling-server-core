@@ -18,20 +18,17 @@ package com.ait.tooling.server.core.test;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
 
-import com.ait.tooling.server.core.support.spring.testing.IServerCoreTesting;
+import com.ait.tooling.server.core.logging.MDC;
+import com.ait.tooling.server.core.support.spring.testing.cucumber.ServerCoreCucumberTest;
 
-import cucumber.api.CucumberOptions;
-import cucumber.api.junit.Cucumber;
-
-@RunWith(Cucumber.class)
-@CucumberOptions(plugin = { "json" })
-public class RunCukesTest implements IServerCoreTesting
+public class RunCukesTest extends ServerCoreCucumberTest
 {
     @BeforeClass
     public static void setUp() throws Exception
     {
+        MDC.put("session", support().uuid() + "-GLOBAL");
+        
         TestingOps.setupServerCoreDefault("classpath:/com/ait/tooling/server/core/test/ApplicationContext.xml", "classpath:/com/ait/tooling/server/core/config/CoreApplicationContext.xml");
     }
 

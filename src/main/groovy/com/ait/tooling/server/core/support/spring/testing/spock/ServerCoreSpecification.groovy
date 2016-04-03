@@ -19,9 +19,21 @@ package com.ait.tooling.server.core.support.spring.testing.spock
 import groovy.transform.CompileStatic
 import spock.lang.Specification
 
+import org.apache.log4j.Logger;
+
 import com.ait.tooling.server.core.support.spring.testing.IServerCoreTesting
 
 @CompileStatic
-public class ServerCoreSpecification extends Specification implements IServerCoreTesting
+public abstract class ServerCoreSpecification extends Specification implements IServerCoreTesting
 {
+    private Logger m_logger
+
+    public Logger logger()
+    {
+        if (null == m_logger)
+        {
+            m_logger = Logger.getLogger(getClass())
+        }
+        m_logger
+    }
 }

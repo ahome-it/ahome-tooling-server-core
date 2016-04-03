@@ -19,6 +19,8 @@ package com.ait.tooling.server.core.support
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 
+import java.util.Objects;
+
 import javax.script.ScriptEngine
 
 import org.apache.log4j.Logger
@@ -80,7 +82,7 @@ public class CoreGroovySupport implements IServerContext, Closeable
     {
         ServerContextInstance.getServerContextInstance()
     }
-    
+
     @Memoized
     public boolean isApplicationContextInitialized()
     {
@@ -172,9 +174,9 @@ public class CoreGroovySupport implements IServerContext, Closeable
     }
 
     @Memoized
-    public ICoreNetworkProvider getCoreNetworkProvider()
+    public ICoreNetworkProvider network()
     {
-        getServerContext().getCoreNetworkProvider()
+        getServerContext().network()
     }
 
     @Memoized
@@ -387,6 +389,18 @@ public class CoreGroovySupport implements IServerContext, Closeable
     }
 
     @Override
+    public <T> T requireNonNull(T object)
+    {
+        Objects.requireNonNull(object)
+    }
+
+    @Override
+    public <T> T requireNonNull(T object, String message)
+    {
+        Objects.requireNonNull(object, message)
+    }
+
+    @Override
     public ScriptEngine scripting(Scripting type)
     {
         type.getScriptEngine()
@@ -403,7 +417,7 @@ public class CoreGroovySupport implements IServerContext, Closeable
     {
         getServerContext().resource(Objects.requireNonNull(location))
     }
-    
+
     @Override
     public Reader reader(String location) throws IOException
     {

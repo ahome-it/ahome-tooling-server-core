@@ -19,8 +19,10 @@ package com.ait.tooling.server.core.test
 import javax.script.ScriptEngine
 
 import com.ait.tooling.server.core.json.JSONObject
+import com.ait.tooling.server.core.logging.MDC
 import com.ait.tooling.server.core.scripting.Scripting
 import com.ait.tooling.server.core.support.CoreGroovyTrait
+import com.ait.tooling.server.core.support.spring.network.PathParameters
 import com.ait.tooling.server.core.support.spring.testing.IServerCoreTesting.TestingOps
 import com.ait.tooling.server.core.support.spring.testing.spock.ServerCoreSpecification
 
@@ -28,6 +30,8 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
 {
     def setupSpec()
     {
+        MDC.put('session', uuid() + "-GLOBAL")
+        
         TestingOps.setupServerCoreDefault(["classpath:/com/ait/tooling/server/core/test/ApplicationContext.xml", "classpath:/com/ait/tooling/server/core/config/CoreApplicationContext.xml"])
     }
 
@@ -39,19 +43,6 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     def "test server context property provider"()
     {
         expect: getPropertyByName("core.server.events.keep.alive") == "30"
-    }
-
-    def "test telemetry"()
-    {
-        setup:
-        telemetry('testing', [x: 1])
-        telemetry('testing', false)
-        telemetry('testing', 5)
-        telemetry('testing', ['Dean', 'S', 'Jones'])
-        telemetry('testing', new BinderPOJO('Rosaria', 29.99))
-
-        expect:
-        "dean" == "dean"
     }
 
     def "test server context crypto provider"()
@@ -181,12 +172,59 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         expect:
         "dean" == "dean"
     }
+    
+    def "test GroovyWS soap"()
+    {
+        setup:
+        def soap = network().soap('http://www.holidaywebservice.com/Holidays/US/Dates/USHolidayDates.asmx')
+        def resp = soap.send(SOAPAction: 'http://www.27seconds.com/Holidays/US/Dates/GetMothersDay') {
+            body {
+                GetMothersDay(xmlns: 'http://www.27seconds.com/Holidays/US/Dates/') {
+                    year(2016)
+                }
+            }
+        }
+        def code = resp?.httpResponse?.statusCode
+        def answ = resp?.GetMothersDayResponse?.GetMothersDayResult?.text()
+        println answ
+        
+        expect:
+        code == 200
+        answ == '2016-05-08T00:00:00'
+    }
+    
+    def "test Spring rest 1"()
+    {
+        setup:
+        def resp = network().get('http://jsonplaceholder.typicode.com/posts/100')
+        def code = resp.code()
+        def answ = resp.json()['id']
+        println resp.json().toJSONString()
+        
+        expect:
+        answ == 100
+        code == 200
+    }
+    
+    def "test Spring rest 2"()
+    {
+        setup:
+        def resp = network().get('http://jsonplaceholder.typicode.com/posts/{id}', new PathParameters(id: 100))
+        def code = resp.code()
+        def answ = resp.json()['id']
+        println resp.json().toJSONString()
+        
+        expect:
+        answ == 100
+        code == 200
+    }
 
     def "test chars"()
     {
         setup:
         def i = "11" as Integer
         println i + 2
+        /*
         File file = new File("/tmp/chars")
         if (file.exists())
         {
@@ -201,6 +239,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         println "w4 " + IOTest.w4(10000000, writer, json(count: 1, name: "Dean", last: 1.5d, flag: false))
         println "r0 " + IOTest.r0(10000000, writer, json(count: 1, name: "Dean", last: 1.5d, flag: false))
         println "r1 " + IOTest.r1(10000000, writer, json(count: 1, name: "Dean", last: 1.5d, flag: false))
+        */
         
         expect:
         "dean" == "dean"
@@ -224,5 +263,19 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
 
         expect:
         text == valu
+    }
+    
+    def "test MDC"()
+    {
+        setup:
+        def keep = MDC.get('session')
+        MDC.put('session', 'LOCAL')
+        logger().info('MDC test')
+        if (keep) {
+            MDC.put('session', keep)
+        }
+
+        expect:
+        "dean" == "dean"
     }
 }

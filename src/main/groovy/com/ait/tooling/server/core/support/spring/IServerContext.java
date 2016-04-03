@@ -77,7 +77,7 @@ public interface IServerContext extends IJSONUtilities, IAuthorizer, IProperties
 
     public ISignatoryProvider getSignatoryProvider();
 
-    public ICoreNetworkProvider getCoreNetworkProvider();
+    public ICoreNetworkProvider network();
 
     public MessageChannel getMessageChannel(String name);
 
@@ -106,6 +106,10 @@ public interface IServerContext extends IJSONUtilities, IAuthorizer, IProperties
     public String toTrimOrNull(String string);
 
     public String toTrimOrElse(String string, String otherwise);
+    
+    public <T> T requireNonNull(T object);
+    
+    public <T> T requireNonNull(T object, String message);
     
     public ScriptEngine scripting(Scripting type);
     

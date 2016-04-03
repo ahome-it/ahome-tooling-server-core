@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.test;
+package com.ait.tooling.server.core.support.spring.network;
 
-import com.ait.tooling.server.core.support.spring.testing.cucumber.ServerCoreCucumberFeature;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import cucumber.api.java.en.Given;
-
-public class Belly extends ServerCoreCucumberFeature
+public class PathParameters extends LinkedHashMap<String, Object>
 {
-    @Given("^I have (\\d+) cukes in my belly$")
-    public void I_have_cukes_in_my_belly(int cukes) throws Throwable
+    private static final long serialVersionUID = -1215997968274953434L;
+
+    public PathParameters(final Map<String, ?> vars)
     {
-        logger().info("How many cukes " + cukes);
+        super(vars);
     }
 }
