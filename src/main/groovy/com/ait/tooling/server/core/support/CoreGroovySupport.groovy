@@ -19,6 +19,7 @@ package com.ait.tooling.server.core.support
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.script.ScriptEngine
@@ -41,7 +42,8 @@ import com.ait.tooling.server.core.json.binder.JSONBinder
 import com.ait.tooling.server.core.json.parser.JSONParserException
 import com.ait.tooling.server.core.json.schema.JSONSchema
 import com.ait.tooling.server.core.pubsub.JSONMessageBuilder
-import com.ait.tooling.server.core.scripting.Scripting
+import com.ait.tooling.server.core.scripting.ScriptType
+import com.ait.tooling.server.core.scripting.Scripting;
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.security.ICryptoProvider
@@ -401,15 +403,27 @@ public class CoreGroovySupport implements IServerContext, Closeable
     }
 
     @Override
-    public ScriptEngine scripting(Scripting type)
+    public ScriptEngine scripting(ScriptType type)
     {
-        type.getScriptEngine()
+        getServerContext().scripting(type)
     }
 
     @Override
-    public ScriptEngine scripting(Scripting type, ClassLoader loader)
+    public ScriptEngine scripting(ScriptType type, ClassLoader loader)
     {
-        type.getScriptEngine(Objects.requireNonNull(loader))
+        getServerContext().scripting(type, loader)
+    }
+
+    @Override
+    public List<String> getScriptingLanguageNames()
+    {
+        getServerContext().getScriptingLanguageNames()
+    }
+
+    @Override
+    public List<ScriptType> getScriptingLanguageTypes()
+    {
+        getServerContext().getScriptingLanguageTypes()
     }
 
     @Override

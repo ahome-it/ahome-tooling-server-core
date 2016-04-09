@@ -139,13 +139,14 @@ public class PropertiesUI {
         if (s) {
             t.text = s.text.trim()
         }
+        t.setForeground(BG_VALIDOK)
     }
 
     public JTextArea setupTextArea(JTextArea t, Insets i) {
         t.setBorder(new CompoundBorder(new CompoundBorder(new MatteBorder(i, Color.DARK_GRAY), new LineBorder(Color.LIGHT_GRAY, 1)), new LineBorder(Color.WHITE, 4)))
         t.setLineWrap(false)
         t.setEditable(false)
-        t.setBackground(Color.WHITE)
+        t.setBackground(rgb(224,255,255))
         t.setForeground(BG_INVALID)
         t
     }

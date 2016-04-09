@@ -18,6 +18,7 @@ package com.ait.tooling.server.core.support.spring.network;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Objects;
 
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpEntity;
@@ -46,60 +47,132 @@ public class CoreNetworkProvider implements ICoreNetworkProvider
     @Override
     public IRESTResponse get(final String path)
     {
-        return new CoreRestResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.GET, new HttpEntity<String>(new HTTPHeaders().doRESTHeaders()), String.class));
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.GET, new HttpEntity<String>(new HTTPHeaders().doRESTHeaders()), String.class));
     }
 
     @Override
     public IRESTResponse get(final String path, final HTTPHeaders headers)
     {
-        return new CoreRestResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.GET, new HttpEntity<String>(headers.doRESTHeaders()), String.class));
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.GET, new HttpEntity<String>(headers.doRESTHeaders()), String.class));
     }
 
     @Override
     public IRESTResponse get(final String path, final PathParameters params)
     {
-        return new CoreRestResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.GET, new HttpEntity<String>(new HTTPHeaders().doRESTHeaders()), String.class, params));
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.GET, new HttpEntity<String>(new HTTPHeaders().doRESTHeaders()), String.class, Objects.requireNonNull(params)));
     }
 
     @Override
     public IRESTResponse get(final String path, final PathParameters params, final HTTPHeaders headers)
     {
-        return new CoreRestResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.GET, new HttpEntity<String>(headers.doRESTHeaders()), String.class, params));
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.GET, new HttpEntity<String>(headers.doRESTHeaders()), String.class, Objects.requireNonNull(params)));
+    }
+    
+    @Override
+    public IRESTResponse put(final String path, final JSONObject body)
+    {
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.PUT, new HttpEntity<String>(body.toJSONString(), new HTTPHeaders().doRESTHeaders()), String.class));
+    }
+
+    @Override
+    public IRESTResponse put(final String path, final JSONObject body, final HTTPHeaders headers)
+    {
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.PUT, new HttpEntity<String>(body.toJSONString(), headers.doRESTHeaders()), String.class));
+    }
+
+    @Override
+    public IRESTResponse put(final String path, final JSONObject body, final PathParameters params)
+    {
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.PUT, new HttpEntity<String>(body.toJSONString(), new HTTPHeaders().doRESTHeaders()), String.class, Objects.requireNonNull(params)));
+    }
+
+    @Override
+    public IRESTResponse put(final String path, final JSONObject body, final PathParameters params, final HTTPHeaders headers)
+    {
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.PUT, new HttpEntity<String>(body.toJSONString(), headers.doRESTHeaders()), String.class, Objects.requireNonNull(params)));
     }
 
     @Override
     public IRESTResponse post(final String path, final JSONObject body)
     {
-        return new CoreRestResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.POST, new HttpEntity<String>(body.toJSONString(), new HTTPHeaders().doRESTHeaders()), String.class));
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.POST, new HttpEntity<String>(body.toJSONString(), new HTTPHeaders().doRESTHeaders()), String.class));
     }
 
     @Override
     public IRESTResponse post(final String path, final JSONObject body, final HTTPHeaders headers)
     {
-        return new CoreRestResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.POST, new HttpEntity<String>(body.toJSONString(), headers.doRESTHeaders()), String.class));
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.POST, new HttpEntity<String>(body.toJSONString(), headers.doRESTHeaders()), String.class));
     }
 
     @Override
     public IRESTResponse post(final String path, final JSONObject body, final PathParameters params)
     {
-        return new CoreRestResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.POST, new HttpEntity<String>(body.toJSONString(), new HTTPHeaders().doRESTHeaders()), String.class, params));
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.POST, new HttpEntity<String>(body.toJSONString(), new HTTPHeaders().doRESTHeaders()), String.class, Objects.requireNonNull(params)));
     }
 
     @Override
     public IRESTResponse post(final String path, final JSONObject body, final PathParameters params, final HTTPHeaders headers)
     {
-        return new CoreRestResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.POST, new HttpEntity<String>(body.toJSONString(), headers.doRESTHeaders()), String.class, params));
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.POST, new HttpEntity<String>(body.toJSONString(), headers.doRESTHeaders()), String.class, Objects.requireNonNull(params)));
+    }
+    
+    @Override
+    public IRESTResponse patch(final String path, final JSONObject body)
+    {
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.PATCH, new HttpEntity<String>(body.toJSONString(), new HTTPHeaders().doRESTHeaders()), String.class));
     }
 
     @Override
-    public SOAPClient soap(final String path)
+    public IRESTResponse patch(final String path, final JSONObject body, final HTTPHeaders headers)
     {
-        return new SOAPClient(StringOps.requireTrimOrNull(path));
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.PATCH, new HttpEntity<String>(body.toJSONString(), headers.doRESTHeaders()), String.class));
     }
 
-    protected static class CoreRestResponse implements IRESTResponse
+    @Override
+    public IRESTResponse patch(final String path, final JSONObject body, final PathParameters params)
     {
-        private static final Logger logger = Logger.getLogger(CoreRestResponse.class);
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.PATCH, new HttpEntity<String>(body.toJSONString(), new HTTPHeaders().doRESTHeaders()), String.class, Objects.requireNonNull(params)));
+    }
+
+    @Override
+    public IRESTResponse patch(final String path, final JSONObject body, final PathParameters params, final HTTPHeaders headers)
+    {
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.PATCH, new HttpEntity<String>(body.toJSONString(), headers.doRESTHeaders()), String.class, Objects.requireNonNull(params)));
+    }
+    
+    @Override
+    public IRESTResponse delete(final String path)
+    {
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.DELETE, new HttpEntity<String>(new HTTPHeaders().doRESTHeaders()), String.class));
+    }
+
+    @Override
+    public IRESTResponse delete(final String path, final HTTPHeaders headers)
+    {
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.DELETE, new HttpEntity<String>(headers.doRESTHeaders()), String.class));
+    }
+
+    @Override
+    public IRESTResponse delete(final String path, final PathParameters params)
+    {
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.DELETE, new HttpEntity<String>(new HTTPHeaders().doRESTHeaders()), String.class, Objects.requireNonNull(params)));
+    }
+
+    @Override
+    public IRESTResponse delete(final String path, final PathParameters params, final HTTPHeaders headers)
+    {
+        return new CoreRESTResponse(new RestTemplate().exchange(StringOps.requireTrimOrNull(path), HttpMethod.DELETE, new HttpEntity<String>(headers.doRESTHeaders()), String.class, Objects.requireNonNull(params)));
+    }
+
+    @Override
+    public ISOAPClient soap(final String path)
+    {
+        return new CoreSOAPClient(new SOAPClient(StringOps.requireTrimOrNull(path)));
+    }
+    
+    protected static class CoreRESTResponse implements IRESTResponse
+    {
+        private static final Logger logger = Logger.getLogger(CoreRESTResponse.class);
 
         private final int           m_code;
 
@@ -109,12 +182,12 @@ public class CoreNetworkProvider implements ICoreNetworkProvider
 
         private JSONObject          m_json;
 
-        public CoreRestResponse(final ResponseEntity<String> resp)
+        public CoreRESTResponse(final ResponseEntity<String> resp)
         {
             this(resp.getStatusCode().value(), (resp.hasBody() ? resp.getBody() : null), new HTTPHeaders(Collections.unmodifiableMap(resp.getHeaders())));
         }
 
-        public CoreRestResponse(final int code, final String body, final HTTPHeaders head)
+        public CoreRESTResponse(final int code, final String body, final HTTPHeaders head)
         {
             m_code = code;
 

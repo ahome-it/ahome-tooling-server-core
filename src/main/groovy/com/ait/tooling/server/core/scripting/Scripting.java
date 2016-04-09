@@ -16,103 +16,73 @@
 
 package com.ait.tooling.server.core.scripting;
 
-import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
-import org.apache.log4j.Logger;
-
 import com.ait.tooling.common.api.java.util.StringOps;
-import com.ait.tooling.common.api.types.IStringValued;
 
-public enum Scripting implements IStringValued
+public class Scripting
 {
-    GROOVY("groovy"), JAVASCRIPT("javascript"), PYTHON("python"), RUBY("ruby");
-
-    private static final Logger logger = Logger.getLogger(Scripting.class);
-
-    static
+    public final static ScriptEngine getScriptEngine(final ScriptType type)
     {
-        setPythonImportSite(false);
+        return new ScriptEngineManager().getEngineByName(StringOps.requireTrimOrNull(type.getValue()));
     }
 
-    private final String m_value;
-
-    private Scripting(final String value)
+    public final static ScriptEngine getScriptEngine(final ScriptType type, final ClassLoader loader)
     {
-        m_value = StringOps.requireTrimOrNull(value);
+        return new ScriptEngineManager(Objects.requireNonNull(loader)).getEngineByName(StringOps.requireTrimOrNull(type.getValue()));
     }
 
-    @Override
-    public final String getValue()
+    public final static List<String> getScriptingLanguageNames()
     {
-        return m_value;
-    }
+        final HashSet<String> look = new HashSet<String>();
 
-    @Override
-    public final String toString()
-    {
-        return m_value;
-    }
-
-    public final ScriptEngine getScriptEngine()
-    {
-        return getScriptEngine(getValue());
-    }
-
-    public final ScriptEngine getScriptEngine(final ClassLoader loader)
-    {
-        return getScriptEngine(getValue(), Objects.requireNonNull(loader));
-    }
-
-    public static final ScriptEngine getScriptEngine(final String name)
-    {
-        return new ScriptEngineManager().getEngineByName(StringOps.requireTrimOrNull(name));
-    }
-
-    public static final ScriptEngine getScriptEngine(final String name, final ClassLoader loader)
-    {
-        return new ScriptEngineManager(Objects.requireNonNull(loader)).getEngineByName(StringOps.requireTrimOrNull(name));
-    }
-
-    public static final boolean setPythonImportSite(final boolean site)
-    {
-        return setPythonOptions("importSite", site);
-    }
-
-    public static final boolean setPythonOptions(String name, final Object value)
-    {
-        name = StringOps.requireTrimOrNull(name);
-
-        try
+        for (ScriptEngineFactory factory : new ScriptEngineManager().getEngineFactories())
         {
-            final Class<?> options = Class.forName("org.python.core.Options");
-
-            if (null == options)
-            {
-                logger.warn("Can't find Python options org.python.core.Options");
-
-                return false;
-            }
-            final Field field = options.getDeclaredField(name);
-
-            if (null == field)
-            {
-                logger.error("Can't find Python options org.python.core.Options static field: " + name);
-
-                return false;
-            }
-            field.set(null, value);
-
-            return true;
+            look.addAll(factory.getNames());
         }
-        catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e)
+        final HashSet<String> find = new HashSet<String>();
+
+        for (ScriptType type : ScriptType.values())
         {
-            logger.error("Error setting Python options org.python.core.Options", e);
-
-            return false;
+            for (String name : look)
+            {
+                if (type.getValue().equalsIgnoreCase(name))
+                {
+                    find.add(type.getValue());
+                }
+            }
         }
+        return Collections.unmodifiableList(new ArrayList<String>(find));
+    }
+
+    public final static List<ScriptType> getScriptingLanguageTypes()
+    {
+        final HashSet<String> look = new HashSet<String>();
+
+        for (ScriptEngineFactory factory : new ScriptEngineManager().getEngineFactories())
+        {
+            look.addAll(factory.getNames());
+        }
+        final HashSet<ScriptType> find = new HashSet<ScriptType>();
+
+        for (ScriptType type : ScriptType.values())
+        {
+            for (String name : look)
+            {
+                if (type.getValue().equalsIgnoreCase(name))
+                {
+                    find.add(type);
+                }
+            }
+        }
+        return Collections.unmodifiableList(new ArrayList<ScriptType>(find));
     }
 }

@@ -19,6 +19,8 @@ package com.ait.tooling.server.core.support
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 
+import java.util.List;
+
 import javax.script.ScriptEngine
 
 import org.springframework.context.ApplicationContext
@@ -35,7 +37,7 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager
 import com.ait.tooling.server.core.json.JSONObject
 import com.ait.tooling.server.core.json.support.JSONTrait
 import com.ait.tooling.server.core.pubsub.JSONMessageBuilder
-import com.ait.tooling.server.core.scripting.Scripting
+import com.ait.tooling.server.core.scripting.ScriptType
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.security.ICryptoProvider
@@ -245,14 +247,24 @@ public trait CoreGroovyTrait implements JSONTrait
         Objects.requireNonNull(object, message)
     }
 
-    public ScriptEngine scripting(Scripting type)
+    public ScriptEngine scripting(ScriptType type)
     {
-        type.getScriptEngine()
+        getServerContext().scripting(type)
     }
 
-    public ScriptEngine scripting(Scripting type, ClassLoader loader)
+    public ScriptEngine scripting(ScriptType type, ClassLoader loader)
     {
-        type.getScriptEngine(Objects.requireNonNull(loader))
+        getServerContext().scripting(type, loader)
+    }
+
+    public List<String> getScriptingLanguageNames()
+    {
+        getServerContext().getScriptingLanguageNames()
+    }
+
+    public List<ScriptType> getScriptingLanguageTypes()
+    {
+        getServerContext().getScriptingLanguageTypes()
     }
 
     public Resource resource(String location)

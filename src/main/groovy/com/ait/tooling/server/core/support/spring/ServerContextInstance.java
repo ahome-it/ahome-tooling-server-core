@@ -41,6 +41,7 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.support.JSONUtilitiesInstance;
 import com.ait.tooling.server.core.pubsub.JSONMessageBuilder;
+import com.ait.tooling.server.core.scripting.ScriptType;
 import com.ait.tooling.server.core.scripting.Scripting;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 import com.ait.tooling.server.core.security.AuthorizationResult;
@@ -396,15 +397,27 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     }
 
     @Override
-    public ScriptEngine scripting(final Scripting type)
+    public ScriptEngine scripting(final ScriptType type)
     {
-        return type.getScriptEngine();
+        return Scripting.getScriptEngine(type);
     }
 
     @Override
-    public ScriptEngine scripting(final Scripting type, final ClassLoader loader)
+    public ScriptEngine scripting(final ScriptType type, final ClassLoader loader)
     {
-        return type.getScriptEngine(Objects.requireNonNull(loader));
+        return Scripting.getScriptEngine(type, Objects.requireNonNull(loader));
+    }
+    
+    @Override
+    public List<String> getScriptingLanguageNames()
+    {
+        return Scripting.getScriptingLanguageNames();
+    }
+    
+    @Override
+    public List<ScriptType> getScriptingLanguageTypes()
+    {
+        return Scripting.getScriptingLanguageTypes();
     }
 
     @Override
@@ -424,4 +437,6 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
         }
         return null;
     }
+
+    
 }

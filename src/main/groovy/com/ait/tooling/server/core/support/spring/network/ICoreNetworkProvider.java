@@ -20,8 +20,6 @@ import java.io.Closeable;
 
 import com.ait.tooling.server.core.json.JSONObject;
 
-import wslite.soap.SOAPClient;
-
 public interface ICoreNetworkProvider extends Closeable
 {
     public IRESTResponse get(String path);
@@ -32,6 +30,14 @@ public interface ICoreNetworkProvider extends Closeable
 
     public IRESTResponse get(String path, PathParameters params, HTTPHeaders headers);
 
+    public IRESTResponse put(String path, JSONObject body);
+
+    public IRESTResponse put(String path, JSONObject body, HTTPHeaders headers);
+
+    public IRESTResponse put(String path, JSONObject body, PathParameters params);
+
+    public IRESTResponse put(String path, JSONObject body, PathParameters params, HTTPHeaders headers);
+
     public IRESTResponse post(String path, JSONObject body);
 
     public IRESTResponse post(String path, JSONObject body, HTTPHeaders headers);
@@ -40,5 +46,21 @@ public interface ICoreNetworkProvider extends Closeable
 
     public IRESTResponse post(String path, JSONObject body, PathParameters params, HTTPHeaders headers);
 
-    public SOAPClient soap(String path);
+    public IRESTResponse patch(String path, JSONObject body);
+
+    public IRESTResponse patch(String path, JSONObject body, HTTPHeaders headers);
+
+    public IRESTResponse patch(String path, JSONObject body, PathParameters params);
+
+    public IRESTResponse patch(String path, JSONObject body, PathParameters params, HTTPHeaders headers);
+
+    public IRESTResponse delete(String path);
+
+    public IRESTResponse delete(String path, HTTPHeaders headers);
+
+    public IRESTResponse delete(String path, PathParameters params);
+
+    public IRESTResponse delete(String path, PathParameters params, HTTPHeaders headers);
+
+    public ISOAPClient soap(String path);
 }

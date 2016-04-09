@@ -47,5 +47,11 @@
 	<bean id="AuthorizationProvider" class="com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider"/>
 
 	<bean id="PrincipalsKeysProvider" class="com.ait.tooling.server.core.support.spring.DefaultPrincipalsKeysProvider"/>
-
+	
+	<bean id="PythonScriptingProperties" class="com.ait.tooling.server.core.scripting.PythonScriptingProperties" destroy-method="close">
+		<constructor-arg>
+			<value>classpath:/com/ait/tooling/server/core/test/python.properties</value>
+		</constructor-arg>
+	</bean>
+	
 </beans>

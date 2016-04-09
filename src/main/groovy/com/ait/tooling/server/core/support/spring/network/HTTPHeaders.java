@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -32,6 +33,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import com.ait.tooling.common.api.java.util.function.Predicate;
+import com.ait.tooling.server.core.json.JSONObject;
 
 public class HTTPHeaders extends HttpHeaders
 {
@@ -156,5 +158,27 @@ public class HTTPHeaders extends HttpHeaders
             setAccept(JSON_MEDIA_TYPE);
         }
         return this;
+    }
+
+    public JSONObject toJSONObject()
+    {
+        final Map<String, List<String>> make = new LinkedHashMap<String, List<String>>();
+
+        for (String k : keySet())
+        {
+            make.put(k, get(k));
+        }
+        return new JSONObject(make);
+    }
+
+    public String toJSONString()
+    {
+        return toJSONObject().toJSONString();
+    }
+
+    @Override
+    public String toString()
+    {
+        return toJSONString();
     }
 }

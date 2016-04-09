@@ -20,7 +20,7 @@ import javax.script.ScriptEngine
 
 import com.ait.tooling.server.core.json.JSONObject
 import com.ait.tooling.server.core.logging.MDC
-import com.ait.tooling.server.core.scripting.Scripting
+import com.ait.tooling.server.core.scripting.ScriptType
 import com.ait.tooling.server.core.support.CoreGroovyTrait
 import com.ait.tooling.server.core.support.spring.network.PathParameters
 import com.ait.tooling.server.core.support.spring.testing.IServerCoreTesting.TestingOps
@@ -100,14 +100,11 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         getCryptoProvider().isPassValid(pass) == true
     }
     
-    def "test JS Reader"()
+    def "test script types"()
     {
         setup:
-        Reader rsrc = reader('classpath:/com/ait/tooling/server/core/test/test.js')
-        rsrc.eachLine { line ->
-            println line
-        }
-        rsrc.close()
+        def lang = getScriptingLanguageNames()
+        println json(languages: lang)
 
         expect:
         "dean" == "dean"
@@ -117,7 +114,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     {
         setup:
         Reader rsrc = reader('classpath:/com/ait/tooling/server/core/test/test.js')
-        ScriptEngine engine = scripting(Scripting.JAVASCRIPT)
+        ScriptEngine engine = scripting(ScriptType.JAVASCRIPT)
         engine.eval(rsrc)
         rsrc.close()
         println "JavaScript " + engine.get('x')
@@ -132,7 +129,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     {
         setup:
         Reader rsrc = reader('classpath:/com/ait/tooling/server/core/test/test.py')
-        ScriptEngine engine = scripting(Scripting.PYTHON)
+        ScriptEngine engine = scripting(ScriptType.PYTHON)
         engine.eval(rsrc)
         rsrc.close()
         println "Python " + engine.get('x')
@@ -147,7 +144,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     {
         setup:
         Reader rsrc = reader('classpath:/com/ait/tooling/server/core/test/test.gy')
-        ScriptEngine engine = scripting(Scripting.GROOVY)
+        ScriptEngine engine = scripting(ScriptType.GROOVY)
         engine.eval(rsrc)
         rsrc.close()
         println "Groovy " + engine.get('x')
@@ -162,7 +159,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     {
         setup:
         Reader rsrc = reader('classpath:/com/ait/tooling/server/core/test/test.rb')
-        ScriptEngine engine = scripting(Scripting.RUBY)
+        ScriptEngine engine = scripting(ScriptType.RUBY)
         engine.eval(rsrc)
         rsrc.close()
         println "Ruby " + engine.get('x')
@@ -184,9 +181,10 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
                 }
             }
         }
-        def code = resp?.httpResponse?.statusCode
-        def answ = resp?.GetMothersDayResponse?.GetMothersDayResult?.text()
+        def code = resp.code()
+        def answ = resp.body().GetMothersDayResponse.GetMothersDayResult.text()
         println answ
+        println resp.headers().toString()
         
         expect:
         code == 200
