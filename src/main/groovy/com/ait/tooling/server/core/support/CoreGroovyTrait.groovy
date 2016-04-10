@@ -19,8 +19,6 @@ package com.ait.tooling.server.core.support
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 
-import java.util.List;
-
 import javax.script.ScriptEngine
 
 import org.springframework.context.ApplicationContext
@@ -37,6 +35,7 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager
 import com.ait.tooling.server.core.json.JSONObject
 import com.ait.tooling.server.core.json.support.JSONTrait
 import com.ait.tooling.server.core.pubsub.JSONMessageBuilder
+import com.ait.tooling.server.core.scripting.IScriptingProvider
 import com.ait.tooling.server.core.scripting.ScriptType
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
@@ -132,7 +131,7 @@ public trait CoreGroovyTrait implements JSONTrait
 
     public AuthorizationResult isAuthorized(Object target, List<String> roles)
     {
-        getServerContext().isAuthorized(target, roles)
+        getServerContext().isAuthorized(Objects.requireNonNull(target), Objects.requireNonNull(roles))
     }
 
     @Memoized
@@ -247,24 +246,42 @@ public trait CoreGroovyTrait implements JSONTrait
         Objects.requireNonNull(object, message)
     }
 
+    @Memoized
+    public IScriptingProvider getScriptingProvider()
+    {
+        getServerContext().getScriptingProvider()
+    }
+
     public ScriptEngine scripting(ScriptType type)
     {
-        getServerContext().scripting(type)
+        getServerContext().scripting(Objects.requireNonNull(type))
     }
 
     public ScriptEngine scripting(ScriptType type, ClassLoader loader)
     {
-        getServerContext().scripting(type, loader)
+        getServerContext().scripting(Objects.requireNonNull(type), Objects.requireNonNull(loader))
     }
 
+    @Memoized
     public List<String> getScriptingLanguageNames()
     {
         getServerContext().getScriptingLanguageNames()
     }
 
+    public List<String> getScriptingLanguageNames(ClassLoader loader)
+    {
+        getScriptingProvider().getScriptingLanguageNames(Objects.requireNonNull(loader))
+    }
+
+    @Memoized
     public List<ScriptType> getScriptingLanguageTypes()
     {
         getServerContext().getScriptingLanguageTypes()
+    }
+
+    public List<ScriptType> getScriptingLanguageTypes(ClassLoader loader)
+    {
+        getScriptingProvider().getScriptingLanguageTypes(Objects.requireNonNull(loader))
     }
 
     public Resource resource(String location)

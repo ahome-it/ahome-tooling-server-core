@@ -19,43 +19,26 @@ package com.ait.tooling.server.core.scripting;
 import java.util.Map;
 import java.util.Objects;
 
-import org.python.core.PySystemState;
 import org.springframework.core.io.Resource;
 
-import com.ait.tooling.common.api.java.util.StringOps;
-
-public class PythonScriptingProperties extends AbstractScriptingProperties
+public class GroovyScriptingProperties extends AbstractScriptingProperties
 {
-    public PythonScriptingProperties()
+    public GroovyScriptingProperties()
     {
-        super(ScriptType.PYTHON);
+        super(ScriptType.GROOVY);
     }
 
-    public PythonScriptingProperties(final Map<String, String> properties)
+    public GroovyScriptingProperties(final Map<String, String> properties)
     {
         this();
-
+        
         populate(Objects.requireNonNull(properties));
     }
 
-    public PythonScriptingProperties(final Resource resource) throws Exception
+    public GroovyScriptingProperties(final Resource resource) throws Exception
     {
         this();
 
         populate(Objects.requireNonNull(resource));
-    }
-
-    @Override
-    protected void start()
-    {
-        getProperties().putIfAbsent("python.home", "/Development/jython2.7.0/Lib");
-
-        getProperties().putIfAbsent("python.console.encoding", "UTF-8");
-
-        getProperties().putIfAbsent("python.security.respectJavaAccessibility", "false");
-
-        getProperties().putIfAbsent("python.import.site", "false");
-
-        PySystemState.initialize(PySystemState.getBaseProperties(), getProperties(), StringOps.EMPTY_STRING_ARRAY);
     }
 }

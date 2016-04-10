@@ -19,9 +19,6 @@ package com.ait.tooling.server.core.security;
 import java.io.IOException;
 import java.util.Objects;
 
-import org.springframework.jmx.export.annotation.ManagedResource;
-
-@ManagedResource
 public final class CryptoProvider implements ICryptoProvider
 {
     private final AESStringCryptoProvider        m_pcrypt;
@@ -59,7 +56,7 @@ public final class CryptoProvider implements ICryptoProvider
 
         m_pcrypt = new AESStringCryptoProvider(Objects.requireNonNull(pass), Objects.requireNonNull(salt));
 
-        m_keygen = new SimpleCryptoKeysGenerator();
+        m_keygen = SimpleCryptoKeysGenerator.getCryptoKeysGenerator();
     }
 
     @Override
@@ -73,7 +70,7 @@ public final class CryptoProvider implements ICryptoProvider
     {
         return m_keygen.getRandomSalt();
     }
-    
+
     @Override
     public boolean isPassValid(final String pass)
     {

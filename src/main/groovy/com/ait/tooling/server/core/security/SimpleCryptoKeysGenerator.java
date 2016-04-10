@@ -25,6 +25,13 @@ import org.apache.commons.lang.RandomStringUtils;
 
 public class SimpleCryptoKeysGenerator implements ICryptoKeysGenerator
 {
+    private static final SimpleCryptoKeysGenerator INSTANCE = new SimpleCryptoKeysGenerator();
+
+    public static final SimpleCryptoKeysGenerator getCryptoKeysGenerator()
+    {
+        return INSTANCE;
+    }
+
     public SimpleCryptoKeysGenerator()
     {
     }

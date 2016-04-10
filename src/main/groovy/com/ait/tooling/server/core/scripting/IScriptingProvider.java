@@ -17,13 +17,26 @@
 package com.ait.tooling.server.core.scripting;
 
 import java.io.Closeable;
-import java.util.Properties;
+import java.util.List;
 
-import com.ait.tooling.common.api.types.IActivatable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
-public interface IScriptingProperties extends IActivatable, Closeable
+public interface IScriptingProvider extends Closeable
 {
-    public ScriptType getType();
-    
-    public Properties getProperties();
+    public ScriptEngine getScriptEngine(ScriptType type);
+
+    public ScriptEngine getScriptEngine(ScriptType type, ClassLoader loader);
+
+    public List<String> getScriptingLanguageNames();
+
+    public List<String> getScriptingLanguageNames(ClassLoader loader);
+
+    public List<ScriptType> getScriptingLanguageTypes();
+
+    public List<ScriptType> getScriptingLanguageTypes(ClassLoader loader);
+
+    public ScriptEngineManager getScriptEngineManager();
+
+    public ScriptEngineManager getScriptEngineManager(ClassLoader loader);
 }

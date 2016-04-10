@@ -36,6 +36,7 @@ import org.springframework.messaging.SubscribableChannel;
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.support.IJSONUtilities;
+import com.ait.tooling.server.core.scripting.IScriptingProvider;
 import com.ait.tooling.server.core.scripting.ScriptType;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizer;
@@ -111,13 +112,19 @@ public interface IServerContext extends IJSONUtilities, IAuthorizer, IProperties
     
     public <T> T requireNonNull(T object, String message);
     
+    public IScriptingProvider getScriptingProvider();
+    
     public ScriptEngine scripting(ScriptType type);
     
     public ScriptEngine scripting(ScriptType type, ClassLoader loader);
     
     public List<String> getScriptingLanguageNames();
     
+    public List<String> getScriptingLanguageNames(ClassLoader loader);
+    
     public List<ScriptType> getScriptingLanguageTypes();
+    
+    public List<ScriptType> getScriptingLanguageTypes(ClassLoader loader);
     
     public Resource resource(String location);
     

@@ -41,16 +41,24 @@
 				<value>file:/opt/properties/ahome-tooling-server-core/hazelc.properties</value>
 			</list>
 		</property>
-		<property name="loggingLevelAsString" value="INFO"/>
 	</bean>
 
-	<bean id="AuthorizationProvider" class="com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider"/>
-
-	<bean id="PrincipalsKeysProvider" class="com.ait.tooling.server.core.support.spring.DefaultPrincipalsKeysProvider"/>
-	
-	<bean id="PythonScriptingProperties" class="com.ait.tooling.server.core.scripting.PythonScriptingProperties" destroy-method="close">
+	<bean id="ScriptingProvider" class="com.ait.tooling.server.core.scripting.ScriptingProvider" destroy-method="close">
 		<constructor-arg>
-			<value>classpath:/com/ait/tooling/server/core/test/python.properties</value>
+			<list>
+				<bean class="com.ait.tooling.server.core.scripting.GroovyScriptingProperties"/>
+				<bean class="com.ait.tooling.server.core.scripting.JavaScriptScriptingProperties"/>
+				<bean class="com.ait.tooling.server.core.scripting.RubyScriptingProperties">
+					<constructor-arg>
+						<value>classpath:/com/ait/tooling/server/core/test/jruby.properties</value>
+					</constructor-arg>
+				</bean>
+				<bean class="com.ait.tooling.server.core.scripting.PythonScriptingProperties">
+					<constructor-arg>
+						<value>classpath:/com/ait/tooling/server/core/test/python.properties</value>
+					</constructor-arg>
+				</bean>
+			</list>
 		</constructor-arg>
 	</bean>
 	

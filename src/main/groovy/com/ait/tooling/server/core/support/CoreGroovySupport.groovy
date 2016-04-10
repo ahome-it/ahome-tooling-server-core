@@ -19,9 +19,6 @@ package com.ait.tooling.server.core.support
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 
-import java.util.List;
-import java.util.Objects;
-
 import javax.script.ScriptEngine
 
 import org.apache.log4j.Logger
@@ -42,8 +39,8 @@ import com.ait.tooling.server.core.json.binder.JSONBinder
 import com.ait.tooling.server.core.json.parser.JSONParserException
 import com.ait.tooling.server.core.json.schema.JSONSchema
 import com.ait.tooling.server.core.pubsub.JSONMessageBuilder
+import com.ait.tooling.server.core.scripting.IScriptingProvider
 import com.ait.tooling.server.core.scripting.ScriptType
-import com.ait.tooling.server.core.scripting.Scripting;
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.security.ICryptoProvider
@@ -160,7 +157,7 @@ public class CoreGroovySupport implements IServerContext, Closeable
     @Override
     public AuthorizationResult isAuthorized(Object target, List<String> roles)
     {
-        getServerContext().isAuthorized(target, roles)
+        getServerContext().isAuthorized(Objects.requireNonNull(target), Objects.requireNonNull(roles))
     }
 
     @Memoized
@@ -402,28 +399,46 @@ public class CoreGroovySupport implements IServerContext, Closeable
         Objects.requireNonNull(object, message)
     }
 
+    @Memoized
+    public IScriptingProvider getScriptingProvider()
+    {
+        getServerContext().getScriptingProvider()
+    }
+
     @Override
     public ScriptEngine scripting(ScriptType type)
     {
-        getServerContext().scripting(type)
+        getServerContext().scripting(Objects.requireNonNull(type))
     }
 
     @Override
     public ScriptEngine scripting(ScriptType type, ClassLoader loader)
     {
-        getServerContext().scripting(type, loader)
+        getServerContext().scripting(Objects.requireNonNull(type), Objects.requireNonNull(loader))
     }
 
-    @Override
+    @Memoized
     public List<String> getScriptingLanguageNames()
     {
         getServerContext().getScriptingLanguageNames()
     }
 
     @Override
+    public List<String> getScriptingLanguageNames(ClassLoader loader)
+    {
+        getScriptingProvider().getScriptingLanguageNames(Objects.requireNonNull(loader))
+    }
+
+    @Memoized
     public List<ScriptType> getScriptingLanguageTypes()
     {
         getServerContext().getScriptingLanguageTypes()
+    }
+
+    @Override
+    public List<ScriptType> getScriptingLanguageTypes(ClassLoader loader)
+    {
+        getScriptingProvider().getScriptingLanguageTypes(Objects.requireNonNull(loader))
     }
 
     @Override

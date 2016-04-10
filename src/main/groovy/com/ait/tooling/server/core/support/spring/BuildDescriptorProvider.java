@@ -27,14 +27,11 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.jmx.export.annotation.ManagedAttribute;
-import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.server.core.json.JSONArray;
 import com.ait.tooling.server.core.json.JSONObject;
 
-@ManagedResource
 public class BuildDescriptorProvider implements IBuildDescriptorProvider, BeanFactoryAware
 {
     private static final Logger                           logger        = Logger.getLogger(BuildDescriptorProvider.class);
@@ -77,7 +74,6 @@ public class BuildDescriptorProvider implements IBuildDescriptorProvider, BeanFa
     }
 
     @Override
-    @ManagedAttribute(description = "Get BuildDescriptor names.")
     public List<String> getBuildDescriptorNames()
     {
         return Collections.unmodifiableList(new ArrayList<String>(m_descriptors.keySet()));

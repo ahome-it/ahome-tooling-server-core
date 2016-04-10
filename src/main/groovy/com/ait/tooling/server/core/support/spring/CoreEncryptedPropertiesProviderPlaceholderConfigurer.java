@@ -169,6 +169,8 @@ public final class CoreEncryptedPropertiesProviderPlaceholderConfigurer extends 
         {
             final Level level = m_parent.getLoggingLevel();
 
+            final boolean logson = (false == level.toString().equalsIgnoreCase("OFF"));
+
             final LinkedHashMap<String, String> saved = new LinkedHashMap<String, String>();
 
             for (Object o : props.keySet())
@@ -177,17 +179,29 @@ public final class CoreEncryptedPropertiesProviderPlaceholderConfigurer extends 
 
                 final String v = props.getProperty(k);
 
-                if ((null != v) && (false == v.isEmpty()) && (v.startsWith(m_prefix)))
+                if ((null != v) && (false == v.isEmpty()))
                 {
-                    final String r = v.replace(m_prefix, "");
+                    if (v.startsWith(m_prefix))
+                    {
+                        final String r = v.replace(m_prefix, "");
 
-                    final String d = (r.isEmpty() ? r : m_crypto.decrypt(r));
+                        final String d = (r.isEmpty() ? r : m_crypto.decrypt(r));
 
-                    logger.log(level, "decrypt(name:" + k + ",prop-value;" + v + ")");
+                        if (logson)
+                        {
+                            logger.log(level, "decrypt(name: '" + k + "', encrypted: '" + v + "')");
 
-                    logger.log(level, "decrypt(name:" + k + ",decrypted:" + d + ")");
-
-                    saved.put(k, d);
+                            logger.log(level, "decrypt(name: '" + k + "', decrypted: '" + d + "')");
+                        }
+                        saved.put(k, d);
+                    }
+                    else
+                    {
+                        if (logson)
+                        {
+                            logger.log(level, "decrypt(name: '" + k + "', origvalue: '" + v + "')");
+                        }
+                    }
                 }
             }
             for (String k : saved.keySet())

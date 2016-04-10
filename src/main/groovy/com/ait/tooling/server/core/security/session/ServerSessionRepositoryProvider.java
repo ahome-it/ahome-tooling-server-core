@@ -27,13 +27,10 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.jmx.export.annotation.ManagedOperation;
-import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.common.api.types.Activatable;
 
-@ManagedResource
 public class ServerSessionRepositoryProvider extends Activatable implements IServerSessionRepositoryProvider, BeanFactoryAware
 {
     private static final Logger                                   logger         = Logger.getLogger(ServerSessionRepositoryProvider.class);
@@ -76,7 +73,6 @@ public class ServerSessionRepositoryProvider extends Activatable implements ISer
     }
 
     @Override
-    @ManagedOperation(description = "Close Provider.")
     public void close() throws IOException
     {
         setActive(false);
@@ -98,21 +94,18 @@ public class ServerSessionRepositoryProvider extends Activatable implements ISer
     }
 
     @Override
-    @ManagedOperation(description = "Is Provider Active.")
     public boolean isActive()
     {
         return super.isActive();
     }
 
     @Override
-    @ManagedOperation(description = "Set Provider Active.")
     public boolean setActive(final boolean active)
     {
         return super.setActive(active);
     }
 
     @Override
-    @ManagedOperation(description = "Get Domain Names.")
     public List<String> getServerSessionRepositoryDomains()
     {
         return Collections.unmodifiableList(new ArrayList<String>(m_repositories.keySet()));
@@ -137,7 +130,6 @@ public class ServerSessionRepositoryProvider extends Activatable implements ISer
     }
 
     @Override
-    @ManagedOperation(description = "Clean Expired Sessions.")
     public void cleanExpiredSessions()
     {
         for (IServerSessionRepository repository : m_repositories.values())

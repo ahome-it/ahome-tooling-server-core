@@ -41,8 +41,8 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.support.JSONUtilitiesInstance;
 import com.ait.tooling.server.core.pubsub.JSONMessageBuilder;
+import com.ait.tooling.server.core.scripting.IScriptingProvider;
 import com.ait.tooling.server.core.scripting.ScriptType;
-import com.ait.tooling.server.core.scripting.Scripting;
 import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
 import com.ait.tooling.server.core.security.AuthorizationResult;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
@@ -79,7 +79,7 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     }
 
     @Override
-    public boolean isApplicationContextInitialized()
+    public final boolean isApplicationContextInitialized()
     {
         return (null != APPCONTEXT);
     }
@@ -87,7 +87,7 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     @Override
     public final ApplicationContext getApplicationContext()
     {
-        return requireNonNull(APPCONTEXT, "ApplicationContext is null, initialization error.");
+        return Objects.requireNonNull(APPCONTEXT, "ApplicationContext is null, initialization error.");
     }
 
     @Override
@@ -198,7 +198,7 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
         {
             return auth;
         }
-        logger().warn("Using AuthorizationProvider default " + DEFAULT_AUTH.getClass().getName());
+        logger().trace("Using AuthorizationProvider default " + DEFAULT_AUTH.getClass().getName());
 
         return DEFAULT_AUTH;
     }
@@ -212,7 +212,7 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
         {
             return keys.getPrincipalsKeys();
         }
-        logger().warn("Using PrincipalsKeysProvider default " + DEFAULT_KEYS.getClass().getName());
+        logger().trace("Using PrincipalsKeysProvider default " + DEFAULT_KEYS.getClass().getName());
 
         return DEFAULT_KEYS.getPrincipalsKeys();
     }
@@ -313,25 +313,25 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     }
 
     @Override
-    public boolean publish(final String name, final JSONObject message)
+    public final boolean publish(final String name, final JSONObject message)
     {
         return publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message)));
     }
 
     @Override
-    public boolean publish(final String name, final JSONObject message, final long timeout)
+    public final boolean publish(final String name, final JSONObject message, final long timeout)
     {
         return publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message)), timeout);
     }
 
     @Override
-    public boolean publish(final String name, final JSONObject message, final Map<String, ?> headers)
+    public final boolean publish(final String name, final JSONObject message, final Map<String, ?> headers)
     {
         return publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message), Objects.requireNonNull(headers)));
     }
 
     @Override
-    public boolean publish(final String name, final JSONObject message, final Map<String, ?> headers, final long timeout)
+    public final boolean publish(final String name, final JSONObject message, final Map<String, ?> headers, final long timeout)
     {
         return publish(Objects.requireNonNull(name), JSONMessageBuilder.createMessage(Objects.requireNonNull(message), Objects.requireNonNull(headers)), timeout);
     }
@@ -373,55 +373,73 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     }
 
     @Override
-    public String toTrimOrNull(final String string)
+    public final String toTrimOrNull(final String string)
     {
         return StringOps.toTrimOrNull(string);
     }
 
     @Override
-    public String toTrimOrElse(final String string, final String otherwise)
+    public final String toTrimOrElse(final String string, final String otherwise)
     {
         return StringOps.toTrimOrElse(string, otherwise);
     }
-    
+
     @Override
-    public <T> T requireNonNull(final T object)
+    public final <T> T requireNonNull(final T object)
     {
         return Objects.requireNonNull(object);
     }
-    
+
     @Override
-    public <T> T requireNonNull(final T object, final String message)
+    public final <T> T requireNonNull(final T object, final String message)
     {
         return Objects.requireNonNull(object, message);
     }
 
     @Override
-    public ScriptEngine scripting(final ScriptType type)
+    public final IScriptingProvider getScriptingProvider()
     {
-        return Scripting.getScriptEngine(type);
+        return Objects.requireNonNull(getBeanSafely("ScriptingProvider", IScriptingProvider.class), "ScriptingProvider is null, initialization error.");
     }
 
     @Override
-    public ScriptEngine scripting(final ScriptType type, final ClassLoader loader)
+    public final ScriptEngine scripting(final ScriptType type)
     {
-        return Scripting.getScriptEngine(type, Objects.requireNonNull(loader));
-    }
-    
-    @Override
-    public List<String> getScriptingLanguageNames()
-    {
-        return Scripting.getScriptingLanguageNames();
-    }
-    
-    @Override
-    public List<ScriptType> getScriptingLanguageTypes()
-    {
-        return Scripting.getScriptingLanguageTypes();
+        return getScriptingProvider().getScriptEngine(type);
     }
 
     @Override
-    public Resource resource(final String location)
+    public final ScriptEngine scripting(final ScriptType type, final ClassLoader loader)
+    {
+        return getScriptingProvider().getScriptEngine(type, Objects.requireNonNull(loader));
+    }
+
+    @Override
+    public final List<String> getScriptingLanguageNames()
+    {
+        return getScriptingProvider().getScriptingLanguageNames();
+    }
+    
+    @Override
+    public final List<String> getScriptingLanguageNames(final ClassLoader loader)
+    {
+        return getScriptingProvider().getScriptingLanguageNames(Objects.requireNonNull(loader));
+    }
+
+    @Override
+    public final List<ScriptType> getScriptingLanguageTypes()
+    {
+        return getScriptingProvider().getScriptingLanguageTypes();
+    }
+    
+    @Override
+    public final List<ScriptType> getScriptingLanguageTypes(final ClassLoader loader)
+    {
+        return getScriptingProvider().getScriptingLanguageTypes(Objects.requireNonNull(loader));
+    }
+
+    @Override
+    public final Resource resource(final String location)
     {
         return getApplicationContext().getResource(Objects.requireNonNull(location));
     }
@@ -438,5 +456,4 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
         return null;
     }
 
-    
 }

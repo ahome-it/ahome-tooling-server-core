@@ -170,10 +170,10 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         "dean" == "dean"
     }
     
-    def "test GroovyWS soap"()
+    def "test Groovy soap"()
     {
         setup:
-        def soap = network().soap('http://www.holidaywebservice.com/Holidays/US/Dates/USHolidayDates.asmx')
+        def soap = network().soap('http://www.holidaywebservice.com/Holidays/US/Dates/USHolidayDates.asmx')       
         def resp = soap.send(SOAPAction: 'http://www.27seconds.com/Holidays/US/Dates/GetMothersDay') {
             body {
                 GetMothersDay(xmlns: 'http://www.27seconds.com/Holidays/US/Dates/') {
@@ -217,32 +217,6 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         code == 200
     }
 
-    def "test chars"()
-    {
-        setup:
-        def i = "11" as Integer
-        println i + 2
-        /*
-        File file = new File("/tmp/chars")
-        if (file.exists())
-        {
-            file.delete()
-        }
-        file.createNewFile()
-        Writer writer = new BufferedWriter(new FileWriter(file))
-        println "w0 " + IOTest.w0(10000000, writer, json(count: 1, name: "Dean", last: 1.5d, flag: false))
-        println "w1 " + IOTest.w1(10000000, writer, json(count: 1, name: "Dean", last: 1.5d, flag: false))
-        println "w2 " + IOTest.w2(10000000, writer, json(count: 1, name: "Dean", last: 1.5d, flag: false))
-        println "w3 " + IOTest.w3(10000000, writer, json(count: 1, name: "Dean", last: 1.5d, flag: false))
-        println "w4 " + IOTest.w4(10000000, writer, json(count: 1, name: "Dean", last: 1.5d, flag: false))
-        println "r0 " + IOTest.r0(10000000, writer, json(count: 1, name: "Dean", last: 1.5d, flag: false))
-        println "r1 " + IOTest.r1(10000000, writer, json(count: 1, name: "Dean", last: 1.5d, flag: false))
-        */
-        
-        expect:
-        "dean" == "dean"
-    }
-
     def "test binder"()
     {
         setup:
@@ -257,8 +231,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         println binder().toJSONString(pojo)
         println text
         println valu
-        //Thread.sleep(30000)
-
+        
         expect:
         text == valu
     }

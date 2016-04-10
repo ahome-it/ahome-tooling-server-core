@@ -19,26 +19,23 @@ package com.ait.tooling.server.core.scripting;
 import java.util.Map;
 import java.util.Objects;
 
-import org.python.core.PySystemState;
 import org.springframework.core.io.Resource;
 
-import com.ait.tooling.common.api.java.util.StringOps;
-
-public class PythonScriptingProperties extends AbstractScriptingProperties
+public class RubyScriptingProperties extends AbstractScriptingProperties
 {
-    public PythonScriptingProperties()
+    public RubyScriptingProperties()
     {
-        super(ScriptType.PYTHON);
+        super(ScriptType.RUBY);
     }
 
-    public PythonScriptingProperties(final Map<String, String> properties)
+    public RubyScriptingProperties(final Map<String, String> properties)
     {
         this();
 
         populate(Objects.requireNonNull(properties));
     }
 
-    public PythonScriptingProperties(final Resource resource) throws Exception
+    public RubyScriptingProperties(final Resource resource) throws Exception
     {
         this();
 
@@ -48,14 +45,30 @@ public class PythonScriptingProperties extends AbstractScriptingProperties
     @Override
     protected void start()
     {
-        getProperties().putIfAbsent("python.home", "/Development/jython2.7.0/Lib");
+        getProperties().forEach((k, v) -> {
+            properties(k, v);
+        });
+    }
 
-        getProperties().putIfAbsent("python.console.encoding", "UTF-8");
+    private final void properties(Object k, Object v)
+    {
+        if ((v != null) && (k != null))
+        {
+            final String key = k.toString();
 
-        getProperties().putIfAbsent("python.security.respectJavaAccessibility", "false");
+            final String val = v.toString();
 
-        getProperties().putIfAbsent("python.import.site", "false");
-
-        PySystemState.initialize(PySystemState.getBaseProperties(), getProperties(), StringOps.EMPTY_STRING_ARRAY);
+            if (key.contains("jruby"))
+            {
+                try
+                {
+                    System.setProperty(key, val);
+                }
+                catch (Exception e)
+                {
+                    logger().error("Error setting Ruby property(" + key + "," + val + ")", e);
+                }
+            }
+        }
     }
 }

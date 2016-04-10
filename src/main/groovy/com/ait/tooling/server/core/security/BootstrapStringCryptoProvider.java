@@ -45,7 +45,23 @@ public final class BootstrapStringCryptoProvider implements IStringCryptoProvide
 
         properties.load(resource.getInputStream());
 
-        m_pcrypt = Encryptors.text(StringOps.requireTrimOrNull(properties.getProperty(StringOps.requireTrimOrNull(passname))), StringOps.requireTrimOrNull(properties.getProperty(StringOps.requireTrimOrNull(saltname))));
+        final String pass = StringOps.requireTrimOrNull(properties.getProperty(StringOps.requireTrimOrNull(passname)));
+
+        final String salt = StringOps.requireTrimOrNull(properties.getProperty(StringOps.requireTrimOrNull(saltname)));
+
+        if (SimpleCryptoKeysGenerator.getCryptoKeysGenerator().isPassValid(pass))
+        {
+            logger.info("BootstrapStringCryptoProvider(password has validated)");
+        }
+        else
+        {
+            logger.error("BootstrapStringCryptoProvider(password is not valid)");
+
+            logger.trace("BootstrapStringCryptoProvider(password is not valid) " + pass);
+
+            throw new IllegalArgumentException("BootstrapStringCryptoProvider(password is not valid)");
+        }
+        m_pcrypt = Encryptors.text(pass, salt);
     }
 
     @Override
