@@ -28,7 +28,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath(group: 'org.ajoberstar', name: 'grgit', version: '1.5.0')
+        classpath(group: 'org.ajoberstar', name: 'grgit', version: '1.6.0')
         classpath(group: 'commons-codec', name: 'commons-codec', version: '1.10')
         classpath(group: 'commons-logging', name: 'commons-logging', version: '1.2')
         classpath(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.1')
@@ -50,7 +50,7 @@ sourceCompatibility = 1.8
 
 targetCompatibility = 1.8
 
-version = '1.0.151-SNAPSHOT'
+version = '1.0.152-SNAPSHOT'
 
 group = 'com.ahome-it'
 

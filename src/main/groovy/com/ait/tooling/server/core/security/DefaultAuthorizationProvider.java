@@ -19,13 +19,8 @@ package com.ait.tooling.server.core.security;
 import java.io.IOException;
 import java.util.List;
 
-public class AnonOnlyAuthorizationProvider implements IAuthorizationProvider
+public class DefaultAuthorizationProvider implements IAuthorizationProvider
 {
-    @Override
-    public void close() throws IOException
-    {
-    }
-
     @Override
     public AuthorizationResult isAuthorized(final Object target, final List<String> roles)
     {
@@ -36,6 +31,10 @@ public class AnonOnlyAuthorizationProvider implements IAuthorizationProvider
         if (null == roles)
         {
             return new AuthorizationResult(false, false, E_SERVER_ERROR, "null roles");
+        }
+        if (roles.isEmpty())
+        {
+            return new AuthorizationResult(false, false, E_SERVER_ERROR, "empty roles");
         }
         if (target instanceof IAuthorizedObject)
         {
@@ -55,5 +54,10 @@ public class AnonOnlyAuthorizationProvider implements IAuthorizationProvider
             }
         }
         return new AuthorizationResult(true, false, E_IS_VALIDATED, "valid");
+    }
+
+    @Override
+    public void close() throws IOException
+    {
     }
 }

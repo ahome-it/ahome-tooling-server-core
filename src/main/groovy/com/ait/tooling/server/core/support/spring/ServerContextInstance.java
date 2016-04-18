@@ -43,7 +43,7 @@ import com.ait.tooling.server.core.json.support.JSONUtilitiesInstance;
 import com.ait.tooling.server.core.pubsub.JSONMessageBuilder;
 import com.ait.tooling.server.core.scripting.IScriptingProvider;
 import com.ait.tooling.server.core.scripting.ScriptType;
-import com.ait.tooling.server.core.security.AnonOnlyAuthorizationProvider;
+import com.ait.tooling.server.core.security.DefaultAuthorizationProvider;
 import com.ait.tooling.server.core.security.AuthorizationResult;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.ICryptoProvider;
@@ -56,7 +56,7 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
 {
     private static ApplicationContext                  APPCONTEXT   = null;
 
-    private final static AnonOnlyAuthorizationProvider DEFAULT_AUTH = new AnonOnlyAuthorizationProvider();
+    private final static DefaultAuthorizationProvider  DEFAULT_AUTH = new DefaultAuthorizationProvider();
 
     private final static DefaultPrincipalsKeysProvider DEFAULT_KEYS = new DefaultPrincipalsKeysProvider();
 
@@ -419,7 +419,7 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     {
         return getScriptingProvider().getScriptingLanguageNames();
     }
-    
+
     @Override
     public final List<String> getScriptingLanguageNames(final ClassLoader loader)
     {
@@ -431,7 +431,7 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     {
         return getScriptingProvider().getScriptingLanguageTypes();
     }
-    
+
     @Override
     public final List<ScriptType> getScriptingLanguageTypes(final ClassLoader loader)
     {
