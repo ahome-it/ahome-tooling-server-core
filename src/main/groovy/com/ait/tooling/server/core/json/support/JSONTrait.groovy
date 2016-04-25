@@ -144,7 +144,7 @@ public trait JSONTrait
         new JSONBinder()
     }
     
-    public IBinder binder(BinderType type)
+    public IBinder binder(final BinderType type)
     {
         if (type == BinderType.XML)
         {
@@ -154,6 +154,6 @@ public trait JSONTrait
         {
             return new YAMLBinder()
         }
-        binder()
+        new JSONBinder()
     }
 }

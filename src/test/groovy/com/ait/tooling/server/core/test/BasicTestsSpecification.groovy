@@ -320,10 +320,10 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     def "test tree"()
     {
         setup:
-        JSONMapToTreeSolver tree = new JSONMapToTreeSolver()
-        tree << [id: '1']
-        tree << [id: '2']
-        tree << [id: '3']
+        JSONMapToTreeSolver tree = new JSONMapToTreeSolver([[linked: 'tree', parent: 'level', column: 'children']]).setIncluded(['id', 'children'])
+        tree << [id: '1', level: 1, tree: 0]
+        tree << [id: '2', level: 2, tree: 1]
+        tree << [id: '3', level: 3, tree: 2]
         JSONObject json = tree.solve('tree')
         String valu = json.toJSONString()
         println valu

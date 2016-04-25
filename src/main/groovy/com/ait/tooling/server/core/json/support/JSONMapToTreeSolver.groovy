@@ -20,17 +20,37 @@ import com.ait.tooling.server.core.json.JSONObject
 
 public class JSONMapToTreeSolver implements JSONTrait
 {
-    private Map             m_opts
 
     private List<String>    m_incl
 
     private List<String>    m_excl
-    
+
+    private List<String>    m_seen = []
+
     private List<Map>       m_rows = []
 
-    public JSONMapToTreeSolver(Map opts = [:])
+    private List<Map>       m_save = []
+
+    private Map             m_spec = [:]
+
+    public JSONMapToTreeSolver(Map spec)
     {
-        m_opts = Objects.requireNonNull(opts)
+        this([Objects.requireNonNull(spec)])
+    }
+
+    public JSONMapToTreeSolver(List<Map> spec)
+    {
+        spec = Objects.requireNonNull(spec)
+
+        spec.each { Map cols ->
+
+            def parent = cols['parent'] as String
+
+            if (null == m_spec[parent])
+            {
+                m_spec[parent] = [linked: cols['linked'] as String, column: cols['column'] as String, array: []]
+            }
+        }
     }
 
     public List<String> getIncluded()
@@ -61,9 +81,35 @@ public class JSONMapToTreeSolver implements JSONTrait
     {
         def list = []
 
+        def incl = getIncluded()
+
+        if ((incl) && (incl.size() < 1))
+        {
+            incl = null
+        }
+        def excl = getExcluded()
+
+        if ((excl) && (excl.size() < 1))
+        {
+            excl = null
+        }
         m_rows.each { Map jrow ->
 
-            list << json(jrow)
+            if (jrow)
+            {
+                if (incl)
+                {
+                    jrow = jrow.subMap(incl)
+                }
+                if (excl)
+                {
+                    jrow.keySet().removeAll(excl)
+                }
+                if (jrow.size() > 0)
+                {
+                    list << json(jrow)
+                }
+            }
         }
         m_rows.clear()
 
