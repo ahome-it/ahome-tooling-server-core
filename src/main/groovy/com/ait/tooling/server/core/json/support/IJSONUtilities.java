@@ -24,7 +24,8 @@ import java.util.Map;
 
 import com.ait.tooling.server.core.json.JSONArray;
 import com.ait.tooling.server.core.json.JSONObject;
-import com.ait.tooling.server.core.json.binder.JSONBinder;
+import com.ait.tooling.server.core.json.binder.BinderType;
+import com.ait.tooling.server.core.json.binder.IBinder;
 import com.ait.tooling.server.core.json.parser.JSONParserException;
 import com.ait.tooling.server.core.json.schema.JSONSchema;
 
@@ -60,5 +61,7 @@ public interface IJSONUtilities
 
     public JSONArray jarr(Collection<?> collection);
 
-    public JSONBinder binder();
+    public IBinder binder();
+    
+    public IBinder binder(BinderType type);
 }

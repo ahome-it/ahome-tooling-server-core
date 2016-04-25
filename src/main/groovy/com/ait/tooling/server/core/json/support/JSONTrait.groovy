@@ -20,10 +20,14 @@ import groovy.transform.CompileStatic
 
 import com.ait.tooling.server.core.json.JSONArray
 import com.ait.tooling.server.core.json.JSONObject
+import com.ait.tooling.server.core.json.binder.BinderType;
+import com.ait.tooling.server.core.json.binder.IBinder
 import com.ait.tooling.server.core.json.binder.JSONBinder
+import com.ait.tooling.server.core.json.binder.XMLBinder;
+import com.ait.tooling.server.core.json.binder.YAMLBinder;
 import com.ait.tooling.server.core.json.parser.JSONParser
 import com.ait.tooling.server.core.json.parser.JSONParserException
-import com.ait.tooling.server.core.json.schema.JSONSchema
+import com.ait.tooling.server.core.json.schema.JSONSchema;
 
 @CompileStatic
 public trait JSONTrait
@@ -135,8 +139,21 @@ public trait JSONTrait
         }
     }
 
-    public JSONBinder binder()
+    public IBinder binder()
     {
         new JSONBinder()
+    }
+    
+    public IBinder binder(BinderType type)
+    {
+        if (type == BinderType.XML)
+        {
+            return new XMLBinder()
+        }
+        if (type == BinderType.YAML)
+        {
+            return new YAMLBinder()
+        }
+        binder()
     }
 }

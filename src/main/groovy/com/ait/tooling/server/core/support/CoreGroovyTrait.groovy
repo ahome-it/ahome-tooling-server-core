@@ -279,6 +279,7 @@ public trait CoreGroovyTrait implements JSONTrait
         getServerContext().getScriptingLanguageTypes()
     }
 
+    @Memoized
     public List<ScriptType> getScriptingLanguageTypes(ClassLoader loader)
     {
         getScriptingProvider().getScriptingLanguageTypes(Objects.requireNonNull(loader))

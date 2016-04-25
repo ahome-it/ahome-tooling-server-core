@@ -25,10 +25,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import com.ait.tooling.common.server.io.NoSyncStringBuilderWriter;
+import com.ait.tooling.server.core.json.binder.JSONBinder;
 
 public final class JSONUtils
 {
+    private static final Logger     logger          = Logger.getLogger(JSONUtils.class);
+
     private static final String     NULL_FOR_OUTPUT = "null".intern();
 
     private final static BigDecimal BIG_DECIMAL_MAX = BigDecimal.valueOf(Double.MAX_VALUE);
@@ -216,6 +221,26 @@ public final class JSONUtils
             JSONArray.writeJSONString((Collection<?>) value, out, context, strict);
 
             return;
+        }
+        try
+        {
+            final JSONBinder binder = new JSONBinder();
+
+            if (binder.canSerializeType(value.getClass()))
+            {
+                binder.send(out, value);
+
+                return;
+            }
+            else
+            {
+                logger.warn("Can't serialize type " + value.getClass().getName() + ", trying toString()");
+            }
+        }
+        catch (Exception e)
+        {
+            logger.error("Can't serialize type " + value.getClass().getName() + ", trying toString()", e);
+
         }
         out.write('\"');
 

@@ -18,182 +18,36 @@ package com.ait.tooling.server.core.json.binder;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
 import java.io.Writer;
-import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 
 import com.ait.tooling.server.core.json.JSONObject;
-import com.ait.tooling.server.core.json.parser.JSONParser;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public final class JSONBinder
+public final class JSONBinder extends AbstractDataBinder
 {
-    private static final Logger logger   = Logger.getLogger(JSONBinder.class);
-
-    private ObjectMapper        m_mapper;
-
-    private boolean             m_strict = false;
-
     public JSONBinder()
     {
-        m_mapper = new ObjectMapper();
+        super(new ObjectMapper());
     }
 
     public JSONBinder(final MapperFeature... features)
     {
-        m_mapper = new ObjectMapper().enable(features);
+        super(new ObjectMapper(), features);
     }
 
     public JSONBinder(final List<MapperFeature> features)
     {
-        m_mapper = new ObjectMapper();
-
-        enable(features);
+        super(new ObjectMapper(), features);
     }
 
-    public JSONBinder setStrict(final boolean strict)
-    {
-        m_strict = strict;
-
-        return this;
-    }
-
-    public boolean isStrict()
-    {
-        return m_strict;
-    }
-
-    public JSONBinder configure(final MapperFeature feature, final boolean state)
-    {
-        m_mapper = m_mapper.configure(feature, state);
-
-        return this;
-    }
-
-    public JSONBinder enable(final MapperFeature... features)
-    {
-        m_mapper = m_mapper.enable(features);
-
-        return this;
-    }
-
-    public JSONBinder enable(final List<MapperFeature> features)
-    {
-        for (MapperFeature feature : features)
-        {
-            m_mapper = m_mapper.enable(feature);
-        }
-        return this;
-    }
-
-    public JSONBinder disable(final MapperFeature... features)
-    {
-        m_mapper = m_mapper.disable(features);
-
-        return this;
-    }
-
-    public JSONBinder disable(final List<MapperFeature> features)
-    {
-        for (MapperFeature feature : features)
-        {
-            m_mapper = m_mapper.disable(feature);
-        }
-        return this;
-    }
-
-    public boolean isEnabled(final MapperFeature feature)
-    {
-        return m_mapper.isEnabled(feature);
-    }
-
-    public <T> T bind(final File file, final Class<T> claz)
-    {
-        try
-        {
-            return m_mapper.readValue(file, claz);
-        }
-        catch (Exception e)
-        {
-            logger.error("bind(" + claz.getName() + ")", e);
-        }
-        return null;
-    }
-
-    public <T> T bind(final InputStream stream, final Class<T> claz)
-    {
-        try
-        {
-            return m_mapper.readValue(stream, claz);
-        }
-        catch (Exception e)
-        {
-            logger.error("bind(" + claz.getName() + ")", e);
-        }
-        return null;
-    }
-
-    public <T> T bind(final Reader reader, final Class<T> claz)
-    {
-        try
-        {
-            return m_mapper.readValue(reader, claz);
-        }
-        catch (Exception e)
-        {
-            logger.error("bind(" + claz.getName() + ")", e);
-        }
-        return null;
-    }
-
-    public <T> T bind(final URL url, final Class<T> claz)
-    {
-        try
-        {
-            return m_mapper.readValue(url, claz);
-        }
-        catch (Exception e)
-        {
-            logger.error("bind(" + claz.getName() + ")", e);
-        }
-        return null;
-    }
-
-    public <T> T bind(final String text, final Class<T> claz)
-    {
-        try
-        {
-            return m_mapper.readValue(text, claz);
-        }
-        catch (Exception e)
-        {
-            logger.error("bind(" + claz.getName() + ")", e);
-        }
-        return null;
-    }
-
-    public <T> T bind(final JSONObject json, final Class<T> claz)
-    {
-        try
-        {
-            return m_mapper.readValue(json.toJSONString(isStrict()), claz);
-        }
-        catch (Exception e)
-        {
-            logger.error("bind(" + claz.getName() + ")", e);
-        }
-        return null;
-    }
-
+    @Override
     public void send(final File file, final Object object)
     {
         Objects.requireNonNull(object);
@@ -210,15 +64,16 @@ public final class JSONBinder
             }
             else
             {
-                m_mapper.writeValue(file, object);
+                super.send(file, object);
             }
         }
         catch (Exception e)
         {
-            logger.error("send()", e);
+            logger().error("send()", e);
         }
     }
 
+    @Override
     public void send(final OutputStream stream, final Object object)
     {
         Objects.requireNonNull(object);
@@ -231,15 +86,16 @@ public final class JSONBinder
             }
             else
             {
-                m_mapper.writeValue(stream, object);
+                super.send(stream, object);
             }
         }
         catch (Exception e)
         {
-            logger.error("send()", e);
+            logger().error("send()", e);
         }
     }
 
+    @Override
     public void send(final Writer writer, final Object object)
     {
         Objects.requireNonNull(object);
@@ -252,63 +108,18 @@ public final class JSONBinder
             }
             else
             {
-                m_mapper.writeValue(writer, object);
+                super.send(writer, object);
             }
         }
         catch (Exception e)
         {
-            logger.error("send()", e);
+            logger().error("send()", e);
         }
     }
 
-    public String toJSONString(final Object object)
+    @Override
+    public BinderType getType()
     {
-        Objects.requireNonNull(object);
-
-        try
-        {
-            if (object instanceof JSONObject)
-            {
-                return ((JSONObject) object).toJSONString(isStrict());
-            }
-            else
-            {
-                return m_mapper.writeValueAsString(object);
-            }
-        }
-        catch (Exception e)
-        {
-            logger.error("toJSONString()", e);
-        }
-        return null;
-    }
-
-    public JSONObject toJSONObject(Object object)
-    {
-        Objects.requireNonNull(object);
-
-        try
-        {
-            if (object instanceof JSONObject)
-            {
-                return ((JSONObject) object);
-            }
-            else
-            {
-                final JSONParser parser = new JSONParser();
-
-                object = parser.parse(m_mapper.writeValueAsString(object));
-
-                if (object instanceof JSONObject)
-                {
-                    return ((JSONObject) object);
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            logger.error("toJSONObject()", e);
-        }
-        return null;
+        return BinderType.JSON;
     }
 }

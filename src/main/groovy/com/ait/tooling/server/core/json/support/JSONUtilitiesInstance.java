@@ -26,7 +26,11 @@ import java.util.Objects;
 
 import com.ait.tooling.server.core.json.JSONArray;
 import com.ait.tooling.server.core.json.JSONObject;
+import com.ait.tooling.server.core.json.binder.BinderType;
+import com.ait.tooling.server.core.json.binder.IBinder;
 import com.ait.tooling.server.core.json.binder.JSONBinder;
+import com.ait.tooling.server.core.json.binder.XMLBinder;
+import com.ait.tooling.server.core.json.binder.YAMLBinder;
 import com.ait.tooling.server.core.json.parser.JSONParser;
 import com.ait.tooling.server.core.json.parser.JSONParserException;
 import com.ait.tooling.server.core.json.schema.JSONSchema;
@@ -169,8 +173,24 @@ public class JSONUtilitiesInstance implements IJSONUtilities
     }
 
     @Override
-    public final JSONBinder binder()
+    public final IBinder binder()
     {
         return new JSONBinder();
+    }
+
+    @Override
+    public final IBinder binder(final BinderType type)
+    {
+        switch (type)
+        {
+            case XML:
+                return new XMLBinder();
+            case YAML:
+                return new YAMLBinder();
+            case JSON:
+                return new JSONBinder();
+            default:
+                return new JSONBinder();
+        }
     }
 }

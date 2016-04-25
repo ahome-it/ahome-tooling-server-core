@@ -35,7 +35,10 @@ import com.ait.tooling.common.api.java.util.StringOps
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager
 import com.ait.tooling.server.core.json.JSONArray
 import com.ait.tooling.server.core.json.JSONObject
+import com.ait.tooling.server.core.json.binder.BinderType;
+import com.ait.tooling.server.core.json.binder.IBinder
 import com.ait.tooling.server.core.json.binder.JSONBinder
+import com.ait.tooling.server.core.json.binder.YAMLBinder;
 import com.ait.tooling.server.core.json.parser.JSONParserException
 import com.ait.tooling.server.core.json.schema.JSONSchema
 import com.ait.tooling.server.core.pubsub.JSONMessageBuilder
@@ -370,11 +373,17 @@ public class CoreGroovySupport implements IServerContext, Closeable
     }
 
     @Override
-    public JSONBinder binder()
+    public IBinder binder()
     {
         getServerContext().binder()
     }
-
+    
+    @Override
+    public IBinder binder(final BinderType type)
+    {
+        getServerContext().binder(type)
+    }
+    
     @Override
     public String toTrimOrNull(String string)
     {
@@ -435,7 +444,7 @@ public class CoreGroovySupport implements IServerContext, Closeable
         getServerContext().getScriptingLanguageTypes()
     }
 
-    @Override
+    @Memoized
     public List<ScriptType> getScriptingLanguageTypes(ClassLoader loader)
     {
         getScriptingProvider().getScriptingLanguageTypes(Objects.requireNonNull(loader))

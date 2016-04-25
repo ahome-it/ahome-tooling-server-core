@@ -19,19 +19,21 @@ package com.ait.tooling.server.core.test
 import javax.script.ScriptEngine
 
 import com.ait.tooling.server.core.json.JSONObject
+import com.ait.tooling.server.core.json.support.JSONMapToTreeSolver
 import com.ait.tooling.server.core.logging.MDC
 import com.ait.tooling.server.core.scripting.ScriptType
 import com.ait.tooling.server.core.support.CoreGroovyTrait
 import com.ait.tooling.server.core.support.spring.network.PathParameters
 import com.ait.tooling.server.core.support.spring.testing.IServerCoreTesting.TestingOps
 import com.ait.tooling.server.core.support.spring.testing.spock.ServerCoreSpecification
+import com.ait.tooling.server.core.json.binder.BinderType
 
 class BasicTestsSpecification extends ServerCoreSpecification implements CoreGroovyTrait
 {
     def setupSpec()
     {
         MDC.put('session', uuid() + "-GLOBAL")
-        
+
         TestingOps.setupServerCoreDefault(["classpath:/com/ait/tooling/server/core/test/ApplicationContext.xml", "classpath:/com/ait/tooling/server/core/config/CoreApplicationContext.xml"])
     }
 
@@ -99,7 +101,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         expect:
         getCryptoProvider().isPassValid(pass) == true
     }
-    
+
     def "test script types"()
     {
         setup:
@@ -109,7 +111,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         expect:
         "dean" == "dean"
     }
-    
+
     def "test JS Script"()
     {
         setup:
@@ -120,11 +122,11 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         println "JavaScript " + engine.get('x')
         engine.eval('increment_x()')
         println "JavaScript " + engine.get('x')
-       
+
         expect:
         "dean" == "dean"
     }
-    
+
     def "test Python Script"()
     {
         setup:
@@ -135,11 +137,11 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         println "Python " + engine.get('x')
         engine.eval('increment_x()')
         println "Python " + engine.get('x')
-       
+
         expect:
         "dean" == "dean"
     }
-    
+
     def "test Groovy Script"()
     {
         setup:
@@ -150,11 +152,11 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         println "Groovy " + engine.get('x')
         engine.eval('increment_x()')
         println "Groovy " + engine.get('x')
-       
+
         expect:
         "dean" == "dean"
     }
-    
+
     def "test Ruby Script"()
     {
         setup:
@@ -165,15 +167,15 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         println "Ruby " + engine.get('x')
         engine.eval('increment_x()')
         println "Ruby " + engine.get('x')
-       
+
         expect:
         "dean" == "dean"
     }
-    
+
     def "test Groovy soap"()
     {
         setup:
-        def soap = network().soap('http://www.holidaywebservice.com/Holidays/US/Dates/USHolidayDates.asmx')       
+        def soap = network().soap('http://www.holidaywebservice.com/Holidays/US/Dates/USHolidayDates.asmx')
         def resp = soap.send(SOAPAction: 'http://www.27seconds.com/Holidays/US/Dates/GetMothersDay') {
             body {
                 GetMothersDay(xmlns: 'http://www.27seconds.com/Holidays/US/Dates/') {
@@ -185,12 +187,12 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         def answ = resp.body().GetMothersDayResponse.GetMothersDayResult.text()
         println answ
         println resp.headers().toString()
-        
+
         expect:
         code == 200
         answ == '2016-05-08T00:00:00'
     }
-    
+
     def "test Spring rest 1"()
     {
         setup:
@@ -198,12 +200,12 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         def code = resp.code()
         def answ = resp.json()['id']
         println resp.json().toJSONString()
-        
+
         expect:
         answ == 100
         code == 200
     }
-    
+
     def "test Spring rest 2"()
     {
         setup:
@@ -211,7 +213,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         def code = resp.code()
         def answ = resp.json()['id']
         println resp.json().toJSONString()
-        
+
         expect:
         answ == 100
         code == 200
@@ -231,11 +233,105 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         println binder().toJSONString(pojo)
         println text
         println valu
-        
+        binder().send(System.out, "Hi")
+        println ""
+
+        expect:
+        text == valu
+    }
+
+    def "test yaml pojo 1"()
+    {
+        setup:
+        BinderPOJO make = binder(BinderType.YAML).bind(resource('classpath:/com/ait/tooling/server/core/test/pojo.yml'), BinderPOJO)
+        String valu = binder(BinderType.YAML).toString(make)
+        println valu
+
+        expect:
+        valu == valu
+    }
+
+    def "test yaml pojo 2"()
+    {
+        setup:
+        JSONObject json = binder(BinderType.YAML).bindJSON(resource('classpath:/com/ait/tooling/server/core/test/pojo.yml'))
+        String valu = json.toJSONString()
+        println valu
+
+        expect:
+        valu == valu
+    }
+
+    def "test yaml json 1"()
+    {
+        setup:
+        JSONObject json = json(type: 'API', active: true, versions: [1, 2, 3, false], pojo: new BinderPOJO("Rosaria", 100), list:[])
+        String valu = binder(BinderType.YAML).toString(json)
+        println valu
+        println json.toJSONString()
+
+        expect:
+        valu == valu
+    }
+
+    def "test yaml json 3"()
+    {
+        setup:
+        JSONObject json = binder(BinderType.YAML).bindJSON(resource('classpath:/com/ait/tooling/server/core/test/test.yml'))
+        String valu = json.toJSONString()
+        println valu
+
+        expect:
+        valu == valu
+    }
+
+    def "test yaml pojo recycle"()
+    {
+        setup:
+        BinderPOJO pojo = new BinderPOJO()
+        pojo.setName('Dean S. Jones')
+        pojo.setCost(9.99)
+        String text = binder(BinderType.YAML).toString(pojo)
+        BinderPOJO make = binder(BinderType.YAML).bind(text, BinderPOJO)
+        String valu = binder(BinderType.YAML).toString(make)
+        println text
+        println valu
+
         expect:
         text == valu
     }
     
+    def "test xml pojo recycle"()
+    {
+        setup:
+        BinderPOJO pojo = new BinderPOJO()
+        pojo.setName('Dean S. Jones')
+        pojo.setCost(9.99)
+        String text = binder(BinderType.XML).toString(pojo)
+        BinderPOJO make = binder(BinderType.XML).bind(text, BinderPOJO)
+        String valu = binder(BinderType.XML).toString(make)
+        println text
+        println valu
+
+        expect:
+        text == valu
+    }
+
+    def "test tree"()
+    {
+        setup:
+        JSONMapToTreeSolver tree = new JSONMapToTreeSolver()
+        tree << [id: '1']
+        tree << [id: '2']
+        tree << [id: '3']
+        JSONObject json = tree.solve('tree')
+        String valu = json.toJSONString()
+        println valu
+
+        expect:
+        valu == valu
+    }
+
     def "test MDC"()
     {
         setup:
