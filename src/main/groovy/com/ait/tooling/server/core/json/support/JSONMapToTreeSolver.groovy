@@ -17,30 +17,29 @@
 package com.ait.tooling.server.core.json.support
 
 import com.ait.tooling.server.core.json.JSONObject
+import groovy.transform.CompileStatic
 
+@CompileStatic
 public class JSONMapToTreeSolver implements JSONTrait
 {
+    private Set<String>         m_keys
 
-    private List<String>    m_incl
+    private List<String>        m_incl
 
-    private List<String>    m_excl
+    private List<String>        m_excl
 
-    private List<String>    m_seen = []
+    private List<Map>           m_rows = []
 
-    private List<Map>       m_rows = []
+    private Map<String, Map>    m_spec = [:]
 
-    private List<Map>       m_save = []
-
-    private Map             m_spec = [:]
-
-    public JSONMapToTreeSolver(Map spec)
+    public JSONMapToTreeSolver(final Map spec)
     {
         this([Objects.requireNonNull(spec)])
     }
 
-    public JSONMapToTreeSolver(List<Map> spec)
+    public JSONMapToTreeSolver(final List<Map> spec)
     {
-        spec = Objects.requireNonNull(spec)
+        Objects.requireNonNull(spec)
 
         spec.each { Map cols ->
 
@@ -48,9 +47,10 @@ public class JSONMapToTreeSolver implements JSONTrait
 
             if (null == m_spec[parent])
             {
-                m_spec[parent] = [linked: cols['linked'] as String, column: cols['column'] as String, array: []]
+                m_spec[parent] = [linked: cols['linked'] as String, column: cols['column'] as String, values: []]
             }
         }
+        m_keys = m_spec.keySet()
     }
 
     public List<String> getIncluded()
@@ -58,7 +58,7 @@ public class JSONMapToTreeSolver implements JSONTrait
         m_incl
     }
 
-    public JSONMapToTreeSolver setIncluded(List<String> incl)
+    public JSONMapToTreeSolver setIncluded(final List<String> incl)
     {
         m_incl = incl
 
@@ -70,24 +70,24 @@ public class JSONMapToTreeSolver implements JSONTrait
         m_excl
     }
 
-    public JSONMapToTreeSolver setExcluded(List<String> excl)
+    public JSONMapToTreeSolver setExcluded(final List<String> excl)
     {
         m_excl = excl
 
         this
     }
 
-    public List<JSONObject> solve()
+    public List<JSONObject> solve(Closure c = null)
     {
-        def list = []
+        List list = []
 
-        def incl = getIncluded()
+        List incl = getIncluded()
 
         if ((incl) && (incl.size() < 1))
         {
             incl = null
         }
-        def excl = getExcluded()
+        List excl = getExcluded()
 
         if ((excl) && (excl.size() < 1))
         {
@@ -107,7 +107,21 @@ public class JSONMapToTreeSolver implements JSONTrait
                 }
                 if (jrow.size() > 0)
                 {
-                    list << json(jrow)
+                    def good = true
+
+                    if (c)
+                    {
+                        def resp = c.call(jrow)
+
+                        if (resp instanceof Boolean)
+                        {
+                            good = resp
+                        }
+                    }
+                    if ((good) && (jrow.size() > 0))
+                    {
+                        list << json(jrow)
+                    }
                 }
             }
         }
@@ -116,24 +130,49 @@ public class JSONMapToTreeSolver implements JSONTrait
         list
     }
 
-    public JSONObject solve(String name)
+    public JSONObject solve(final String name, Closure c = null)
     {
-        json(Objects.requireNonNull(name), solve())
+        json(Objects.requireNonNull(name), solve(c))
     }
 
-    public void add(Map jrow)
+    public void add(final Map jrow)
     {
-        if (jrow)
+        if ((jrow) && (jrow.size() > 0))
         {
             m_rows << jrow
+
+            m_keys.each { pkey ->
+
+                if (keys(pkey, jrow))
+                {
+                    return
+                }
+            }
         }
     }
 
-    public void leftShift(Map jrow)
+    private boolean keys(final String pkey, final Map jrow)
     {
-        if (jrow)
+        def look = m_spec[pkey]
+
+        if (look)
         {
-            m_rows << jrow
+            def valu = jrow[pkey]
+
+            def list = look['values'] as List
+
+            if (false == list.contains(valu))
+            {
+                list << valu
+
+                return true
+            }
         }
+        false
+    }
+
+    public void leftShift(final Map jrow)
+    {
+        add(jrow)
     }
 }

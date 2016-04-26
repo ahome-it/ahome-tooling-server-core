@@ -38,4 +38,6 @@ public interface IServerSession extends ExpiringSession, JSONStringify
     public IServerSession getProxyForSession();
     
     public JSONObject toJSONObject();
+    
+    public boolean isSaved();
 }
