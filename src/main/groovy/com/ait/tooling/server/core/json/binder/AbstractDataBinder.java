@@ -30,9 +30,9 @@ import java.util.Objects;
 import org.apache.log4j.Logger;
 import org.springframework.core.io.Resource;
 
+import com.ait.tooling.common.server.io.NoCloseProxyReader;
+import com.ait.tooling.common.server.io.NoSyncOrCloseBufferedWriter;
 import com.ait.tooling.common.server.io.NoSyncStringBuilderWriter;
-import com.ait.tooling.server.core.io.NoCloseProxyReader;
-import com.ait.tooling.server.core.io.NoSyncOrCloseBufferedWriter;
 import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.parser.JSONParser;
 import com.fasterxml.jackson.databind.MapperFeature;

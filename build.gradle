@@ -219,7 +219,7 @@ configurations {
 }
 
 dependencies {
-    compile(group: 'com.ahome-it', name: 'ahome-tooling-common', version: '1.0.140-RELEASE')
+    compile(group: 'com.ahome-it', name: 'ahome-tooling-common', version: '1.0.150-RELEASE')
     compile(group: 'org.ow2.asm', name: 'asm', version: '5.0.4')
     compile(group: 'log4j', name: 'log4j', version: '1.2.17')
     compile(group: 'log4j', name: 'apache-log4j-extras', version:'1.2.17')

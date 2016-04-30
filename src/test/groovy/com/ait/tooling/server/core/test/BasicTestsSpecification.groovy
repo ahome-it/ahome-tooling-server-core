@@ -22,6 +22,7 @@ import com.ait.tooling.server.core.json.JSONObject
 import com.ait.tooling.server.core.json.support.JSONMapToTreeSolver
 import com.ait.tooling.server.core.logging.MDC
 import com.ait.tooling.server.core.scripting.ScriptType
+import com.ait.tooling.server.core.scripting.ScriptingProxy
 import com.ait.tooling.server.core.support.CoreGroovyTrait
 import com.ait.tooling.server.core.support.spring.network.PathParameters
 import com.ait.tooling.server.core.support.spring.testing.IServerCoreTesting.TestingOps
@@ -342,6 +343,21 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
             MDC.put('session', keep)
         }
 
+        expect:
+        "dean" == "dean"
+    }
+    
+    def "text scripting Proxy"()
+    {
+        setup:
+        def p = new ScriptingProxy(ScriptType.JAVASCRIPT, reader('classpath:/com/ait/tooling/server/core/test/test.js'))
+        
+        p.increment_x()
+        p.testargs(5, 'dean')
+        p.x = 5
+        def z = p.x
+        println z
+        
         expect:
         "dean" == "dean"
     }
