@@ -26,6 +26,8 @@ class ScriptingProxy extends CoreGroovySupport
 {
     private final def m_getter = new Object()
 
+    private final ScriptType m_type
+
     private final ScriptEngine m_engine
 
     public ScriptingProxy(final ScriptType type, final Resource resource)
@@ -40,6 +42,8 @@ class ScriptingProxy extends CoreGroovySupport
 
     public ScriptingProxy(final ScriptType type, final Reader reader)
     {
+        m_type = type
+
         m_engine = scripting(type)
 
         m_engine.eval(reader)
@@ -54,23 +58,31 @@ class ScriptingProxy extends CoreGroovySupport
 
     def methodMissing(String name, args)
     {
+        def pref = ''
+
+        if (m_type == ScriptType.RUBY)
+        {
+            pref = '$'
+        }
         if ((null == args) || (args.size() == 0))
         {
             return m_engine.eval("${name}()")
         }
         else
         {
+            def i = 1
+
             def make = ""
 
-            def i = 1
+            def kill = []
 
             def bind = m_engine.getBindings(ScriptContext.ENGINE_SCOPE)
 
             args.each { arg ->
 
-                def vars = "a${i}"
+                def vars = "${pref}a__r__g${i++}"
 
-                i++
+                kill << vars
 
                 make = make + "${vars},"
 
@@ -78,7 +90,21 @@ class ScriptingProxy extends CoreGroovySupport
             }
             make = make.substring(0, make.length() - 1)
 
-            return m_engine.eval("${name}(${make})")
+            def rslt
+
+            try
+            {
+                return m_engine.eval("${name}(${make})")
+            }
+            finally
+            {
+                kill.each { String vars ->
+
+                    logger().info("remove ${vars}")
+
+                    bind.remove(vars)
+                }
+            }
         }
     }
 

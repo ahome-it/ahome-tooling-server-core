@@ -347,7 +347,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         "dean" == "dean"
     }
     
-    def "text scripting Proxy"()
+    def "test JavaScript scripting Proxy"()
     {
         setup:
         def p = new ScriptingProxy(ScriptType.JAVASCRIPT, reader('classpath:/com/ait/tooling/server/core/test/test.js'))
@@ -359,6 +359,51 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         println z
         
         expect:
-        "dean" == "dean"
+        z == 5
+    }
+    
+    def "test Groovy scripting Proxy"()
+    {
+        setup:
+        def p = new ScriptingProxy(ScriptType.GROOVY, reader('classpath:/com/ait/tooling/server/core/test/test.gy'))
+        
+        p.increment_x()
+        p.testargs(5, 'dean')
+        p.x = 5
+        def z = p.x
+        println z
+        
+        expect:
+        z == 5
+    }
+    
+    def "test Python scripting Proxy"()
+    {
+        setup:
+        def p = new ScriptingProxy(ScriptType.PYTHON, reader('classpath:/com/ait/tooling/server/core/test/test.py'))
+        
+        p.increment_x()
+        p.testargs(5, 'dean')
+        p.x = 5
+        def z = p.x
+        println z
+        
+        expect:
+        z == 5
+    }
+    
+    def "test Ruby scripting Proxy"()
+    {
+        setup:
+        def p = new ScriptingProxy(ScriptType.RUBY, reader('classpath:/com/ait/tooling/server/core/test/test.rb'))
+        
+        p.increment_x()
+        p.testargs(5, 'dean')
+        p.x = 5
+        def z = p.x
+        println z
+        
+        expect:
+        z == 5
     }
 }
