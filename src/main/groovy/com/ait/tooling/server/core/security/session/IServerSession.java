@@ -25,8 +25,6 @@ import com.ait.tooling.server.core.json.JSONObject;
 
 public interface IServerSession extends ExpiringSession, JSONStringify
 {
-    public static final String CORE_SERVER_SESSION_KEY = "com.ait.tooling.server.core.security.session.Session.KEY";
-
     public String getUserId();
 
     public String getStatus();
@@ -36,8 +34,10 @@ public interface IServerSession extends ExpiringSession, JSONStringify
     public List<String> getRoles();
 
     public IServerSession getProxyForSession();
-    
+
     public JSONObject toJSONObject();
-    
-    public boolean isSaved();
+
+    public boolean isPersisted();
+
+    public void setPersisted(boolean persisted);
 }

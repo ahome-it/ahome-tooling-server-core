@@ -50,7 +50,7 @@ sourceCompatibility = 1.8
 
 targetCompatibility = 1.8
 
-version = '1.0.156-SNAPSHOT'
+version = '1.0.157-SNAPSHOT'
 
 group = 'com.ahome-it'
 
@@ -228,7 +228,6 @@ dependencies {
     compile(group: 'org.slf4j', name: 'log4j-over-slf4j', version: '1.7.21')
     compile(group: 'cglib', name: 'cglib-nodep', version: '3.1')
     compile(group: 'org.fusesource.jansi', name: 'jansi', version: '1.11')
-    compile(group: 'org.ajoberstar', name: 'grgit', version: '1.7.0')
     compile(group: 'joda-time', name: 'joda-time', version: '2.9.3')
     compile(group: 'commons-io', name: 'commons-io', version: '2.4')
     compile(group: 'commons-net', name: 'commons-net', version: '3.3')
@@ -272,7 +271,7 @@ dependencies {
         exclude(group: 'org.codehaus.groovy', module: 'groovy-all')
     }
     compile(group: 'org.springframework.integration', name: 'spring-integration-java-dsl', version: '1.1.2.RELEASE')
-    compile(group: 'org.springframework.session', name: 'spring-session', version: '1.1.1.RELEASE')
+    compile(group: 'org.springframework.session', name: 'spring-session', version: '1.2.0.RELEASE')
     compile(group: 'org.springframework.statemachine', name: 'spring-statemachine-core', version: '1.0.1.RELEASE')
     compile(group: 'org.springframework.batch', name: 'spring-batch-core', version: '3.0.7.RELEASE')
     compile(group: 'org.springframework.amqp', name: 'spring-rabbit', version: '1.5.6.RELEASE')
