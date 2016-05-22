@@ -107,26 +107,26 @@ public interface IServerContext extends IJSONUtilities, IAuthorizer, IProperties
     public String toTrimOrNull(String string);
 
     public String toTrimOrElse(String string, String otherwise);
-    
+
     public <T> T requireNonNull(T object);
-    
+
     public <T> T requireNonNull(T object, String message);
-    
+
     public IScriptingProvider getScriptingProvider();
-    
+
     public ScriptEngine scripting(ScriptType type);
-    
+
     public ScriptEngine scripting(ScriptType type, ClassLoader loader);
-    
+
     public List<String> getScriptingLanguageNames();
-    
+
     public List<String> getScriptingLanguageNames(ClassLoader loader);
-    
+
     public List<ScriptType> getScriptingLanguageTypes();
-    
+
     public List<ScriptType> getScriptingLanguageTypes(ClassLoader loader);
-    
+
     public Resource resource(String location);
-    
+
     public Reader reader(String location) throws IOException;
 }

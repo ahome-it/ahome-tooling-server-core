@@ -37,7 +37,7 @@ class ScriptingProxy extends CoreGroovySupport
 
     public ScriptingProxy(final ScriptType type, final InputStream stream)
     {
-        this(type, InputStreamReader(stream))
+        this(type, new InputStreamReader(stream))
     }
 
     public ScriptingProxy(final ScriptType type, final Reader reader)
@@ -51,9 +51,38 @@ class ScriptingProxy extends CoreGroovySupport
         reader.close()
     }
 
-    public ScriptingProxy(final ScriptEngine engine)
+    public ScriptingProxy(final ScriptType type, final ScriptEngine engine)
     {
+        m_type = type
+
         m_engine = engine
+    }
+
+    public ScriptType getScriptType()
+    {
+        m_type
+    }
+
+    public ScriptEngine getScriptEngine()
+    {
+        m_engine
+    }
+
+    public ScriptingProxy setEngineBindings(Map vals)
+    {
+        def pref = ''
+
+        if (m_type == ScriptType.RUBY)
+        {
+            pref = '$'
+        }
+        def bind = m_engine.getBindings(ScriptContext.ENGINE_SCOPE)
+
+        vals.each { k, v ->
+
+            bind.put(pref + k, v)
+        }
+        this
     }
 
     def methodMissing(String name, args)
@@ -99,8 +128,6 @@ class ScriptingProxy extends CoreGroovySupport
             finally
             {
                 kill.each { String vars ->
-
-                    logger().info("remove ${vars}")
 
                     bind.remove(vars)
                 }
