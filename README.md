@@ -35,6 +35,10 @@ Latest code coverage results:
 
 https://lienzo-core.com/documents/reports/ahome-tooling-server-core/coverage/
 
+Latest CheckStyle results:
+
+https://lienzo-core.com/documents/reports/ahome-tooling-server-core/checkstyle/
+
 License:
 
 Copyright (c) 2014,2015,2016 Ahome Innovation Technologies. All rights reserved.
