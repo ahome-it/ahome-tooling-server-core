@@ -69,10 +69,6 @@ checkstyle {
 tasks.withType(Checkstyle) {
     source 'src/main'
     exclude "**/Yylex.java"
-    reports {
-        xml.enabled false
-        html.enabled true
-    }
 }
 
 task deleteConfigs(type: Delete) {
