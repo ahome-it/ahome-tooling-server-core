@@ -45,18 +45,33 @@ apply plugin: 'groovy'
 apply plugin: 'jacoco'
 apply plugin: 'signing'
 apply plugin: 'eclipse'
+apply plugin: 'checkstyle'
 
 sourceCompatibility = 1.8
 
 targetCompatibility = 1.8
 
-version = '1.1.0-RELEASE'
+version = '1.1.1-RELEASE'
 
 group = 'com.ahome-it'
 
 eclipse {
     classpath {
         downloadJavadoc = true
+    }
+}
+
+checkstyle {
+    toolVersion = "6.19"
+    ignoreFailures = true
+}
+
+tasks.withType(Checkstyle) {
+    source 'src/main'
+    exclude "**/Yylex.java"
+    reports {
+        xml.enabled false
+        html.enabled true
     }
 }
 
@@ -148,6 +163,12 @@ test {
         classDumpFile = file("${buildDir}/jacoco/classpathdumps")
     }
 }
+
+task checkCodeQuality << {
+    println ":checkCodeQuality-done"
+}
+
+checkCodeQuality.dependsOn codeCoverage,checkstyleMain
 
 tasks.withType(GroovyCompile) {
     groovyOptions.optimizationOptions.indy = true
@@ -254,7 +275,7 @@ dependencies {
     compile(group: 'org.seleniumhq.selenium', name: 'selenium-api', version: '2.53.0')
     compile(group: 'org.seleniumhq.selenium', name: 'selenium-support', version: '2.53.0')
     compile(group: 'org.python', name: 'jython', version: '2.7.0')
-    compile(group: 'org.jruby', name: 'jruby-complete', version: '9.1.2.0')
+    compile(group: 'org.jruby', name: 'jruby-complete', version: '9.0.5.0')
     springCorePackages().each { String name ->
         compile(group: 'org.springframework', name: name, version: '4.2.6.RELEASE')
     }
@@ -274,7 +295,7 @@ dependencies {
     compile(group: 'org.springframework.session', name: 'spring-session', version: '1.2.0.RELEASE')
     compile(group: 'org.springframework.statemachine', name: 'spring-statemachine-core', version: '1.1.0.RELEASE')
     compile(group: 'org.springframework.batch', name: 'spring-batch-core', version: '3.0.7.RELEASE')
-    compile(group: 'org.springframework.amqp', name: 'spring-rabbit', version: '1.5.6.RELEASE')
+    compile(group: 'org.springframework.amqp', name: 'spring-rabbit', version: '1.6.0.RELEASE')
     compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.6', classifier: 'indy')
     compile(group: 'org.codehaus.gpars', name: 'gpars', version: '1.2.1')
     compile(group: 'javax.persistence', name: 'persistence-api', version: '1.0.2')
@@ -287,6 +308,7 @@ dependencies {
     compile(group: 'info.cukes', name:'cucumber-groovy', version: '1.2.4') {
         exclude(group: 'org.codehaus.groovy', module: 'groovy-all')
     }
+    compile(group: 'org.ajoberstar', name: 'grgit', version: '1.7.0')
     testCompile(group: 'log4j', name: 'log4j', version: '1.2.17')
     testCompile(group: 'log4j', name: 'apache-log4j-extras', version:'1.2.17')
     testCompile(group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21')

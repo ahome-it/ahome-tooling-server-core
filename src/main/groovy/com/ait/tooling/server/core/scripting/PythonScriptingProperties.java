@@ -48,7 +48,7 @@ public class PythonScriptingProperties extends AbstractScriptingProperties
     @Override
     protected void start()
     {
-        getProperties().putIfAbsent("python.home", "/Development/jython2.7.0/Lib");
+        getProperties().putIfAbsent("python.home", StringOps.toTrimOrElse(System.getenv("JYTHON_HOME"), "/opt/development/jython/Lib"));
 
         getProperties().putIfAbsent("python.console.encoding", "UTF-8");
 

@@ -193,11 +193,11 @@ public class CacheControlHeaderInjector implements IHeaderInjector
             }
             else if (url.endsWith(".html"))
             {
-                // let it check every request
+                ; // let it check every request
             }
             else if (url.endsWith(".htm"))
             {
-                // let it check every request
+                ; // let it check every request
             }
             else
             {

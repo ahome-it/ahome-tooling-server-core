@@ -21,6 +21,8 @@ import java.util.Objects;
 
 import org.springframework.core.io.Resource;
 
+import com.ait.tooling.common.api.java.util.StringOps;
+
 public class RubyScriptingProperties extends AbstractScriptingProperties
 {
     public RubyScriptingProperties()
@@ -45,6 +47,8 @@ public class RubyScriptingProperties extends AbstractScriptingProperties
     @Override
     protected void start()
     {
+        getProperties().putIfAbsent("jruby.home", StringOps.toTrimOrElse(System.getenv("JRUBY_HOME"), "/opt/development/jruby"));
+
         getProperties().forEach((k, v) -> {
             properties(k, v);
         });
