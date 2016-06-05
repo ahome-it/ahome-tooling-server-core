@@ -42,4 +42,6 @@ public interface IServerSession extends ExpiringSession, JSONStringify
     public void setPersisted(boolean persisted);
 
     public void save();
+    
+    public IServerSessionHelper getHelper();
 }

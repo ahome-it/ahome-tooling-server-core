@@ -52,7 +52,7 @@ public class SimpleServerSession implements IServerSession
     {
         if (m_attr.isNumber(m_repo.getHelper().getCreationTimeKey()))
         {
-            final Long lval = JSONUtils.asLong(m_attr.get(m_repo.getHelper().getCreationTimeKey()));
+            final Long lval = JSONUtils.asLong(m_attr.get(getHelper().getCreationTimeKey()));
 
             if (null != lval)
             {
@@ -65,15 +65,15 @@ public class SimpleServerSession implements IServerSession
     @Override
     public void setLastAccessedTime(final long time)
     {
-        setAttribute(m_repo.getHelper().getLastAccessedTimeKey(), time);
+        setAttribute(getHelper().getLastAccessedTimeKey(), time);
     }
 
     @Override
     public long getLastAccessedTime()
     {
-        if (m_attr.isNumber(m_repo.getHelper().getLastAccessedTimeKey()))
+        if (m_attr.isNumber(getHelper().getLastAccessedTimeKey()))
         {
-            final Long lval = JSONUtils.asLong(m_attr.get(m_repo.getHelper().getLastAccessedTimeKey()));
+            final Long lval = JSONUtils.asLong(m_attr.get(getHelper().getLastAccessedTimeKey()));
 
             if (null != lval)
             {
@@ -86,15 +86,15 @@ public class SimpleServerSession implements IServerSession
     @Override
     public void setMaxInactiveIntervalInSeconds(final int interval)
     {
-        setAttribute(m_repo.getHelper().getMaxInactiveIntervalInSecondsKey(), interval);
+        setAttribute(getHelper().getMaxInactiveIntervalInSecondsKey(), interval);
     }
 
     @Override
     public int getMaxInactiveIntervalInSeconds()
     {
-        if (m_attr.isInteger(m_repo.getHelper().getMaxInactiveIntervalInSecondsKey()))
+        if (m_attr.isInteger(getHelper().getMaxInactiveIntervalInSecondsKey()))
         {
-            return m_attr.getAsInteger(m_repo.getHelper().getMaxInactiveIntervalInSecondsKey());
+            return m_attr.getAsInteger(getHelper().getMaxInactiveIntervalInSecondsKey());
         }
         return m_repo.getDefaultMaxInactiveIntervalInSeconds();
     }
@@ -102,9 +102,9 @@ public class SimpleServerSession implements IServerSession
     @Override
     public boolean isExpired()
     {
-        if (m_attr.isBoolean(m_repo.getHelper().getExpiredKey()))
+        if (m_attr.isBoolean(getHelper().getExpiredKey()))
         {
-            return m_attr.getAsBoolean(m_repo.getHelper().getExpiredKey());
+            return m_attr.getAsBoolean(getHelper().getExpiredKey());
         }
         return false;
     }
@@ -112,9 +112,9 @@ public class SimpleServerSession implements IServerSession
     @Override
     public String getId()
     {
-        if (m_attr.isString(m_repo.getHelper().getSessionIdKey()))
+        if (m_attr.isString(getHelper().getSessionIdKey()))
         {
-            return StringOps.toTrimOrNull(m_attr.getAsString(m_repo.getHelper().getSessionIdKey()));
+            return StringOps.toTrimOrNull(m_attr.getAsString(getHelper().getSessionIdKey()));
         }
         return null;
     }
@@ -175,9 +175,9 @@ public class SimpleServerSession implements IServerSession
     @Override
     public String getUserId()
     {
-        if (m_attr.isString(m_repo.getHelper().getUserIdKey()))
+        if (m_attr.isString(getHelper().getUserIdKey()))
         {
-            return StringOps.toTrimOrNull(m_attr.getAsString(m_repo.getHelper().getUserIdKey()));
+            return StringOps.toTrimOrNull(m_attr.getAsString(getHelper().getUserIdKey()));
         }
         return null;
     }
@@ -185,9 +185,9 @@ public class SimpleServerSession implements IServerSession
     @Override
     public String getStatus()
     {
-        if (m_attr.isString(m_repo.getHelper().getStatusKey()))
+        if (m_attr.isString(getHelper().getStatusKey()))
         {
-            return StringOps.toTrimOrNull(m_attr.getAsString(m_repo.getHelper().getStatusKey()));
+            return StringOps.toTrimOrNull(m_attr.getAsString(getHelper().getStatusKey()));
         }
         return null;
     }
@@ -195,9 +195,9 @@ public class SimpleServerSession implements IServerSession
     @Override
     public String getDomain()
     {
-        if (m_attr.isString(m_repo.getHelper().getDomainKey()))
+        if (m_attr.isString(getHelper().getDomainKey()))
         {
-            final String domain = StringOps.toTrimOrNull(m_attr.getAsString(m_repo.getHelper().getDomainKey()));
+            final String domain = StringOps.toTrimOrNull(m_attr.getAsString(getHelper().getDomainKey()));
 
             if (null != domain)
             {
@@ -210,9 +210,9 @@ public class SimpleServerSession implements IServerSession
     @Override
     public List<String> getRoles()
     {
-        if (m_attr.isArray(m_repo.getHelper().getDomainKey()))
+        if (m_attr.isArray(getHelper().getDomainKey()))
         {
-            final List<String> role = m_repo.getHelper().toRolesList(m_attr.getAsArray(m_repo.getHelper().getDomainKey()));
+            final List<String> role = getHelper().toRolesList(m_attr.getAsArray(getHelper().getDomainKey()));
 
             if ((null != role) && (false == role.isEmpty()))
             {
@@ -225,15 +225,15 @@ public class SimpleServerSession implements IServerSession
         {
             return role;
         }
-        return m_repo.getHelper().getDefaultRoles();
+        return getHelper().getDefaultRoles();
     }
 
     @Override
     public IServerSession getProxyForSession()
     {
-        if (m_attr.isString(m_repo.getHelper().getProxySessionIdKey()))
+        if (m_attr.isString(getHelper().getProxySessionIdKey()))
         {
-            final String proxy = StringOps.toTrimOrNull(m_attr.getAsString(m_repo.getHelper().getProxySessionIdKey()));
+            final String proxy = StringOps.toTrimOrNull(m_attr.getAsString(getHelper().getProxySessionIdKey()));
 
             if (null != proxy)
             {
@@ -268,5 +268,11 @@ public class SimpleServerSession implements IServerSession
         {
             m_repo.save(this);
         }
+    }
+
+    @Override
+    public IServerSessionHelper getHelper()
+    {
+        return m_repo.getHelper();
     }
 }
