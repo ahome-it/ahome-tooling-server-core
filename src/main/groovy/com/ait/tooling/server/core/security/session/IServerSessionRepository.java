@@ -17,6 +17,7 @@
 package com.ait.tooling.server.core.security.session;
 
 import java.io.Closeable;
+import java.util.List;
 
 import org.springframework.session.SessionRepository;
 
@@ -25,20 +26,26 @@ import com.ait.tooling.server.core.json.JSONObject;
 public interface IServerSessionRepository extends SessionRepository<IServerSession>, Closeable
 {
     public boolean isActive();
-    
+
     public String getDomain();
 
+    public void save(IServerSession session);
+
     public void touch(String id);
-    
+
     public void touch(IServerSession session);
-    
+
     public void delete(String id);
-    
+
     public void delete(IServerSession session);
-    
-    public JSONObject getAttributes();
-    
+
     public void cleanExpiredSessions();
-    
+
     public IServerSession createSession(JSONObject keys);
+
+    public int getDefaultMaxInactiveIntervalInSeconds();
+
+    public List<String> getDefaultRoles();
+    
+    public IServerSessionHelper getHelper();
 }
