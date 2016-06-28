@@ -50,6 +50,8 @@ import com.ait.tooling.server.core.security.ICryptoProvider;
 import com.ait.tooling.server.core.security.ISignatoryProvider;
 import com.ait.tooling.server.core.security.session.IServerSessionRepository;
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider;
+import com.ait.tooling.server.core.socket.IWebSocketService;
+import com.ait.tooling.server.core.socket.IWebSocketServiceProvider;
 import com.ait.tooling.server.core.support.spring.network.ICoreNetworkProvider;
 
 public class ServerContextInstance extends JSONUtilitiesInstance implements IServerContext
@@ -445,7 +447,7 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     }
 
     @Override
-    public Reader reader(final String location) throws IOException
+    public final Reader reader(final String location) throws IOException
     {
         final Resource resource = resource(Objects.requireNonNull(location));
 
@@ -454,5 +456,17 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
             return new InputStreamReader(resource.getInputStream());
         }
         return null;
+    }
+
+    @Override
+    public final IWebSocketServiceProvider getWebSocketServiceProvider()
+    {
+        return Objects.requireNonNull(getBeanSafely("WebSocketServiceProvider", IWebSocketServiceProvider.class), "WebSocketServiceProvider is null, initialization error.");
+    }
+
+    @Override
+    public final IWebSocketService getWebSocketService(final String name)
+    {
+        return getWebSocketServiceProvider().getWebSocketService(name);
     }
 }

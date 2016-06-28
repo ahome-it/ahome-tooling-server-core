@@ -35,10 +35,8 @@ import com.ait.tooling.common.api.java.util.StringOps
 import com.ait.tooling.server.core.jmx.management.ICoreServerManager
 import com.ait.tooling.server.core.json.JSONArray
 import com.ait.tooling.server.core.json.JSONObject
-import com.ait.tooling.server.core.json.binder.BinderType;
+import com.ait.tooling.server.core.json.binder.BinderType
 import com.ait.tooling.server.core.json.binder.IBinder
-import com.ait.tooling.server.core.json.binder.JSONBinder
-import com.ait.tooling.server.core.json.binder.YAMLBinder;
 import com.ait.tooling.server.core.json.parser.JSONParserException
 import com.ait.tooling.server.core.json.schema.JSONSchema
 import com.ait.tooling.server.core.pubsub.JSONMessageBuilder
@@ -50,6 +48,8 @@ import com.ait.tooling.server.core.security.ICryptoProvider
 import com.ait.tooling.server.core.security.ISignatoryProvider
 import com.ait.tooling.server.core.security.session.IServerSessionRepository
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider
+import com.ait.tooling.server.core.socket.IWebSocketService
+import com.ait.tooling.server.core.socket.IWebSocketServiceProvider
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IPropertiesResolver
 import com.ait.tooling.server.core.support.spring.IServerContext
@@ -377,13 +377,13 @@ public class CoreGroovySupport implements IServerContext, Closeable
     {
         getServerContext().binder()
     }
-    
+
     @Override
     public IBinder binder(final BinderType type)
     {
         getServerContext().binder(type)
     }
-    
+
     @Override
     public String toTrimOrNull(String string)
     {
@@ -460,5 +460,17 @@ public class CoreGroovySupport implements IServerContext, Closeable
     public Reader reader(String location) throws IOException
     {
         getServerContext().reader(Objects.requireNonNull(location))
+    }
+
+    @Memoized
+    public IWebSocketServiceProvider getWebSocketServiceProvider()
+    {
+        getServerContext().getWebSocketServiceProvider()
+    }
+
+    @Memoized
+    public IWebSocketService getWebSocketService(String name)
+    {
+        getWebSocketServiceProvider().getWebSocketService(name)
     }
 }

@@ -43,6 +43,8 @@ import com.ait.tooling.server.core.security.ICryptoProvider
 import com.ait.tooling.server.core.security.ISignatoryProvider
 import com.ait.tooling.server.core.security.session.IServerSessionRepository
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider
+import com.ait.tooling.server.core.socket.IWebSocketService
+import com.ait.tooling.server.core.socket.IWebSocketServiceProvider
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IPropertiesResolver
 import com.ait.tooling.server.core.support.spring.IServerContext
@@ -293,5 +295,17 @@ public trait CoreGroovyTrait implements JSONTrait
     public Reader reader(String location) throws IOException
     {
         getServerContext().reader(Objects.requireNonNull(location))
+    }
+
+    @Memoized
+    public IWebSocketServiceProvider getWebSocketServiceProvider()
+    {
+        getServerContext().getWebSocketServiceProvider()
+    }
+
+    @Memoized
+    public IWebSocketService getWebSocketService(String name)
+    {
+        getWebSocketServiceProvider().getWebSocketService(name)
     }
 }
