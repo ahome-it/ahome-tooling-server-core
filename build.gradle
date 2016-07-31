@@ -279,9 +279,9 @@ dependencies {
         compile(group: 'org.springframework.security', name: name, version: '4.1.1.RELEASE')
     }
     springIntegrationPackages().each { String name ->
-        compile(group: 'org.springframework.integration', name: name, version: '4.3.0.RELEASE')
+        compile(group: 'org.springframework.integration', name: name, version: '4.3.1.RELEASE')
     }
-    compile(group: 'org.springframework.integration', name: 'spring-integration-groovy', version: '4.3.0.RELEASE') {
+    compile(group: 'org.springframework.integration', name: 'spring-integration-groovy', version: '4.3.1.RELEASE') {
         exclude(group: 'org.codehaus.groovy', module: 'groovy-all')
     }
     compile(group: 'com.github.groovy-wslite', name: 'groovy-wslite', version: '2.0.0-SNAPSHOT') {
