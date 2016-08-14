@@ -22,6 +22,10 @@ import com.ait.tooling.server.core.json.JSONObject;
 
 public interface ICoreNetworkProvider extends Closeable
 {
+    public String getDefaultUserAgent();
+    
+    public void setDefaultUserAgent(String agent);
+    
     public IRESTResponse get(String path);
 
     public IRESTResponse get(String path, HTTPHeaders headers);

@@ -32,11 +32,14 @@ public class WebSocketEndPointByName extends ServerContextInstance
 
     public WebSocketEndPointByName()
     {
+        System.err.println("CTOR");
     }
 
     @OnOpen
     public void onOpen(final Session session, @PathParam("name") final String name)
     {
+        logger().info("onOpen");
+
         if (null == m_provider)
         {
             m_provider = getWebSocketServiceProvider();
@@ -56,12 +59,16 @@ public class WebSocketEndPointByName extends ServerContextInstance
     @OnClose
     public void onClose(final Session session, @PathParam("name") final String name)
     {
+        logger().info("onClose");
+
         m_provider.removeEndPoint(session, name);
     }
 
     @OnMessage
     public void onText(final Session session, final String text, final boolean last)
     {
+        logger().info("onText");
+
         try
         {
             if (session.isOpen())

@@ -19,6 +19,7 @@ package com.ait.tooling.server.core.support.spring.network;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -32,14 +33,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
+import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.common.api.java.util.function.Predicate;
 import com.ait.tooling.server.core.json.JSONObject;
 
 public class HTTPHeaders extends HttpHeaders
 {
-    private static final long     serialVersionUID = -7217466640722875327L;
+    private static final long           serialVersionUID   = -7217466640722875327L;
 
-    public static List<MediaType> JSON_MEDIA_TYPE  = Arrays.asList(MediaType.APPLICATION_JSON);
+    public static final String          DEFAULT_USER_AGENT = "Ahome-Tooling-Server-Core/1.1.X";
+
+    public static final List<MediaType> JSON_MEDIA_TYPE    = Collections.unmodifiableList(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
 
     HTTPHeaders(final HttpHeaders head)
     {
@@ -151,11 +155,62 @@ public class HTTPHeaders extends HttpHeaders
 
     public HTTPHeaders doRESTHeaders()
     {
+        return doRESTHeaders(DEFAULT_USER_AGENT);
+    }
+
+    public HTTPHeaders doRESTHeaders(final String ua)
+    {
         final List<MediaType> list = getAccept();
 
         if ((null == list) || (list.isEmpty()))
         {
             setAccept(JSON_MEDIA_TYPE);
+        }
+        return doUserAgent(ua);
+    }
+
+    public HTTPHeaders doUserAgent()
+    {
+        return doUserAgent(DEFAULT_USER_AGENT);
+    }
+
+    public HTTPHeaders doUserAgent(final String ua)
+    {
+        return addUserAgent(StringOps.toTrimOrElse(ua, DEFAULT_USER_AGENT));
+    }
+
+    public HTTPHeaders addUserAgent(String ua)
+    {
+        ua = StringOps.toTrimOrNull(ua);
+
+        if (null != ua)
+        {
+            final List<String> list = get(USER_AGENT);
+
+            if (null == list)
+            {
+                add(USER_AGENT, ua);
+            }
+            else if (list.isEmpty())
+            {
+                add(USER_AGENT, ua);
+            }
+            else
+            {
+                for (String item : list)
+                {
+                    item = StringOps.toTrimOrNull(item);
+
+                    if (null != item)
+                    {
+                        if (ua.equalsIgnoreCase(item))
+                        {
+                            return this;
+                        }
+                    }
+                }
+                add(USER_AGENT, ua);
+            }
         }
         return this;
     }

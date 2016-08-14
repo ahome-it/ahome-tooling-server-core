@@ -23,6 +23,11 @@ public class PathParameters extends LinkedHashMap<String, Object>
 {
     private static final long serialVersionUID = -1215997968274953434L;
 
+    public PathParameters()
+    {
+        super();
+    }
+
     public PathParameters(final Map<String, ?> vars)
     {
         super(vars);
