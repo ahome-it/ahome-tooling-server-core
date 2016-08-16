@@ -19,15 +19,13 @@ package com.ait.tooling.server.core.socket
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 
-import org.springframework.stereotype.Service
-
 import com.ait.tooling.common.api.java.util.StringOps
 import com.ait.tooling.server.core.support.CoreGroovySupport
 
 @CompileStatic
 public abstract class WebSocketServiceSupport extends CoreGroovySupport implements IWebSocketService
 {
-    public WebSocketServiceSupport()
+    protected WebSocketServiceSupport()
     {
     }
 
@@ -36,9 +34,9 @@ public abstract class WebSocketServiceSupport extends CoreGroovySupport implemen
     {
         final Class<?> claz = getClass()
 
-        if (claz.isAnnotationPresent(Service))
+        if (claz.isAnnotationPresent(WSService))
         {
-            final String name = StringOps.toTrimOrNull(claz.getAnnotation(Service).value())
+            final String name = StringOps.toTrimOrNull(claz.getAnnotation(WSService).name())
 
             if (name)
             {
@@ -46,5 +44,22 @@ public abstract class WebSocketServiceSupport extends CoreGroovySupport implemen
             }
         }
         claz.getSimpleName()
+    }
+    
+    @Memoized
+    public List<String> getScopes()
+    {
+        final Class<?> claz = getClass()
+
+        if (claz.isAnnotationPresent(WSService))
+        {
+            final String[] list = claz.getAnnotation(WSService).scopes();
+
+            if (list)
+            {
+                return Collections.unmodifiableList(Arrays.asList(list))
+            }
+        }
+        return []
     }
 }

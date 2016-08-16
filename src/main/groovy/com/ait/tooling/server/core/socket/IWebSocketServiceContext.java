@@ -19,21 +19,34 @@ package com.ait.tooling.server.core.socket;
 import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
 
+import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.support.spring.IServerContext;
 
 public interface IWebSocketServiceContext
 {
     public boolean isOpen();
-    
+
     public Session getSession();
-    
+
     public RemoteEndpoint.Async getRemoteAsync();
 
     public RemoteEndpoint.Basic getRemoteBasic();
-    
+
     public boolean broadcast(String name, String text);
+
+    public boolean broadcast(String name, String text, boolean last);
     
+    public boolean broadcast(String name, JSONObject json);
+
+    public boolean broadcast(String name, JSONObject json, boolean last);
+
     public boolean reply(String text);
+
+    public boolean reply(String text, boolean last);
     
+    public boolean reply(JSONObject json);
+
+    public boolean reply(JSONObject json, boolean last);
+
     public IServerContext getServerContext();
 }

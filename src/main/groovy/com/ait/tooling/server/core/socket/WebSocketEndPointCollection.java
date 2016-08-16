@@ -34,7 +34,7 @@ public class WebSocketEndPointCollection
 
         if (null != endp)
         {
-            return endp.onMessage(session, name, last);
+            return endp.onMessage(session, text, last);
         }
         return false;
     }
@@ -75,6 +75,17 @@ public class WebSocketEndPointCollection
         if (null != endp)
         {
             return endp.broadcast(text);
+        }
+        return false;
+    }
+
+    public boolean broadcast(final String name, final String text, final boolean last)
+    {
+        final WebSocketServiceCollection endp = m_collection.get(name);
+
+        if (null != endp)
+        {
+            return endp.broadcast(text, last);
         }
         return false;
     }

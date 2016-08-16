@@ -74,11 +74,16 @@ public class WebSocketServiceCollection
 
     public boolean broadcast(final String text)
     {
+        return broadcast(text, true);
+    }
+    
+    public boolean broadcast(final String text, final boolean last)
+    {
         for (WebSocketServiceContextEntry entry : m_collection.values())
         {
             try
             {
-                entry.getRemoteBasic().sendText(text, true);
+                entry.getRemoteBasic().sendText(text, last);
             }
             catch (IOException e)
             {

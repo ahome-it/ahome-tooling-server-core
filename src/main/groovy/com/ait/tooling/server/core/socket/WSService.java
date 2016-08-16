@@ -16,24 +16,16 @@
 
 package com.ait.tooling.server.core.socket;
 
-import java.io.Closeable;
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import com.ait.tooling.common.api.types.INamed;
-
-public interface IWebSocketService extends INamed, Closeable
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface WSService
 {
-    public boolean onMessage(IWebSocketServiceContext context, String text, boolean last) throws Exception;
+    String name();
 
-    default public boolean isJSON()
-    {
-        return false;
-    }
-
-    default public boolean isText()
-    {
-        return true;
-    }
-    
-    public List<String> getScopes();
+    String[] scopes() default "*";
 }

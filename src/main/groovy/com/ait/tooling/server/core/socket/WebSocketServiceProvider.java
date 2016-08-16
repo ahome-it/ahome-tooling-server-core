@@ -120,13 +120,19 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
     {
         return m_endpoint.broadcast(name, text);
     }
-    
+
+    @Override
+    public boolean broadcast(final String name, final String text, final boolean last)
+    {
+        return m_endpoint.broadcast(name, text, last);
+    }
+
     @Override
     public boolean addEndPoint(final Session session, final String name, final IWebSocketService service)
     {
         return m_endpoint.addEndPoint(session, name, service);
     }
-    
+
     @Override
     public boolean removeEndPoint(final Session session, final String name)
     {

@@ -22,6 +22,7 @@ import java.util.Objects;
 import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
 
+import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.support.spring.IServerContext;
 
 public class WebSocketServiceContextEntry implements IWebSocketServiceContextEntry
@@ -45,7 +46,7 @@ public class WebSocketServiceContextEntry implements IWebSocketServiceContextEnt
         m_session = Objects.requireNonNull(session);
 
         m_context = Objects.requireNonNull(context);
-        
+
         m_providr = m_context.getWebSocketServiceProvider();
 
         m_reasync = m_session.getAsyncRemote();
@@ -107,6 +108,12 @@ public class WebSocketServiceContextEntry implements IWebSocketServiceContextEnt
     }
 
     @Override
+    public boolean broadcast(final String name, final String text, final boolean last)
+    {
+        return m_providr.broadcast(name, text, last);
+    }
+
+    @Override
     public IServerContext getServerContext()
     {
         return m_context;
@@ -115,15 +122,45 @@ public class WebSocketServiceContextEntry implements IWebSocketServiceContextEnt
     @Override
     public boolean reply(final String text)
     {
+        return reply(text, true);
+    }
+
+    @Override
+    public boolean reply(final String text, final boolean last)
+    {
         try
         {
-            getRemoteBasic().sendText(text, true);
-            
+            getRemoteBasic().sendText(text, last);
+
             return true;
         }
         catch (IOException e)
         {
             return false;
         }
+    }
+
+    @Override
+    public boolean broadcast(final String name, final JSONObject json)
+    {
+        return broadcast(name, json.toJSONString());
+    }
+
+    @Override
+    public boolean broadcast(final String name, final JSONObject json, final boolean last)
+    {
+        return broadcast(name, json.toJSONString(), last);
+    }
+
+    @Override
+    public boolean reply(final JSONObject json)
+    {
+        return reply(json.toJSONString());
+    }
+
+    @Override
+    public boolean reply(final JSONObject json, final boolean last)
+    {
+        return reply(json.toJSONString(), last);
     }
 }

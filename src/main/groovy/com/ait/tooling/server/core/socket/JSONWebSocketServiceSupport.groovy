@@ -14,26 +14,14 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.socket;
+package com.ait.tooling.server.core.socket
 
-import java.io.Closeable;
-import java.util.List;
+import groovy.transform.CompileStatic
 
-import com.ait.tooling.common.api.types.INamed;
-
-public interface IWebSocketService extends INamed, Closeable
+@CompileStatic
+public abstract class JSONWebSocketServiceSupport extends WebSocketServiceSupport implements IJSONWebSocketService
 {
-    public boolean onMessage(IWebSocketServiceContext context, String text, boolean last) throws Exception;
-
-    default public boolean isJSON()
+    protected JSONWebSocketServiceSupport()
     {
-        return false;
     }
-
-    default public boolean isText()
-    {
-        return true;
-    }
-    
-    public List<String> getScopes();
 }

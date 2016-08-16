@@ -16,26 +16,35 @@
 
 package com.ait.tooling.server.core.socket;
 
-import java.io.Closeable;
-import java.util.List;
-
+import javax.websocket.OnClose;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
 import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
 
-public interface IWebSocketServiceProvider extends Closeable
+@ServerEndpoint("/websockets/core/endpoints/{name}")
+public class CoreWebSocketEndPointByName extends AbstractWebSocketEndPointByPathPart
 {
-    public List<String> getWebSocketServiceNames();
+    public CoreWebSocketEndPointByName()
+    {
+        super("name");
+    }
 
-    public List<IWebSocketService> getWebSocketServices();
+    @OnOpen
+    public void onOpen(final Session session)
+    {
+        super.onOpen(session);
+    }
 
-    public IWebSocketService getWebSocketService(String name);
+    @OnClose
+    public void onClose(final Session session)
+    {
+        super.onClose(session);
+    }
 
-    public boolean broadcast(String name, String text);
-
-    public boolean broadcast(String name, String text, boolean last);
-
-    public boolean addEndPoint(Session session, String name, IWebSocketService service);
-
-    public boolean removeEndPoint(Session session, String name);
-
-    public boolean onMessage(final Session session, final String name, final String text, final boolean last) throws Exception;
+    @OnMessage
+    public void onText(final Session session, final String text, final boolean last)
+    {
+        super.onText(session, text, last);
+    }
 }
