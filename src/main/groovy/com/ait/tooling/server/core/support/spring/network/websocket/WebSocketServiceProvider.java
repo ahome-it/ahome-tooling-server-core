@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.socket;
+package com.ait.tooling.server.core.support.spring.network.websocket;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,6 +31,7 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import com.ait.tooling.common.api.java.util.StringOps;
+import com.ait.tooling.server.core.json.JSONObject;
 
 public class WebSocketServiceProvider implements IWebSocketServiceProvider, BeanFactoryAware
 {
@@ -65,11 +66,42 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
             }
         }
     }
-
+    
     @Override
     public IWebSocketService getWebSocketService(final String name)
     {
         return m_services.get(StringOps.requireTrimOrNull(name));
+    }
+
+    @Override
+    public IWebSocketService getWebSocketService(final String name, final List<String> scopes)
+    {
+        final IWebSocketService sock = m_services.get(StringOps.requireTrimOrNull(name));
+
+        if (null != sock)
+        {
+            if ((null == scopes) || (scopes.isEmpty()))
+            {
+                return sock;
+            }
+            final List<String> list = sock.getScopes();
+
+            if ((null != list) && (false == list.isEmpty()))
+            {
+                if (list.contains("*"))
+                {
+                    return sock;
+                }
+                for (String scope : scopes)
+                {
+                    if (list.contains(scope))
+                    {
+                        return sock;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -125,6 +157,18 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
     public boolean broadcast(final String name, final String text, final boolean last)
     {
         return m_endpoint.broadcast(name, text, last);
+    }
+
+    @Override
+    public boolean broadcast(final String name, final JSONObject json)
+    {
+        return m_endpoint.broadcast(name, json);
+    }
+
+    @Override
+    public boolean broadcast(final String name, final JSONObject json, final boolean last)
+    {
+        return m_endpoint.broadcast(name, json, last);
     }
 
     @Override

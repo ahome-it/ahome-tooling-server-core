@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.socket;
+package com.ait.tooling.server.core.support.spring.network.websocket;
 
 import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
@@ -41,12 +41,20 @@ public interface IWebSocketServiceContext
     public boolean broadcast(String name, JSONObject json, boolean last);
 
     public boolean reply(String text);
+    
+    public boolean reply(String text, IWebSocketAsyncCallback<String> callback);
 
     public boolean reply(String text, boolean last);
     
     public boolean reply(JSONObject json);
+    
+    public boolean reply(JSONObject json, IWebSocketAsyncCallback<JSONObject> callback);
 
     public boolean reply(JSONObject json, boolean last);
 
     public IServerContext getServerContext();
+    
+    public String getPathParameter(String name);
+    
+    public boolean isStrict();
 }

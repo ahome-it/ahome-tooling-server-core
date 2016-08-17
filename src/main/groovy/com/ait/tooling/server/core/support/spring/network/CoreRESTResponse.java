@@ -27,28 +27,32 @@ import com.ait.tooling.server.core.json.parser.JSONParserException;
 
 public class CoreRESTResponse implements IRESTResponse
 {
-    private static final Logger logger = Logger.getLogger(CoreRESTResponse.class);
+    private static final Logger        logger = Logger.getLogger(CoreRESTResponse.class);
 
-    private final int           m_code;
+    private final int                  m_code;
 
-    private final String        m_body;
+    private final String               m_body;
 
-    private final HTTPHeaders   m_head;
+    private final HTTPHeaders          m_head;
 
-    private JSONObject          m_json;
+    private final ICoreNetworkProvider m_prov;
 
-    public CoreRESTResponse(final ResponseEntity<String> resp)
+    private JSONObject                 m_json;
+
+    public CoreRESTResponse(ICoreNetworkProvider prov, final ResponseEntity<String> resp)
     {
-        this(resp.getStatusCode().value(), (resp.hasBody() ? resp.getBody() : null), new HTTPHeaders(Collections.unmodifiableMap(resp.getHeaders())));
+        this(prov, resp.getStatusCode().value(), (resp.hasBody() ? resp.getBody() : null), new HTTPHeaders(Collections.unmodifiableMap(resp.getHeaders())));
     }
 
-    public CoreRESTResponse(final int code, final String body, final HTTPHeaders head)
+    public CoreRESTResponse(ICoreNetworkProvider prov, final int code, final String body, final HTTPHeaders head)
     {
         m_code = code;
 
         m_body = body;
 
         m_head = head;
+
+        m_prov = prov;
     }
 
     @Override
@@ -91,5 +95,17 @@ public class CoreRESTResponse implements IRESTResponse
     public HTTPHeaders headers()
     {
         return m_head;
+    }
+
+    @Override
+    public boolean good()
+    {
+        return network().isGoodCode(code());
+    }
+
+    @Override
+    public ICoreNetworkProvider network()
+    {
+        return m_prov;
     }
 }

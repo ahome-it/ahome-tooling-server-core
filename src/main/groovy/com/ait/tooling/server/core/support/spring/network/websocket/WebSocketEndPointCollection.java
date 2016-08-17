@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.socket;
+package com.ait.tooling.server.core.support.spring.network.websocket;
 
 import java.util.LinkedHashMap;
 
 import javax.websocket.Session;
+
+import com.ait.tooling.server.core.json.JSONObject;
 
 public class WebSocketEndPointCollection
 {
@@ -78,6 +80,17 @@ public class WebSocketEndPointCollection
         }
         return false;
     }
+    
+    public boolean broadcast(final String name, final JSONObject json)
+    {
+        final WebSocketServiceCollection endp = m_collection.get(name);
+
+        if (null != endp)
+        {
+            return endp.broadcast(json);
+        }
+        return false;
+    }
 
     public boolean broadcast(final String name, final String text, final boolean last)
     {
@@ -86,6 +99,17 @@ public class WebSocketEndPointCollection
         if (null != endp)
         {
             return endp.broadcast(text, last);
+        }
+        return false;
+    }
+    
+    public boolean broadcast(final String name, final JSONObject json, final boolean last)
+    {
+        final WebSocketServiceCollection endp = m_collection.get(name);
+
+        if (null != endp)
+        {
+            return endp.broadcast(json, last);
         }
         return false;
     }

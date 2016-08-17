@@ -50,9 +50,9 @@ import com.ait.tooling.server.core.security.ICryptoProvider;
 import com.ait.tooling.server.core.security.ISignatoryProvider;
 import com.ait.tooling.server.core.security.session.IServerSessionRepository;
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider;
-import com.ait.tooling.server.core.socket.IWebSocketService;
-import com.ait.tooling.server.core.socket.IWebSocketServiceProvider;
 import com.ait.tooling.server.core.support.spring.network.ICoreNetworkProvider;
+import com.ait.tooling.server.core.support.spring.network.websocket.IWebSocketService;
+import com.ait.tooling.server.core.support.spring.network.websocket.IWebSocketServiceProvider;
 
 public class ServerContextInstance extends JSONUtilitiesInstance implements IServerContext
 {
@@ -468,5 +468,11 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     public final IWebSocketService getWebSocketService(final String name)
     {
         return getWebSocketServiceProvider().getWebSocketService(name);
+    }
+
+    @Override
+    public final IWebSocketService getWebSocketService(final String name, final List<String> scopes)
+    {
+        return getWebSocketServiceProvider().getWebSocketService(name, scopes);
     }
 }

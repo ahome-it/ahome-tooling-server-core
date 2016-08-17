@@ -61,7 +61,7 @@
 	
 	<bean id="NetworkProvider" class="com.ait.tooling.server.core.support.spring.network.CoreNetworkProvider" destroy-method="close"/>
 	
-	<bean id="WebSocketServiceProvider" class="com.ait.tooling.server.core.socket.WebSocketServiceProvider" destroy-method="close"/>
+	<bean id="WebSocketServiceProvider" class="com.ait.tooling.server.core.support.spring.network.websocket.WebSocketServiceProvider" destroy-method="close"/>
 
 	<bean id="SignatoryProvider" class="com.ait.tooling.server.core.security.SignatoryProvider" destroy-method="close"/>
 

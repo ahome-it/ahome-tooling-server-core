@@ -52,6 +52,8 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     {
         setup:
         def text = getCryptoProvider().encrypt("ok")
+        def list = 1..100
+        println list instanceof List
 
         expect:
         getCryptoProvider().decrypt(text) != null
@@ -199,25 +201,43 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         setup:
         def resp = network().get('http://jsonplaceholder.typicode.com/posts/100')
         def code = resp.code()
-        def answ = resp.json()['id']
-        println resp.json().toJSONString()
+        def answ = resp.json()
 
         expect:
-        answ == 100
-        code == 200
+        true == resp.good()
+        answ != null
+        answ['id'] == 100
     }
 
+    /*
     def "test Spring rest 2"()
     {
         setup:
         def resp = network().get('http://jsonplaceholder.typicode.com/posts/{id}', new PathParameters(id: 100))
         def code = resp.code()
-        def answ = resp.json()['id']
-        println resp.json().toJSONString()
+        def answ = resp.json()
 
         expect:
-        answ == 100
         code == 200
+        answ != null
+        answ['id'] == 100
+    }
+*/
+    
+    def "test Spring rest 3"()
+    {
+        setup:
+        def resp = network().post('http://jsonplaceholder.typicode.com/posts', json(data: [body: 'hi', value: 888]))
+        def code = resp.code()
+        def answ = resp.json()
+        if (answ)
+        {
+            println "POST(" + answ.toString() + ")"
+        }
+        expect:
+        true == resp.good()
+        answ != null
+        answ['id'] > 100
     }
 
     def "test binder"()

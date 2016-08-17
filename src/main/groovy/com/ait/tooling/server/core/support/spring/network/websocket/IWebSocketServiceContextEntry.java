@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.socket;
+package com.ait.tooling.server.core.support.spring.network.websocket;
 
 import java.io.Closeable;
 

@@ -44,9 +44,9 @@ import com.ait.tooling.server.core.security.ICryptoProvider;
 import com.ait.tooling.server.core.security.ISignatoryProvider;
 import com.ait.tooling.server.core.security.session.IServerSessionRepository;
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider;
-import com.ait.tooling.server.core.socket.IWebSocketService;
-import com.ait.tooling.server.core.socket.IWebSocketServiceProvider;
 import com.ait.tooling.server.core.support.spring.network.ICoreNetworkProvider;
+import com.ait.tooling.server.core.support.spring.network.websocket.IWebSocketService;
+import com.ait.tooling.server.core.support.spring.network.websocket.IWebSocketServiceProvider;
 
 public interface IServerContext extends IJSONUtilities, IAuthorizer, IPropertiesResolver
 {
@@ -85,6 +85,8 @@ public interface IServerContext extends IJSONUtilities, IAuthorizer, IProperties
     public IWebSocketServiceProvider getWebSocketServiceProvider();
     
     public IWebSocketService getWebSocketService(String name);
+    
+    public IWebSocketService getWebSocketService(String name, List<String> scopes);
 
     public MessageChannel getMessageChannel(String name);
 

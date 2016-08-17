@@ -14,25 +14,35 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.socket;
+package com.ait.tooling.server.core.support.spring.network.websocket;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.websocket.PongMessage;
 import javax.websocket.Session;
 
 import org.apache.log4j.Logger;
 
+import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.server.core.support.CoreGroovySupport;
 import com.ait.tooling.server.core.support.spring.IServerContext;
 
 public abstract class AbstractWebSocketEndPointByPathPart
 {
-    private String                    m_pathpart;
+    private final String                    m_pathpart;
 
-    private IWebSocketServiceProvider m_provider;
+    private final IWebSocketServiceProvider m_provider;
 
-    private Logger                    m_logger = Logger.getLogger(getClass());
+    private final Set<String>               m_scopes = new HashSet<String>();
+
+    private final Logger                    m_logger = Logger.getLogger(getClass());
 
     protected AbstractWebSocketEndPointByPathPart(final String pathpart)
     {
@@ -51,11 +61,33 @@ public abstract class AbstractWebSocketEndPointByPathPart
         return m_logger;
     }
 
+    public void addScope(final String scope)
+    {
+        m_scopes.add(scope);
+    }
+
+    public void setScopes(final Collection<String> scopes)
+    {
+        m_scopes.clear();
+
+        m_scopes.addAll(scopes);
+    }
+
+    public void setScopes(String... scopes)
+    {
+        setScopes(Arrays.asList(scopes));
+    }
+
+    public List<String> getScopes()
+    {
+        return Collections.unmodifiableList(new ArrayList<String>(m_scopes));
+    }
+
     public void onOpen(final Session session)
     {
         final String name = getEndPointName(session);
 
-        final IWebSocketService service = getServerContext().getWebSocketService(name);
+        final IWebSocketService service = getServerContext().getWebSocketService(name, getScopes());
 
         if (null != service)
         {
@@ -63,7 +95,7 @@ public abstract class AbstractWebSocketEndPointByPathPart
         }
         else
         {
-            logger().error("onOpen(" + name + ") Can't find WebSocketService");
+            logger().error("onOpen(" + name + ") Can't find WebSocketService in " + StringOps.toPrintableString(getScopes()));
         }
     }
 
@@ -114,7 +146,12 @@ public abstract class AbstractWebSocketEndPointByPathPart
 
     public String getEndPointName(final Session session)
     {
-        return session.getPathParameters().get(getPathPart());
+        return getPathParameter(session, getPathPart());
+    }
+
+    public String getPathParameter(final Session session, final String name)
+    {
+        return session.getPathParameters().get(name);
     }
 
     public String getPathPart()

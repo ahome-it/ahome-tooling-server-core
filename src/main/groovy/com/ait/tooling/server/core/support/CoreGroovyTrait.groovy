@@ -43,12 +43,12 @@ import com.ait.tooling.server.core.security.ICryptoProvider
 import com.ait.tooling.server.core.security.ISignatoryProvider
 import com.ait.tooling.server.core.security.session.IServerSessionRepository
 import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProvider
-import com.ait.tooling.server.core.socket.IWebSocketService
-import com.ait.tooling.server.core.socket.IWebSocketServiceProvider
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IPropertiesResolver
 import com.ait.tooling.server.core.support.spring.IServerContext
 import com.ait.tooling.server.core.support.spring.network.ICoreNetworkProvider
+import com.ait.tooling.server.core.support.spring.network.websocket.IWebSocketService
+import com.ait.tooling.server.core.support.spring.network.websocket.IWebSocketServiceProvider
 
 @CompileStatic
 public trait CoreGroovyTrait implements JSONTrait
@@ -307,5 +307,11 @@ public trait CoreGroovyTrait implements JSONTrait
     public IWebSocketService getWebSocketService(String name)
     {
         getWebSocketServiceProvider().getWebSocketService(name)
+    }
+
+    @Memoized
+    public IWebSocketService getWebSocketService(String name, List<String> scopes)
+    {
+        getWebSocketServiceProvider().getWebSocketService(name, scopes)
     }
 }

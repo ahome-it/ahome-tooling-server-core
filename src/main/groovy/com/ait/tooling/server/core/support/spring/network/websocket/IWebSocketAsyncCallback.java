@@ -14,21 +14,11 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.support.spring.network;
+package com.ait.tooling.server.core.support.spring.network.websocket;
 
-import com.ait.tooling.server.core.json.JSONObject;
-
-public interface IRESTResponse
+public interface IWebSocketAsyncCallback<T>
 {
-    public int code();
+    public void onSuccess(IWebSocketServiceContext context, T value);
 
-    public boolean good();
-
-    public String body();
-
-    public JSONObject json();
-
-    public HTTPHeaders headers();
-
-    public ICoreNetworkProvider network();
+    public void onFailure(IWebSocketServiceContext context, T value, Throwable t);
 }

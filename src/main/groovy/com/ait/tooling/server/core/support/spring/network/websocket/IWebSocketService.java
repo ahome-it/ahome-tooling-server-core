@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.socket;
+package com.ait.tooling.server.core.support.spring.network.websocket;
 
-import com.ait.tooling.server.core.json.JSONObject;
-import com.ait.tooling.server.core.json.parser.JSONParser;
+import java.io.Closeable;
+import java.util.List;
 
-public interface IJSONWebSocketService extends IWebSocketService
+import com.ait.tooling.common.api.types.INamed;
+
+public interface IWebSocketService extends INamed, Closeable
 {
-    default public boolean onMessage(final IWebSocketServiceContext context, final String text, final boolean last) throws Exception
-    {
-        return onMessage(context, new JSONParser().parse(text), last);
-    }
-    
-    default public boolean isJSON()
-    {
-        return true;
-    }
+    public boolean onMessage(IWebSocketServiceContext context, String text, boolean last) throws Exception;
 
-    default public boolean isText()
+    default public boolean isJSON()
     {
         return false;
     }
 
-    public boolean onMessage(IWebSocketServiceContext context, JSONObject json, boolean last) throws Exception;
+    default public boolean isText()
+    {
+        return true;
+    }
+    
+    public List<String> getScopes();
 }

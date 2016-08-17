@@ -17,9 +17,13 @@
 package com.ait.tooling.server.core.support.spring.network;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import com.ait.tooling.common.api.java.util.StringOps;
@@ -29,12 +33,34 @@ import wslite.soap.SOAPClient;
 
 public class CoreNetworkProvider implements ICoreNetworkProvider
 {
-    private String                      m_user_agent = HTTPHeaders.DEFAULT_USER_AGENT;
+    private String                                m_user_agent = HTTPHeaders.DEFAULT_USER_AGENT;
 
-    private static final PathParameters EMPTY_PARAMS = new PathParameters();
+    private List<Integer>                         m_good_codes = new ArrayList<Integer>();
+
+    private static final PathParameters           EMPTY_PARAMS = new PathParameters();
+
+    private static final CoreResponseErrorHandler NO_ERRORS_CB = new CoreResponseErrorHandler();
+
+    private static final class CoreResponseErrorHandler implements ResponseErrorHandler
+    {
+        @Override
+        public boolean hasError(ClientHttpResponse response) throws IOException
+        {
+            return false;
+        }
+
+        @Override
+        public void handleError(ClientHttpResponse response) throws IOException
+        {
+        }
+    }
 
     public CoreNetworkProvider()
     {
+        for (int i = 200; i < 300; i++)
+        {
+            m_good_codes.add(i);
+        }
     }
 
     @Override
@@ -178,7 +204,18 @@ public class CoreNetworkProvider implements ICoreNetworkProvider
         {
             params = EMPTY_PARAMS;
         }
-        return new CoreRESTResponse(new RestTemplate().exchange(curl, method, entity, String.class, params));
+        final RestTemplate rest = new RestTemplate();
+
+        rest.setErrorHandler(NO_ERRORS_CB);
+
+        try
+        {
+            return new CoreRESTResponse(this, rest.exchange(curl, method, entity, String.class, params));
+        }
+        catch (Exception e)
+        {
+            return new CoreRESTResponse(this, UNKNOWN_ERROR, e.getMessage(), headers);
+        }
     }
 
     @Override
@@ -197,5 +234,19 @@ public class CoreNetworkProvider implements ICoreNetworkProvider
     public void setDefaultUserAgent(final String agent)
     {
         m_user_agent = agent;
+    }
+
+    @Override
+    public boolean isGoodCode(final int code)
+    {
+        return m_good_codes.contains(code);
+    }
+
+    @Override
+    public void setGoodCodes(List<Integer> list)
+    {
+        m_good_codes.clear();
+
+        m_good_codes.addAll(list);
     }
 }

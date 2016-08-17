@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.socket;
+package com.ait.tooling.server.core.support.spring.network.websocket;
 
-import java.io.IOException;
 import java.util.LinkedHashMap;
 
 import javax.websocket.Session;
 
+import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.support.spring.IServerContext;
 import com.ait.tooling.server.core.support.spring.ServerContextInstance;
 
 public class WebSocketServiceCollection
 {
-    private final IServerContext m_context;
-    
+    private final IServerContext                                      m_context;
+
     private final LinkedHashMap<String, WebSocketServiceContextEntry> m_collection = new LinkedHashMap<String, WebSocketServiceContextEntry>();
 
     public WebSocketServiceCollection()
@@ -76,17 +76,44 @@ public class WebSocketServiceCollection
     {
         return broadcast(text, true);
     }
-    
+
+    public boolean broadcast(final JSONObject json)
+    {
+        return broadcast(json, true);
+    }
+
     public boolean broadcast(final String text, final boolean last)
     {
         for (WebSocketServiceContextEntry entry : m_collection.values())
         {
-            try
+            entry.reply(text, last);
+        }
+        return true;
+    }
+
+    public boolean broadcast(final JSONObject json, final boolean last)
+    {
+        String safe = null;
+
+        String text = null;
+
+        for (WebSocketServiceContextEntry entry : m_collection.values())
+        {
+            if (entry.isStrict())
             {
-                entry.getRemoteBasic().sendText(text, last);
+                if (null == safe)
+                {
+                    safe = json.toJSONString(true);
+                }
+                entry.reply(safe, last);
             }
-            catch (IOException e)
+            else
             {
+                if (null == text)
+                {
+                    text = json.toJSONString(false);
+                }
+                entry.reply(text, last);
             }
         }
         return true;

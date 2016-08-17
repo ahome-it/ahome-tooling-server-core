@@ -14,25 +14,33 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.socket;
+package com.ait.tooling.server.core.support.spring.network.websocket;
 
 import java.io.Closeable;
 import java.util.List;
 
 import javax.websocket.Session;
 
+import com.ait.tooling.server.core.json.JSONObject;
+
 public interface IWebSocketServiceProvider extends Closeable
 {
     public List<String> getWebSocketServiceNames();
 
     public List<IWebSocketService> getWebSocketServices();
-
+    
     public IWebSocketService getWebSocketService(String name);
+
+    public IWebSocketService getWebSocketService(String name, List<String> scopes);
 
     public boolean broadcast(String name, String text);
 
     public boolean broadcast(String name, String text, boolean last);
+    
+    public boolean broadcast(String name, JSONObject json);
 
+    public boolean broadcast(String name, JSONObject json, boolean last);
+    
     public boolean addEndPoint(Session session, String name, IWebSocketService service);
 
     public boolean removeEndPoint(Session session, String name);
