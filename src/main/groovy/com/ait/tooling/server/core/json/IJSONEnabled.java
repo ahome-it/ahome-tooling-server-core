@@ -20,5 +20,5 @@ import com.ait.tooling.common.api.json.JSONStringify;
 
 public interface IJSONEnabled extends JSONStringify
 {
-    public JSONObject toJSONObject();
+    public String toJSONString(boolean strict);
 }

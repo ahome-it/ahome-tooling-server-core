@@ -34,7 +34,7 @@ import com.ait.tooling.common.api.json.JSONObjectDefinition;
 import com.ait.tooling.common.api.json.JSONType;
 import com.ait.tooling.server.core.json.binder.JSONBinder;
 
-public class JSONObject extends LinkedHashMap<String, Object>implements JSONObjectDefinition<JSONArray, JSONObject>, IJSONStreamAware
+public class JSONObject extends LinkedHashMap<String, Object> implements JSONObjectDefinition<JSONArray, JSONObject>, IJSONStreamAware, IJSONEnabled
 {
     private static final long   serialVersionUID = -6811236788038367702L;
 
@@ -387,6 +387,7 @@ public class JSONObject extends LinkedHashMap<String, Object>implements JSONObje
         return JSONUtils.toJSONString(this, false);
     }
 
+    @Override
     public synchronized String toJSONString(final boolean strict)
     {
         return JSONUtils.toJSONString(this, strict);

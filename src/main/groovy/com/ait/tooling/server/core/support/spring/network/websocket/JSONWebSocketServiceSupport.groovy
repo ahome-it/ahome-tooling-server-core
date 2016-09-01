@@ -18,10 +18,28 @@ package com.ait.tooling.server.core.support.spring.network.websocket
 
 import groovy.transform.CompileStatic
 
+import com.ait.tooling.server.core.json.JSONObject
+import com.ait.tooling.server.core.json.parser.JSONParser
+
 @CompileStatic
 public abstract class JSONWebSocketServiceSupport extends WebSocketServiceSupport implements IJSONWebSocketService
 {
     protected JSONWebSocketServiceSupport()
     {
     }
+    
+    @Override
+    public boolean onMessage(final IWebSocketServiceContext context, final String text, final boolean last) throws Exception
+    {
+        return onMessage(context, new JSONParser().parse(text), last)
+    }
+    
+    
+    @Override
+    public boolean isText()
+    {
+        return false
+    }
+    
+    abstract public boolean onMessage(IWebSocketServiceContext context, JSONObject json, boolean last) throws Exception
 }

@@ -17,24 +17,8 @@
 package com.ait.tooling.server.core.support.spring.network.websocket;
 
 import com.ait.tooling.server.core.json.JSONObject;
-import com.ait.tooling.server.core.json.parser.JSONParser;
 
 public interface IJSONWebSocketService extends IWebSocketService
 {
-    default public boolean onMessage(final IWebSocketServiceContext context, final String text, final boolean last) throws Exception
-    {
-        return onMessage(context, new JSONParser().parse(text), last);
-    }
-    
-    default public boolean isJSON()
-    {
-        return true;
-    }
-
-    default public boolean isText()
-    {
-        return false;
-    }
-
     public boolean onMessage(IWebSocketServiceContext context, JSONObject json, boolean last) throws Exception;
 }

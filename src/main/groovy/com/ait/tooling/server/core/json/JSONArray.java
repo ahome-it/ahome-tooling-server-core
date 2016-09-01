@@ -31,7 +31,7 @@ import java.util.Objects;
 import com.ait.tooling.common.api.json.JSONArrayDefinition;
 import com.ait.tooling.common.api.json.JSONType;
 
-public class JSONArray extends ArrayList<Object> implements JSONArrayDefinition<JSONArray, JSONObject>, IJSONStreamAware
+public class JSONArray extends ArrayList<Object> implements JSONArrayDefinition<JSONArray, JSONObject>, IJSONStreamAware, IJSONEnabled
 {
     private static final String NULL_FOR_OUTPUT  = "null".intern();
 
@@ -57,7 +57,7 @@ public class JSONArray extends ArrayList<Object> implements JSONArrayDefinition<
 
         return this;
     }
-    
+
     public final JSONArray push(Object value)
     {
         add(Objects.requireNonNull(value));
@@ -106,17 +106,17 @@ public class JSONArray extends ArrayList<Object> implements JSONArrayDefinition<
             }
         }
     }
-    
+
     public JSONArray asClassNames()
     {
         final int size = size();
-        
+
         final JSONArray jarr = new JSONArray(size);
 
         for (int i = 0; i < size; i++)
         {
             final Object object = get(i);
-            
+
             jarr.add((null == object) ? "null" : object.getClass().getName());
         }
         return jarr;
@@ -355,12 +355,12 @@ public class JSONArray extends ArrayList<Object> implements JSONArrayDefinition<
         }
         return null;
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T> T asType(final Class<T> type)
     {
         Objects.requireNonNull(type);
-        
+
         if (String.class.equals(type))
         {
             return (T) toJSONString();
@@ -378,6 +378,7 @@ public class JSONArray extends ArrayList<Object> implements JSONArrayDefinition<
         return JSONUtils.toJSONString(this, false);
     }
 
+    @Override
     public synchronized String toJSONString(final boolean strict)
     {
         return JSONUtils.toJSONString(this, strict);

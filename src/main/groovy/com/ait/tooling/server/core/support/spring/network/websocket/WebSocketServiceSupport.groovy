@@ -53,7 +53,7 @@ public abstract class WebSocketServiceSupport extends CoreGroovySupport implemen
 
         if (claz.isAnnotationPresent(WSService))
         {
-            final String[] list = claz.getAnnotation(WSService).scopes();
+            final String[] list = claz.getAnnotation(WSService).scopes()
 
             if (list)
             {
@@ -61,5 +61,11 @@ public abstract class WebSocketServiceSupport extends CoreGroovySupport implemen
             }
         }
         return ['*']
+    }
+    
+    @Override
+    public boolean isText()
+    {
+        return true
     }
 }

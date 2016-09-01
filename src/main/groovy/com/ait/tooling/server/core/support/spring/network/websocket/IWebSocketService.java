@@ -25,15 +25,7 @@ public interface IWebSocketService extends INamed, Closeable
 {
     public boolean onMessage(IWebSocketServiceContext context, String text, boolean last) throws Exception;
 
-    default public boolean isJSON()
-    {
-        return false;
-    }
-
-    default public boolean isText()
-    {
-        return true;
-    }
+    public boolean isText();
     
     public List<String> getScopes();
 }
