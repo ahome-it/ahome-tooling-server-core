@@ -16,13 +16,15 @@
 
 package com.ait.tooling.server.core.support.spring.network.websocket;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 
 import javax.websocket.Session;
 
 import com.ait.tooling.server.core.json.JSONObject;
 
-public class WebSocketEndPointCollection
+public class WebSocketEndPointCollection implements Closeable
 {
     private LinkedHashMap<String, WebSocketServiceCollection> m_collection = new LinkedHashMap<String, WebSocketServiceCollection>();
 
@@ -30,15 +32,14 @@ public class WebSocketEndPointCollection
     {
     }
 
-    public boolean onMessage(final Session session, final String name, final String text, final boolean last) throws Exception
+    public void onMessage(final Session session, final String name, final String text, final boolean last) throws Exception
     {
         final WebSocketServiceCollection endp = m_collection.get(name);
 
         if (null != endp)
         {
-            return endp.onMessage(session, text, last);
+            endp.onMessage(session, text, last);
         }
-        return false;
     }
 
     public boolean addEndPoint(final Session session, final String name, final IWebSocketService service)
@@ -70,47 +71,53 @@ public class WebSocketEndPointCollection
         return false;
     }
 
-    public boolean broadcast(final String name, final String text)
+    public void broadcast(final String name, final String text)
     {
         final WebSocketServiceCollection endp = m_collection.get(name);
 
         if (null != endp)
         {
-            return endp.broadcast(text);
+            endp.broadcast(text);
         }
-        return false;
-    }
-    
-    public boolean broadcast(final String name, final JSONObject json)
-    {
-        final WebSocketServiceCollection endp = m_collection.get(name);
-
-        if (null != endp)
-        {
-            return endp.broadcast(json);
-        }
-        return false;
     }
 
-    public boolean broadcast(final String name, final String text, final boolean last)
+    public void broadcast(final String name, final JSONObject json)
     {
         final WebSocketServiceCollection endp = m_collection.get(name);
 
         if (null != endp)
         {
-            return endp.broadcast(text, last);
+            endp.broadcast(json);
         }
-        return false;
     }
-    
-    public boolean broadcast(final String name, final JSONObject json, final boolean last)
+
+    public void broadcast(final String name, final String text, final boolean last)
     {
         final WebSocketServiceCollection endp = m_collection.get(name);
 
         if (null != endp)
         {
-            return endp.broadcast(json, last);
+            endp.broadcast(text, last);
         }
-        return false;
+    }
+
+    public IWebSocketServiceSession getWebSocketServiceSession(final String id)
+    {
+        for (WebSocketServiceCollection endp : m_collection.values())
+        {
+            final IWebSocketServiceSession sess = endp.getWebSocketServiceSession(id);
+
+            if (null != sess)
+            {
+                return sess;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void close() throws IOException
+    {
+        
     }
 }

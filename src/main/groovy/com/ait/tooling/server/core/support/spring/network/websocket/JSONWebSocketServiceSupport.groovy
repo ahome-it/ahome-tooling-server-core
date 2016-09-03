@@ -27,19 +27,24 @@ public abstract class JSONWebSocketServiceSupport extends WebSocketServiceSuppor
     protected JSONWebSocketServiceSupport()
     {
     }
-    
+
     @Override
-    public boolean onMessage(final IWebSocketServiceContext context, final String text, final boolean last) throws Exception
+    public void onMessage(final IWebSocketServiceContext context, final String text, final boolean last) throws Exception
     {
-        return onMessage(context, new JSONParser().parse(text), last)
+        onMessage(context, getJSONParser().parse(text))
     }
-    
-    
+
+    @Override
+    public JSONParser getJSONParser()
+    {
+        new JSONParser()
+    }
+
     @Override
     public boolean isText()
     {
-        return false
+        false
     }
-    
-    abstract public boolean onMessage(IWebSocketServiceContext context, JSONObject json, boolean last) throws Exception
+
+    abstract public void onMessage(IWebSocketServiceContext context, JSONObject json) throws Exception
 }

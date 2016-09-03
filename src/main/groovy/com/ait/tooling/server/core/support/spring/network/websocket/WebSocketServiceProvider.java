@@ -66,7 +66,7 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
             }
         }
     }
-    
+
     @Override
     public IWebSocketService getWebSocketService(final String name)
     {
@@ -145,30 +145,25 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
                 }
             }
         }
+        m_endpoint.close();
     }
 
     @Override
-    public boolean broadcast(final String name, final String text)
+    public void broadcast(final String name, final String text)
     {
-        return m_endpoint.broadcast(name, text);
+        m_endpoint.broadcast(name, text);
     }
 
     @Override
-    public boolean broadcast(final String name, final String text, final boolean last)
+    public void broadcast(final String name, final String text, final boolean last)
     {
-        return m_endpoint.broadcast(name, text, last);
+        m_endpoint.broadcast(name, text, last);
     }
 
     @Override
-    public boolean broadcast(final String name, final JSONObject json)
+    public void broadcast(final String name, final JSONObject json)
     {
-        return m_endpoint.broadcast(name, json);
-    }
-
-    @Override
-    public boolean broadcast(final String name, final JSONObject json, final boolean last)
-    {
-        return m_endpoint.broadcast(name, json, last);
+        m_endpoint.broadcast(name, json);
     }
 
     @Override
@@ -184,8 +179,14 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
     }
 
     @Override
-    public boolean onMessage(final Session session, final String name, final String text, final boolean last) throws Exception
+    public void onMessage(final Session session, final String name, final String text, final boolean last) throws Exception
     {
-        return m_endpoint.onMessage(session, name, text, last);
+        m_endpoint.onMessage(session, name, text, last);
+    }
+
+    @Override
+    public IWebSocketServiceSession getWebSocketServiceSession(final String id)
+    {
+        return m_endpoint.getWebSocketServiceSession(id);
     }
 }

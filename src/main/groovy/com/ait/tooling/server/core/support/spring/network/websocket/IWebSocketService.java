@@ -23,9 +23,11 @@ import com.ait.tooling.common.api.types.INamed;
 
 public interface IWebSocketService extends INamed, Closeable
 {
-    public boolean onMessage(IWebSocketServiceContext context, String text, boolean last) throws Exception;
+    public void onMessage(IWebSocketServiceContext context, String text, boolean last) throws Exception;
+
+    public void onOpen(IWebSocketServiceContext context);
 
     public boolean isText();
-    
+
     public List<String> getScopes();
 }

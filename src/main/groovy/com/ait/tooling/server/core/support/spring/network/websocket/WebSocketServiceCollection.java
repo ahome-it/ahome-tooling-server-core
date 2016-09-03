@@ -16,34 +16,30 @@
 
 package com.ait.tooling.server.core.support.spring.network.websocket;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 
 import javax.websocket.Session;
 
 import com.ait.tooling.server.core.json.JSONObject;
-import com.ait.tooling.server.core.support.spring.IServerContext;
-import com.ait.tooling.server.core.support.spring.ServerContextInstance;
 
-public class WebSocketServiceCollection
+public class WebSocketServiceCollection implements Closeable
 {
-    private final IServerContext                                      m_context;
-
-    private final LinkedHashMap<String, WebSocketServiceContextEntry> m_collection = new LinkedHashMap<String, WebSocketServiceContextEntry>();
+    private final LinkedHashMap<String, WebSocketServiceContext> m_collection = new LinkedHashMap<String, WebSocketServiceContext>();
 
     public WebSocketServiceCollection()
     {
-        m_context = ServerContextInstance.getServerContextInstance();
     }
 
-    public boolean onMessage(final Session session, final String text, final boolean last) throws Exception
+    public void onMessage(final Session session, final String text, final boolean last) throws Exception
     {
-        final WebSocketServiceContextEntry entr = m_collection.get(session.getId());
+        final WebSocketServiceContext entr = m_collection.get(session.getId());
 
         if (null != entr)
         {
-            return entr.onMessage(text, last);
+            entr.onMessage(text, last);
         }
-        return false;
     }
 
     public boolean addEndPoint(final Session session, final IWebSocketService service)
@@ -52,7 +48,7 @@ public class WebSocketServiceCollection
 
         if (false == m_collection.containsKey(id))
         {
-            m_collection.put(id, new WebSocketServiceContextEntry(session, m_context, service));
+            m_collection.put(id, new WebSocketServiceContext(session, service));
 
             return true;
         }
@@ -72,32 +68,26 @@ public class WebSocketServiceCollection
         return false;
     }
 
-    public boolean broadcast(final String text)
+    public void broadcast(final String text)
     {
-        return broadcast(text, true);
+        broadcast(text, true);
     }
 
-    public boolean broadcast(final JSONObject json)
+    public void broadcast(final String text, final boolean last)
     {
-        return broadcast(json, true);
-    }
-
-    public boolean broadcast(final String text, final boolean last)
-    {
-        for (WebSocketServiceContextEntry entry : m_collection.values())
+        for (WebSocketServiceContext entry : m_collection.values())
         {
             entry.reply(text, last);
         }
-        return true;
     }
 
-    public boolean broadcast(final JSONObject json, final boolean last)
+    public void broadcast(final JSONObject json)
     {
         String safe = null;
 
         String text = null;
 
-        for (WebSocketServiceContextEntry entry : m_collection.values())
+        for (WebSocketServiceContext entry : m_collection.values())
         {
             if (entry.isStrict())
             {
@@ -105,7 +95,7 @@ public class WebSocketServiceCollection
                 {
                     safe = json.toJSONString(true);
                 }
-                entry.reply(safe, last);
+                entry.reply(safe);
             }
             else
             {
@@ -113,9 +103,29 @@ public class WebSocketServiceCollection
                 {
                     text = json.toJSONString(false);
                 }
-                entry.reply(text, last);
+                entry.reply(text);
             }
         }
-        return true;
+    }
+
+    public IWebSocketServiceSession getWebSocketServiceSession(final String id)
+    {
+        return m_collection.get(id);
+    }
+
+    @Override
+    public void close() throws IOException
+    {
+        for (WebSocketServiceContext entry : m_collection.values())
+        {
+            try
+            {
+                entry.close();
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
     }
 }

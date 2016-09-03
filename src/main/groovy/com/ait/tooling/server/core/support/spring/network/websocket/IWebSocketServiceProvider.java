@@ -32,18 +32,18 @@ public interface IWebSocketServiceProvider extends Closeable
     public IWebSocketService getWebSocketService(String name);
 
     public IWebSocketService getWebSocketService(String name, List<String> scopes);
-
-    public boolean broadcast(String name, String text);
-
-    public boolean broadcast(String name, String text, boolean last);
     
-    public boolean broadcast(String name, JSONObject json);
+    public IWebSocketServiceSession getWebSocketServiceSession(String id);
 
-    public boolean broadcast(String name, JSONObject json, boolean last);
+    public void broadcast(String name, String text);
+
+    public void broadcast(String name, String text, boolean last);
+    
+    public void broadcast(String name, JSONObject json);
     
     public boolean addEndPoint(Session session, String name, IWebSocketService service);
 
     public boolean removeEndPoint(Session session, String name);
 
-    public boolean onMessage(final Session session, final String name, final String text, final boolean last) throws Exception;
+    public void onMessage(final Session session, final String name, final String text, final boolean last) throws Exception;
 }

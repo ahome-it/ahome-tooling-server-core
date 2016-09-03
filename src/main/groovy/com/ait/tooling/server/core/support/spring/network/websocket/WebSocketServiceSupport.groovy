@@ -45,7 +45,7 @@ public abstract class WebSocketServiceSupport extends CoreGroovySupport implemen
         }
         claz.getSimpleName()
     }
-    
+
     @Memoized
     public List<String> getScopes()
     {
@@ -60,12 +60,17 @@ public abstract class WebSocketServiceSupport extends CoreGroovySupport implemen
                 return Collections.unmodifiableList(Arrays.asList(list))
             }
         }
-        return ['*']
+        ['*']
     }
-    
+
     @Override
     public boolean isText()
     {
-        return true
+        true
+    }
+
+    @Override
+    public void onOpen(IWebSocketServiceContext context)
+    {
     }
 }

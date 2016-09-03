@@ -18,9 +18,26 @@ package com.ait.tooling.server.core.support.spring.network.websocket;
 
 import java.io.Closeable;
 
-public interface IWebSocketServiceContextEntry extends IWebSocketServiceContext, Closeable
+import javax.websocket.Session;
+
+import com.ait.tooling.common.api.types.IIdentified;
+import com.ait.tooling.server.core.json.JSONObject;
+
+public interface IWebSocketServiceSession extends IIdentified, Closeable
 {
+    public boolean isOpen();
+
+    public Session getSession();
+
+    public String getPathParameter(String name);
+
+    public boolean isStrict();
+
     public IWebSocketService getSerivce();
 
-    public boolean onMessage(String text, boolean last) throws Exception;
+    public void reply(String text);
+
+    public void reply(String text, boolean last);
+
+    public void reply(JSONObject json);
 }

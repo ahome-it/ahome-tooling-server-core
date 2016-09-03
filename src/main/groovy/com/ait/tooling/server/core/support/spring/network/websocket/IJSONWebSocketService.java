@@ -17,8 +17,11 @@
 package com.ait.tooling.server.core.support.spring.network.websocket;
 
 import com.ait.tooling.server.core.json.JSONObject;
+import com.ait.tooling.server.core.json.parser.JSONParser;
 
 public interface IJSONWebSocketService extends IWebSocketService
 {
-    public boolean onMessage(IWebSocketServiceContext context, JSONObject json, boolean last) throws Exception;
+    public JSONParser getJSONParser();
+
+    public void onMessage(IWebSocketServiceContext context, JSONObject json) throws Exception;
 }

@@ -17,6 +17,7 @@
 package com.ait.tooling.server.core.support.spring.network.websocket
 
 import groovy.transform.CompileStatic
+import groovy.transform.Memoized
 
 import java.nio.ByteBuffer
 
@@ -61,7 +62,7 @@ public abstract class AbstractWebSocketEndPointByPathPart extends CoreGroovySupp
 
     public List<String> getScopes()
     {
-        return Collections.unmodifiableList(new ArrayList<String>(m_scopes))
+        Collections.unmodifiableList(new ArrayList<String>(m_scopes))
     }
 
     public void onOpen(final Session session)
@@ -127,21 +128,22 @@ public abstract class AbstractWebSocketEndPointByPathPart extends CoreGroovySupp
 
     public String getEndPointName(final Session session)
     {
-        return getPathParameter(session, getPathPart())
+        getPathParameter(session, getPathPart())
     }
 
     public String getPathParameter(final Session session, final String name)
     {
-        return session.getPathParameters().get(name)
+        session.getPathParameters().get(name)
     }
 
+    @Memoized
     public String getPathPart()
     {
-        return m_pathpart
+        m_pathpart
     }
 
     public boolean doCloseOnException(Exception e)
     {
-        return true
+        true
     }
 }
