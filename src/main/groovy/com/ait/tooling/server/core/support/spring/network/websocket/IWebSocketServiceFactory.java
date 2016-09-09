@@ -16,19 +16,9 @@
 
 package com.ait.tooling.server.core.support.spring.network.websocket;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import org.springframework.stereotype.Component;
-
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Component
-public @interface WSService
+public interface IWebSocketServiceFactory
 {
-    public String name();
+    public IWebSocketService get();
+    
+    public boolean isPrototype();
 }

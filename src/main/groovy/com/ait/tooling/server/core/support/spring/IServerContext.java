@@ -86,8 +86,6 @@ public interface IServerContext extends IJSONUtilities, IAuthorizer, IProperties
     
     public IWebSocketService getWebSocketService(String name);
     
-    public IWebSocketService getWebSocketService(String name, List<String> scopes);
-
     public MessageChannel getMessageChannel(String name);
 
     public PublishSubscribeChannel getPublishSubscribeChannel(String name);

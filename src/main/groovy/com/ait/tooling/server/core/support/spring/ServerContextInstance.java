@@ -469,10 +469,4 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     {
         return getWebSocketServiceProvider().getWebSocketService(name);
     }
-
-    @Override
-    public final IWebSocketService getWebSocketService(final String name, final List<String> scopes)
-    {
-        return getWebSocketServiceProvider().getWebSocketService(name, scopes);
-    }
 }

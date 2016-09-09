@@ -32,58 +32,30 @@ public abstract class AbstractWebSocketEndPointByPathPart extends CoreGroovySupp
 {
     private final String                    m_pathpart
 
-    private final IWebSocketServiceProvider m_provider
-
-    private final Set<String>               m_scopes = new HashSet<String>()
-
     protected AbstractWebSocketEndPointByPathPart(final String pathpart)
     {
         m_pathpart = StringOps.toTrimOrNull(pathpart)
-
-        m_provider = getWebSocketServiceProvider()
-    }
-
-    public void addScope(final String scope)
-    {
-        m_scopes.add(scope)
-    }
-
-    public void setScopes(final Collection<String> scopes)
-    {
-        m_scopes.clear()
-
-        m_scopes.addAll(scopes)
-    }
-
-    public void setScopes(String... scopes)
-    {
-        setScopes(Arrays.asList(scopes))
-    }
-
-    public List<String> getScopes()
-    {
-        Collections.unmodifiableList(new ArrayList<String>(m_scopes))
     }
 
     public void onOpen(final Session session)
     {
         final String name = getEndPointName(session)
 
-        final IWebSocketService service = getWebSocketService(name, getScopes())
+        final IWebSocketService service = getWebSocketService(name)
 
         if (null != service)
         {
-            m_provider.addEndPoint(session, name, service)
+            getWebSocketServiceProvider().addEndPoint(session, name, service)
         }
         else
         {
-            logger().error("onOpen(" + name + ") Can't find WebSocketService in " + StringOps.toPrintableString(getScopes()))
+            logger().error("onOpen(" + name + ") Can't find WebSocketService")
         }
     }
 
     public void onClose(final Session session)
     {
-        m_provider.removeEndPoint(session, getEndPointName(session))
+        getWebSocketServiceProvider().removeEndPoint(session, getEndPointName(session))
     }
 
     public void onText(final Session session, final String text, final boolean last)
@@ -94,7 +66,7 @@ public abstract class AbstractWebSocketEndPointByPathPart extends CoreGroovySupp
         {
             if (session.isOpen())
             {
-                m_provider.onMessage(session, name, text, last)
+                getWebSocketServiceProvider().onMessage(session, name, text, last)
             }
             else
             {

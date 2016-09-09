@@ -35,27 +35,25 @@ import com.ait.tooling.server.core.json.JSONObject;
 
 public class WebSocketServiceProvider implements IWebSocketServiceProvider, BeanFactoryAware
 {
-    private static final Logger                            logger     = Logger.getLogger(WebSocketServiceProvider.class);
+    private static final Logger                                   logger     = Logger.getLogger(WebSocketServiceProvider.class);
 
-    private final LinkedHashMap<String, IWebSocketService> m_services = new LinkedHashMap<String, IWebSocketService>();
+    private final LinkedHashMap<String, IWebSocketServiceFactory> m_factorys = new LinkedHashMap<String, IWebSocketServiceFactory>();
 
-    private final WebSocketEndPointCollection              m_endpoint = new WebSocketEndPointCollection();
+    private final WebSocketEndPointCollection                     m_endpoint = new WebSocketEndPointCollection();
 
     public WebSocketServiceProvider()
     {
     }
 
-    protected void addService(final IWebSocketService service)
+    protected void addFactory(final String name, final IWebSocketServiceFactory fact)
     {
-        if (null != service)
+        if (null != fact)
         {
-            final String name = StringOps.toTrimOrNull(service.getName());
-
             if (null != name)
             {
-                if (null == m_services.get(name))
+                if (null == m_factorys.get(name))
                 {
-                    m_services.put(name, service);
+                    m_factorys.put(name, fact);
 
                     logger.info("WebSocketServiceProvider.addService(" + name + ") Registered");
                 }
@@ -70,36 +68,11 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
     @Override
     public IWebSocketService getWebSocketService(final String name)
     {
-        return m_services.get(StringOps.requireTrimOrNull(name));
-    }
+        final IWebSocketServiceFactory fact = m_factorys.get(StringOps.requireTrimOrNull(name));
 
-    @Override
-    public IWebSocketService getWebSocketService(final String name, final List<String> scopes)
-    {
-        final IWebSocketService sock = m_services.get(StringOps.requireTrimOrNull(name));
-
-        if (null != sock)
+        if (null != fact)
         {
-            if ((null == scopes) || (scopes.isEmpty()))
-            {
-                return sock;
-            }
-            final List<String> list = sock.getScopes();
-
-            if ((null != list) && (false == list.isEmpty()))
-            {
-                if (list.contains("*"))
-                {
-                    return sock;
-                }
-                for (String scope : scopes)
-                {
-                    if (list.contains(scope))
-                    {
-                        return sock;
-                    }
-                }
-            }
+            return fact.get();
         }
         return null;
     }
@@ -107,13 +80,7 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
     @Override
     public List<String> getWebSocketServiceNames()
     {
-        return Collections.unmodifiableList(new ArrayList<String>(m_services.keySet()));
-    }
-
-    @Override
-    public List<IWebSocketService> getWebSocketServices()
-    {
-        return Collections.unmodifiableList(new ArrayList<IWebSocketService>(m_services.values()));
+        return Collections.unmodifiableList(new ArrayList<String>(m_factorys.keySet()));
     }
 
     @Override
@@ -121,9 +88,44 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
     {
         if (factory instanceof DefaultListableBeanFactory)
         {
-            for (IWebSocketService service : ((DefaultListableBeanFactory) factory).getBeansOfType(IWebSocketService.class).values())
+            for (String bean : ((DefaultListableBeanFactory) factory).getBeanNamesForType(IWebSocketService.class))
             {
-                addService(service);
+                final IWebSocketService service = factory.getBean(bean, IWebSocketService.class);
+
+                if (factory.isPrototype(bean))
+                {
+                    addFactory(service.getName(), new IWebSocketServiceFactory()
+                    {
+                        @Override
+                        public IWebSocketService get()
+                        {
+                            return factory.getBean(bean, IWebSocketService.class);
+                        }
+
+                        @Override
+                        public boolean isPrototype()
+                        {
+                            return true;
+                        }
+                    });
+                }
+                else
+                {
+                    addFactory(service.getName(), new IWebSocketServiceFactory()
+                    {
+                        @Override
+                        public IWebSocketService get()
+                        {
+                            return service;
+                        }
+
+                        @Override
+                        public boolean isPrototype()
+                        {
+                            return false;
+                        }
+                    });
+                }
             }
         }
     }
@@ -131,17 +133,22 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
     @Override
     public void close() throws IOException
     {
-        for (IWebSocketService service : m_services.values())
+        for (IWebSocketServiceFactory fact : m_factorys.values())
         {
-            if (null != service)
+            if (null != fact)
             {
-                try
+                if (false == fact.isPrototype())
                 {
-                    service.close();
-                }
-                catch (Exception e)
-                {
-                    logger.error(service.getName(), e);
+                    final IWebSocketService sock = fact.get();
+
+                    try
+                    {
+                        sock.close();
+                    }
+                    catch (Exception e)
+                    {
+                        logger.error(sock.getName(), e);
+                    }
                 }
             }
         }

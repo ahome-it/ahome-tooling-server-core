@@ -303,15 +303,8 @@ public trait CoreGroovyTrait implements JSONTrait
         getServerContext().getWebSocketServiceProvider()
     }
 
-    @Memoized
     public IWebSocketService getWebSocketService(String name)
     {
         getWebSocketServiceProvider().getWebSocketService(name)
-    }
-
-    @Memoized
-    public IWebSocketService getWebSocketService(String name, List<String> scopes)
-    {
-        getWebSocketServiceProvider().getWebSocketService(name, scopes)
     }
 }

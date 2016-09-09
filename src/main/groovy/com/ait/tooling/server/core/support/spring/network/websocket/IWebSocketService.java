@@ -17,7 +17,6 @@
 package com.ait.tooling.server.core.support.spring.network.websocket;
 
 import java.io.Closeable;
-import java.util.List;
 
 import com.ait.tooling.common.api.types.INamed;
 
@@ -28,6 +27,4 @@ public interface IWebSocketService extends INamed, Closeable
     public void onOpen(IWebSocketServiceContext context);
 
     public boolean isText();
-
-    public List<String> getScopes();
 }

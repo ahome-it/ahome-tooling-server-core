@@ -43,24 +43,7 @@ public abstract class WebSocketServiceSupport extends CoreGroovySupport implemen
                 return name
             }
         }
-        claz.getSimpleName()
-    }
-
-    @Memoized
-    public List<String> getScopes()
-    {
-        final Class<?> claz = getClass()
-
-        if (claz.isAnnotationPresent(WSService))
-        {
-            final String[] list = claz.getAnnotation(WSService).scopes()
-
-            if (list)
-            {
-                return Collections.unmodifiableList(Arrays.asList(list))
-            }
-        }
-        ['*']
+        claz.getName().replace('.', '_')
     }
 
     @Override

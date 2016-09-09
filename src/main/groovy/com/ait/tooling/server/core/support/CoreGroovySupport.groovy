@@ -468,15 +468,9 @@ public class CoreGroovySupport implements IServerContext, Closeable
         getServerContext().getWebSocketServiceProvider()
     }
 
-    @Memoized
+    @Override
     public IWebSocketService getWebSocketService(String name)
     {
         getWebSocketServiceProvider().getWebSocketService(name)
-    }
-
-    @Memoized
-    public IWebSocketService getWebSocketService(String name, List<String> scopes)
-    {
-        getWebSocketServiceProvider().getWebSocketService(name, scopes)
     }
 }

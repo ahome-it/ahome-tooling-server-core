@@ -23,10 +23,9 @@ import javax.websocket.Session;
 
 import com.ait.tooling.common.api.java.util.IHTTPConstants;
 import com.ait.tooling.server.core.json.JSONObject;
-import com.ait.tooling.server.core.support.spring.IServerContext;
 import com.ait.tooling.server.core.support.spring.ServerContextInstance;
 
-public class WebSocketServiceContext implements IWebSocketServiceContext
+public class WebSocketServiceContext extends ServerContextInstance implements IWebSocketServiceContext
 {
     private final Session                   m_session;
 
@@ -114,12 +113,6 @@ public class WebSocketServiceContext implements IWebSocketServiceContext
     public void broadcast(final String name, final String text, final boolean last)
     {
         m_providr.broadcast(name, text, last);
-    }
-
-    @Override
-    public IServerContext getServerContext()
-    {
-        return ServerContextInstance.getServerContextInstance();
     }
 
     @Override

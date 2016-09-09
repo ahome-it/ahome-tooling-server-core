@@ -26,12 +26,8 @@ import com.ait.tooling.server.core.json.JSONObject;
 public interface IWebSocketServiceProvider extends Closeable
 {
     public List<String> getWebSocketServiceNames();
-
-    public List<IWebSocketService> getWebSocketServices();
     
     public IWebSocketService getWebSocketService(String name);
-
-    public IWebSocketService getWebSocketService(String name, List<String> scopes);
     
     public IWebSocketServiceSession getWebSocketServiceSession(String id);
 
