@@ -16,6 +16,7 @@
 
 package com.ait.tooling.server.core.security.session;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.session.ExpiringSession;
@@ -23,7 +24,7 @@ import org.springframework.session.ExpiringSession;
 import com.ait.tooling.common.api.json.JSONStringify;
 import com.ait.tooling.server.core.json.JSONObject;
 
-public interface IServerSession extends ExpiringSession, JSONStringify
+public interface IServerSession extends ExpiringSession, JSONStringify, Serializable
 {
     public String getUserId();
 
@@ -42,6 +43,8 @@ public interface IServerSession extends ExpiringSession, JSONStringify
     public void setPersisted(boolean persisted);
 
     public void save();
+    
+    public void touch();
     
     public IServerSessionHelper getHelper();
 }

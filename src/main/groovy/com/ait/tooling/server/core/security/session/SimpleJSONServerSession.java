@@ -24,27 +24,37 @@ import java.util.Set;
 import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.JSONUtils;
+import com.ait.tooling.server.core.support.spring.ServerContextInstance;
 
-public class SimpleServerSession implements IServerSession
+public class SimpleJSONServerSession implements IServerSession
 {
+    private static final long              serialVersionUID = 6207984040761462613L;
+
     private boolean                        m_save;
 
     private final JSONObject               m_attr;
 
     private final IServerSessionRepository m_repo;
 
-    public SimpleServerSession(final IServerSessionRepository repo)
+    public SimpleJSONServerSession(final IServerSessionRepository repo)
     {
         m_attr = new JSONObject();
 
         m_repo = Objects.requireNonNull(repo);
+        
+        m_attr.put(getHelper().getSessionIdKey(), ServerContextInstance.getServerContextInstance().uuid());
     }
 
-    public SimpleServerSession(final Map<String, ?> attr, final IServerSessionRepository repo)
+    public SimpleJSONServerSession(final Map<String, ?> attr, final IServerSessionRepository repo)
     {
         m_attr = new JSONObject(Objects.requireNonNull(attr));
 
         m_repo = Objects.requireNonNull(repo);
+
+        if (null == getId())
+        {            
+            m_attr.put(getHelper().getSessionIdKey(), ServerContextInstance.getServerContextInstance().uuid());
+        }
     }
 
     @Override
@@ -210,9 +220,9 @@ public class SimpleServerSession implements IServerSession
     @Override
     public List<String> getRoles()
     {
-        if (m_attr.isArray(getHelper().getDomainKey()))
+        if (m_attr.isArray(getHelper().geRolesKey()))
         {
-            final List<String> role = getHelper().toRolesList(m_attr.getAsArray(getHelper().getDomainKey()));
+            final List<String> role = getHelper().toRolesList(m_attr.getAsArray(getHelper().geRolesKey()));
 
             if ((null != role) && (false == role.isEmpty()))
             {
@@ -274,5 +284,11 @@ public class SimpleServerSession implements IServerSession
     public IServerSessionHelper getHelper()
     {
         return m_repo.getHelper();
+    }
+
+    @Override
+    public void touch()
+    {
+        setLastAccessedTime(System.currentTimeMillis());
     }
 }

@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,7 +35,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import com.ait.tooling.common.api.java.util.StringOps;
-import com.ait.tooling.common.api.java.util.function.Predicate;
 import com.ait.tooling.server.core.json.JSONObject;
 
 public class HTTPHeaders extends HttpHeaders

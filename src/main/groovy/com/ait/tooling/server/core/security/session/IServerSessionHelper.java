@@ -16,83 +16,116 @@
 
 package com.ait.tooling.server.core.security.session;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
 import com.ait.tooling.common.api.java.util.StringOps;
 
-public interface IServerSessionHelper
+public interface IServerSessionHelper extends Serializable
 {
-    public final static String SP_STATUS                           = "status";
+    public final static String               SP_STATUS_KEY                           = "status";
 
-    public final static String SP_DOMAIN                           = "domain";
+    public final static String               SP_DOMAIN_KEY                           = "domain";
 
-    public final static String SP_ROLES                            = "roles";
+    public final static String               SP_ROLES_KEY                            = "roles";
 
-    public final static String SP_USER_ID                          = "user_id";
+    public final static String               SP_USER_ID_KEY                          = "user_id";
 
-    public final static String SP_SESSION_ID                       = "session_id";
+    public final static String               SP_SESSION_ID_KEY                       = "session_id";
 
-    public final static String SP_PROXY_SESSION_ID                 = "proxy_session_id";
+    public final static String               SP_PROXY_SESSION_ID_KEY                 = "proxy_session_id";
 
-    public final static String SP_EXPIRED                          = "expired";
+    public final static String               SP_EXPIRED_KEY                          = "expired";
 
-    public final static String SP_CREATION_TIME                    = "creation_time";
+    public final static String               SP_CREATION_TIME_KEY                    = "creation_time";
 
-    public final static String SP_LAST_ACCESSED_TIME               = "last_accessed_time";
+    public final static String               SP_LAST_ACCESSED_TIME_KEY               = "last_accessed_time";
 
-    public final static String SP_MAX_INACTIVE_INTERVAL_IN_SECONDS = "max_inactive_interval_in_seconds";
+    public final static String               SP_MAX_INACTIVE_INTERVAL_IN_SECONDS_KEY = "max_inactive_interval_in_seconds";
+
+    public final static String               SP_DEFAULT_DOMAIN                       = "default";
+
+    public final static Integer              SP_MAX_INACTIVE_INTERVAL_IN_SECONDS     = 30 * 60;
+
+    public final static List<String>         SP_DEFAULT_ROLES_LIST                   = Collections.unmodifiableList(Arrays.asList("ANONYMOUS"));
+
+    public final static IServerSessionHelper SP_DEFAULT_HELPER_INSTANCE              = new IServerSessionHelper()
+                                                                                     {
+                                                                                         private static final long serialVersionUID = -3837786398300397591L;
+                                                                                     };
 
     default public String getStatusKey()
     {
-        return SP_STATUS;
+        return SP_STATUS_KEY;
     }
 
     default public String getDomainKey()
     {
-        return SP_DOMAIN;
+        return SP_DOMAIN_KEY;
     }
 
     default public String geRolesKey()
     {
-        return SP_ROLES;
+        return SP_ROLES_KEY;
     }
 
     default public String getUserIdKey()
     {
-        return SP_USER_ID;
+        return SP_USER_ID_KEY;
     }
 
     default public String getSessionIdKey()
     {
-        return SP_SESSION_ID;
+        return SP_SESSION_ID_KEY;
     }
 
     default public String getProxySessionIdKey()
     {
-        return SP_PROXY_SESSION_ID;
+        return SP_PROXY_SESSION_ID_KEY;
     }
 
     default public String getExpiredKey()
     {
-        return SP_EXPIRED;
+        return SP_EXPIRED_KEY;
     }
 
     default public String getCreationTimeKey()
     {
-        return SP_CREATION_TIME;
+        return SP_CREATION_TIME_KEY;
     }
 
     default public String getLastAccessedTimeKey()
     {
-        return SP_LAST_ACCESSED_TIME;
+        return SP_LAST_ACCESSED_TIME_KEY;
     }
 
     default public String getMaxInactiveIntervalInSecondsKey()
     {
+        return SP_MAX_INACTIVE_INTERVAL_IN_SECONDS_KEY;
+    }
+
+    default public IServerSessionHelper getHelperInstance()
+    {
+        return SP_DEFAULT_HELPER_INSTANCE;
+    }
+
+    default public List<String> getDefaultRoles()
+    {
+        return SP_DEFAULT_ROLES_LIST;
+    }
+
+    default public int getDefaultMaxInactiveIntervalInSeconds()
+    {
         return SP_MAX_INACTIVE_INTERVAL_IN_SECONDS;
+    }
+
+    default public String getDefaultDomain()
+    {
+        return SP_DEFAULT_DOMAIN;
     }
 
     default public List<String> toRolesList(final List<?> list)
@@ -115,14 +148,9 @@ public interface IServerSessionHelper
             }
             if (false == send.isEmpty())
             {
-                return new ArrayList<String>(send);
+                return Collections.unmodifiableList(new ArrayList<String>(send));
             }
         }
         return null;
-    }
-
-    default public List<String> getDefaultRoles()
-    {
-        return Arrays.asList("ANONYMOUS");
     }
 }
