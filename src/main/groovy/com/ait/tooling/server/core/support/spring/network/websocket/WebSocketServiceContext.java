@@ -22,6 +22,7 @@ import java.util.Objects;
 import javax.websocket.Session;
 
 import com.ait.tooling.common.api.java.util.IHTTPConstants;
+import com.ait.tooling.server.core.json.JSONArray;
 import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.support.spring.ServerContextInstance;
 
@@ -65,7 +66,7 @@ public class WebSocketServiceContext extends ServerContextInstance implements IW
             m_stricts = false;
         }
         m_selfref = this;
-        
+
         m_service.onOpen(m_selfref);
     }
 
@@ -151,6 +152,12 @@ public class WebSocketServiceContext extends ServerContextInstance implements IW
     }
 
     @Override
+    public void reply(final JSONArray batch)
+    {
+        reply(batch.toJSONString(isStrict()));
+    }
+
+    @Override
     public String getPathParameter(final String name)
     {
         return getSession().getPathParameters().get(name);
@@ -167,4 +174,5 @@ public class WebSocketServiceContext extends ServerContextInstance implements IW
     {
         return getSession().getId();
     }
+
 }

@@ -21,6 +21,7 @@ import java.io.Closeable;
 import javax.websocket.Session;
 
 import com.ait.tooling.common.api.types.IIdentified;
+import com.ait.tooling.server.core.json.JSONArray;
 import com.ait.tooling.server.core.json.JSONObject;
 
 public interface IWebSocketServiceSession extends IIdentified, Closeable
@@ -40,4 +41,6 @@ public interface IWebSocketServiceSession extends IIdentified, Closeable
     public void reply(String text, boolean last);
 
     public void reply(JSONObject json);
+    
+    public void reply(JSONArray batch);
 }
