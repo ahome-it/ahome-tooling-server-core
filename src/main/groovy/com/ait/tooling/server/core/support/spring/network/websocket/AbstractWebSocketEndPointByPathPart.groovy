@@ -21,6 +21,8 @@ import groovy.transform.Memoized
 
 import java.nio.ByteBuffer
 
+import javax.websocket.CloseReason
+import javax.websocket.EndpointConfig
 import javax.websocket.PongMessage
 import javax.websocket.Session
 
@@ -37,30 +39,51 @@ public abstract class AbstractWebSocketEndPointByPathPart extends CoreGroovySupp
         m_pathpart = StringOps.toTrimOrNull(pathpart)
     }
 
-    public void onOpen(final Session session)
+    public void onOpen(final Session session, final EndpointConfig config) throws IOException
     {
         final String name = getEndPointName(session)
 
+        final String iden = getEndPointIden(session)
+
         final IWebSocketService service = getWebSocketService(name)
 
-        if (null != service)
+        if (service)
         {
+            logger().info("onOpen(${name},${iden})")
+            
             getWebSocketServiceProvider().addEndPoint(session, name, service)
         }
         else
         {
-            logger().error("onOpen(" + name + ") Can't find WebSocketService")
+            logger().error("onOpen(${name},${iden}) Can't find WebSocketService")
+
+            try
+            {
+                session.close()
+            }
+            catch (Exception e)
+            {
+                logger().error("onOpen(${name},${iden}).close()", e)
+            }
         }
     }
 
-    public void onClose(final Session session)
-    {
-        getWebSocketServiceProvider().removeEndPoint(session, getEndPointName(session))
-    }
-
-    public void onText(final Session session, final String text, final boolean last)
+    public void onClose(final Session session, final CloseReason reason) throws IOException
     {
         final String name = getEndPointName(session)
+
+        final String iden = getEndPointIden(session)
+        
+        logger().info("onClose(${name},${iden})")
+
+        getWebSocketServiceProvider().removeEndPoint(session, name)
+    }
+
+    public void onText(final Session session, final String text, final boolean last) throws IOException
+    {
+        final String name = getEndPointName(session)
+
+        final String iden = getEndPointIden(session)
 
         try
         {
@@ -70,12 +93,12 @@ public abstract class AbstractWebSocketEndPointByPathPart extends CoreGroovySupp
             }
             else
             {
-                logger().error("onText(" + name + ") Session is closed")
+                logger().error("onText(${name},${iden}) Session is closed")
             }
         }
         catch (Exception e)
         {
-            logger().error("onText(" + name + ")", e)
+            logger().error("onText(${name},${iden})", e)
 
             if (doCloseOnException(e))
             {
@@ -85,9 +108,19 @@ public abstract class AbstractWebSocketEndPointByPathPart extends CoreGroovySupp
                 }
                 catch (Exception i)
                 {
+                    logger().error("onText(${name},${iden}).close()", i)
                 }
             }
         }
+    }
+
+    public void onError(final Session session, final Throwable t)
+    {
+        final String name = getEndPointName(session)
+
+        final String iden = getEndPointIden(session)
+
+        logger().error("onError(${name},${iden}): " + t.getMessage())
     }
 
     public void onBinary(final Session session, final ByteBuffer bb, final boolean last)
@@ -96,6 +129,11 @@ public abstract class AbstractWebSocketEndPointByPathPart extends CoreGroovySupp
 
     public void onPongMessage(final PongMessage pm)
     {
+    }
+
+    public String getEndPointIden(final Session session)
+    {
+        session.getId()
     }
 
     public String getEndPointName(final Session session)

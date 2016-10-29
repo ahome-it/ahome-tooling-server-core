@@ -56,6 +56,8 @@ public class PythonScriptingProperties extends AbstractScriptingProperties
 
         getProperties().putIfAbsent("python.import.site", "false");
 
+        getProperties().putIfAbsent("python.cachedir.skip", "true");
+
         PySystemState.initialize(PySystemState.getBaseProperties(), getProperties(), StringOps.EMPTY_STRING_ARRAY);
     }
 }

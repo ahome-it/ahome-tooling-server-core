@@ -43,4 +43,6 @@ public interface IWebSocketServiceSession extends IIdentified, Closeable
     public void reply(JSONObject json);
     
     public void reply(JSONArray batch);
+    
+    public void batch(JSONObject json);
 }

@@ -152,6 +152,12 @@ public class WebSocketServiceContext extends ServerContextInstance implements IW
     }
 
     @Override
+    public void batch(final JSONObject json)
+    {
+        reply(json.toJSONString(isStrict()));
+    }
+
+    @Override
     public void reply(final JSONArray batch)
     {
         reply(batch.toJSONString(isStrict()));
@@ -174,5 +180,4 @@ public class WebSocketServiceContext extends ServerContextInstance implements IW
     {
         return getSession().getId();
     }
-
 }

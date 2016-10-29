@@ -40,11 +40,5 @@ public abstract class JSONWebSocketServiceSupport extends WebSocketServiceSuppor
         new JSONParser()
     }
 
-    @Override
-    public boolean isText()
-    {
-        false
-    }
-
     abstract public void onMessage(IWebSocketServiceContext context, JSONObject json) throws Exception
 }

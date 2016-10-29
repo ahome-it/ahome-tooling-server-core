@@ -25,6 +25,4 @@ public interface IWebSocketService extends INamed, Closeable
     public void onMessage(IWebSocketServiceContext context, String text, boolean last) throws Exception;
 
     public void onOpen(IWebSocketServiceContext context);
-
-    public boolean isText();
 }

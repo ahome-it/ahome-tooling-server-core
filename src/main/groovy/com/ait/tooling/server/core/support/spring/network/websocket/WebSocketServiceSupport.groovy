@@ -47,12 +47,6 @@ public abstract class WebSocketServiceSupport extends CoreGroovySupport implemen
     }
 
     @Override
-    public boolean isText()
-    {
-        true
-    }
-
-    @Override
     public void onOpen(IWebSocketServiceContext context)
     {
     }

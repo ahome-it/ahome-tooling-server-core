@@ -35,17 +35,17 @@ import com.ait.tooling.server.core.json.JSONObject;
 
 public class WebSocketServiceProvider implements IWebSocketServiceProvider, BeanFactoryAware
 {
-    private static final Logger                                   logger     = Logger.getLogger(WebSocketServiceProvider.class);
+    private static final Logger                            logger     = Logger.getLogger(WebSocketServiceProvider.class);
 
-    private final LinkedHashMap<String, IWebSocketServiceFactory> m_factorys = new LinkedHashMap<String, IWebSocketServiceFactory>();
+    private final LinkedHashMap<String, IWebSocketService> m_factorys = new LinkedHashMap<String, IWebSocketService>();
 
-    private final WebSocketEndPointCollection                     m_endpoint = new WebSocketEndPointCollection();
+    private final WebSocketEndPointCollection              m_endpoint = new WebSocketEndPointCollection();
 
     public WebSocketServiceProvider()
     {
     }
 
-    protected void addFactory(final String name, final IWebSocketServiceFactory fact)
+    protected void addFactory(final String name, final IWebSocketService fact)
     {
         if (null != fact)
         {
@@ -68,13 +68,7 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
     @Override
     public IWebSocketService getWebSocketService(final String name)
     {
-        final IWebSocketServiceFactory fact = m_factorys.get(StringOps.requireTrimOrNull(name));
-
-        if (null != fact)
-        {
-            return fact.get();
-        }
-        return null;
+        return m_factorys.get(StringOps.requireTrimOrNull(name));
     }
 
     @Override
@@ -92,40 +86,7 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
             {
                 final IWebSocketService service = factory.getBean(bean, IWebSocketService.class);
 
-                if (factory.isPrototype(bean))
-                {
-                    addFactory(service.getName(), new IWebSocketServiceFactory()
-                    {
-                        @Override
-                        public IWebSocketService get()
-                        {
-                            return factory.getBean(bean, IWebSocketService.class);
-                        }
-
-                        @Override
-                        public boolean isPrototype()
-                        {
-                            return true;
-                        }
-                    });
-                }
-                else
-                {
-                    addFactory(service.getName(), new IWebSocketServiceFactory()
-                    {
-                        @Override
-                        public IWebSocketService get()
-                        {
-                            return service;
-                        }
-
-                        @Override
-                        public boolean isPrototype()
-                        {
-                            return false;
-                        }
-                    });
-                }
+                addFactory(bean, service);
             }
         }
     }
@@ -133,22 +94,17 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
     @Override
     public void close() throws IOException
     {
-        for (IWebSocketServiceFactory fact : m_factorys.values())
+        for (IWebSocketService sock : m_factorys.values())
         {
-            if (null != fact)
+            if (null != sock)
             {
-                if (false == fact.isPrototype())
+                try
                 {
-                    final IWebSocketService sock = fact.get();
-
-                    try
-                    {
-                        sock.close();
-                    }
-                    catch (Exception e)
-                    {
-                        logger.error(sock.getName(), e);
-                    }
+                    sock.close();
+                }
+                catch (Exception e)
+                {
+                    logger.error(sock.getName(), e);
                 }
             }
         }
