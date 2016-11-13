@@ -16,9 +16,6 @@
 
 package com.ait.tooling.server.core.support.spring.network.websocket
 
-import groovy.transform.CompileStatic
-import groovy.transform.Memoized
-
 import java.nio.ByteBuffer
 
 import javax.websocket.CloseReason
@@ -27,12 +24,14 @@ import javax.websocket.PongMessage
 import javax.websocket.Session
 
 import com.ait.tooling.common.api.java.util.StringOps
-import com.ait.tooling.server.core.support.CoreGroovySupport
+
+import groovy.transform.CompileStatic
+import groovy.transform.Memoized
 
 @CompileStatic
-public abstract class AbstractWebSocketEndPointByPathPart extends CoreGroovySupport
+public abstract class AbstractWebSocketEndPointByPathPart extends AbstractWebSocketServiceContext
 {
-    private final String                    m_pathpart
+    private final String    m_pathpart
 
     protected AbstractWebSocketEndPointByPathPart(final String pathpart)
     {
@@ -41,21 +40,33 @@ public abstract class AbstractWebSocketEndPointByPathPart extends CoreGroovySupp
 
     public void onOpen(final Session session, final EndpointConfig config) throws IOException
     {
-        final String name = getEndPointName(session)
+        setSession(session)
 
-        final String iden = getEndPointIden(session)
+        debug("onOpen(${getEndPointName()}, ${getEndPointIden()})")
 
-        final IWebSocketService service = getWebSocketService(name)
+        final IWebSocketService service = getWebSocketService(getEndPointName())
 
         if (service)
         {
-            logger().info("onOpen(${name},${iden})")
-            
-            getWebSocketServiceProvider().addEndPoint(session, name, service)
+            setService(service)
+
+            if (false == getWebSocketServiceProvider().addWebSocketServiceSession(this))
+            {
+                logger().error("onOpen(${getEndPointName()}, ${getEndPointIden()}) Can't add IWebSocketServiceSession")
+
+                try
+                {
+                    session.close()
+                }
+                catch (Exception e)
+                {
+                    logger().error("onOpen(${getEndPointName()}, ${getEndPointIden()}).close()", e)
+                }
+            }
         }
         else
         {
-            logger().error("onOpen(${name},${iden}) Can't find WebSocketService")
+            logger().error("onOpen(${getEndPointName()}, ${getEndPointIden()}) Can't find WebSocketService")
 
             try
             {
@@ -63,52 +74,58 @@ public abstract class AbstractWebSocketEndPointByPathPart extends CoreGroovySupp
             }
             catch (Exception e)
             {
-                logger().error("onOpen(${name},${iden}).close()", e)
+                logger().error("onOpen(${getEndPointName()}, ${getEndPointIden()}).close()", e)
             }
         }
     }
 
     public void onClose(final Session session, final CloseReason reason) throws IOException
     {
-        final String name = getEndPointName(session)
+        debug("onClose(${getEndPointName()}, ${getEndPointIden()})")
 
-        final String iden = getEndPointIden(session)
-        
-        logger().info("onClose(${name},${iden})")
+        getWebSocketServiceProvider().removeWebSocketServiceSession(this)
+    }
 
-        getWebSocketServiceProvider().removeEndPoint(session, name)
+    protected void debug(final String text)
+    {
+        logger().debug(text)
     }
 
     public void onText(final Session session, final String text, final boolean last) throws IOException
     {
-        final String name = getEndPointName(session)
-
-        final String iden = getEndPointIden(session)
-
         try
         {
-            if (session.isOpen())
+            if (isOpen())
             {
-                getWebSocketServiceProvider().onMessage(session, name, text, last)
+                final IWebSocketService service = getService()
+
+                if (service)
+                {
+                    service.onMessage(this, text, last)
+                }
+                else
+                {
+                    logger().error("onText(${getEndPointName()}, ${getEndPointIden()}) WebSocketService is null")
+                }
             }
             else
             {
-                logger().error("onText(${name},${iden}) Session is closed")
+                logger().error("onText(${getEndPointName()}, ${getEndPointIden()}) Session is closed")
             }
         }
         catch (Exception e)
         {
-            logger().error("onText(${name},${iden})", e)
+            logger().error("onText(${getEndPointName()}, ${getEndPointIden()})", e)
 
             if (doCloseOnException(e))
             {
                 try
                 {
-                    session.close()
+                    close()
                 }
                 catch (Exception i)
                 {
-                    logger().error("onText(${name},${iden}).close()", i)
+                    logger().error("onText(${getEndPointName()}, ${getEndPointIden()}).close()", i)
                 }
             }
         }
@@ -116,34 +133,29 @@ public abstract class AbstractWebSocketEndPointByPathPart extends CoreGroovySupp
 
     public void onError(final Session session, final Throwable t)
     {
-        final String name = getEndPointName(session)
-
-        final String iden = getEndPointIden(session)
-
-        logger().error("onError(${name},${iden}): " + t.getMessage())
+        logger().error("onError(${getEndPointName()}, ${getEndPointIden()}) " + t.getMessage())
     }
 
     public void onBinary(final Session session, final ByteBuffer bb, final boolean last)
     {
+        logger().error("onBinary(${getEndPointName()}, ${getEndPointIden()}) unimplemented")
     }
 
     public void onPongMessage(final PongMessage pm)
     {
+        logger().error("onPongMessage(${getEndPointName()}, ${getEndPointIden()}) unimplemented")
     }
 
-    public String getEndPointIden(final Session session)
+    @Memoized
+    public String getEndPointIden()
     {
-        session.getId()
+        getId()
     }
 
-    public String getEndPointName(final Session session)
+    @Memoized
+    public String getEndPointName()
     {
-        getPathParameter(session, getPathPart())
-    }
-
-    public String getPathParameter(final Session session, final String name)
-    {
-        session.getPathParameters().get(name)
+        getPathParameter(getPathPart())
     }
 
     @Memoized

@@ -16,22 +16,21 @@
 
 package com.ait.tooling.server.core.security.tools
 
-import com.ait.tooling.server.core.security.SimpleCryptoKeysGenerator
-import groovy.swing.SwingBuilder as Swing
 import java.awt.BorderLayout as BL
-import java.awt.Insets
 import java.awt.Color
+import java.awt.Insets
 
 import javax.swing.JFileChooser
 import javax.swing.JMenuItem
 import javax.swing.JTextArea
 import javax.swing.border.CompoundBorder
-import javax.swing.border.MatteBorder
 import javax.swing.border.LineBorder
-
+import javax.swing.border.MatteBorder
 import javax.swing.filechooser.FileFilter
 
 import com.ait.tooling.server.core.security.SimpleCryptoKeysGenerator
+
+import groovy.swing.SwingBuilder as Swing
 
 public class PropertiesUI {
 

@@ -17,6 +17,9 @@
 package com.ait.tooling.server.core.scripting;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -29,6 +32,7 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
 import org.apache.log4j.Logger;
+import org.springframework.core.io.Resource;
 
 import com.ait.tooling.common.api.java.util.StringOps;
 
@@ -62,15 +66,39 @@ public class ScriptingProvider implements IScriptingProvider
     }
 
     @Override
-    public ScriptEngine getScriptEngine(final ScriptType type)
+    public ScriptEngine engine(final ScriptType type)
     {
         return getScriptEngineManager().getEngineByName(StringOps.requireTrimOrNull(type.getValue()));
     }
 
     @Override
-    public ScriptEngine getScriptEngine(final ScriptType type, final ClassLoader loader)
+    public ScriptEngine engine(final ScriptType type, final ClassLoader loader)
     {
         return getScriptEngineManager(Objects.requireNonNull(loader)).getEngineByName(StringOps.requireTrimOrNull(type.getValue()));
+    }
+
+    @Override
+    public ScriptEngine engine(final ScriptType type, final Resource resource) throws Exception
+    {
+        return engine(type, resource.getInputStream());
+    }
+
+    @Override
+    public ScriptEngine engine(final ScriptType type, final Reader reader) throws Exception
+    {
+        final ScriptEngine engine = engine(type);
+
+        engine.eval(reader);
+
+        reader.close();
+
+        return engine;
+    }
+
+    @Override
+    public ScriptEngine engine(final ScriptType type, final InputStream stream) throws Exception
+    {
+        return engine(type, new InputStreamReader(stream));
     }
 
     @Override
@@ -188,5 +216,23 @@ public class ScriptingProvider implements IScriptingProvider
     public ScriptEngineManager getScriptEngineManager(final ClassLoader loader)
     {
         return new ScriptEngineManager(Objects.requireNonNull(loader));
+    }
+
+    @Override
+    public ScriptingProxy proxy(final ScriptType type, final Resource resource) throws Exception
+    {
+        return new ScriptingProxy(type, resource);
+    }
+
+    @Override
+    public ScriptingProxy proxy(final ScriptType type, final Reader reader) throws Exception
+    {
+        return new ScriptingProxy(type, reader);
+    }
+
+    @Override
+    public ScriptingProxy proxy(final ScriptType type, final InputStream stream) throws Exception
+    {
+        return new ScriptingProxy(type, stream);
     }
 }

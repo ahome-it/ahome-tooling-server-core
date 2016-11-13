@@ -17,16 +17,26 @@
 package com.ait.tooling.server.core.scripting;
 
 import java.io.Closeable;
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.List;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
+import org.springframework.core.io.Resource;
+
 public interface IScriptingProvider extends Closeable
 {
-    public ScriptEngine getScriptEngine(ScriptType type);
+    public ScriptEngine engine(ScriptType type);
 
-    public ScriptEngine getScriptEngine(ScriptType type, ClassLoader loader);
+    public ScriptEngine engine(ScriptType type, Resource resource) throws Exception;
+
+    public ScriptEngine engine(ScriptType type, Reader reader) throws Exception;
+
+    public ScriptEngine engine(ScriptType type, InputStream stream) throws Exception;
+
+    public ScriptEngine engine(ScriptType type, ClassLoader loader);
 
     public List<String> getScriptingLanguageNames();
 
@@ -39,4 +49,10 @@ public interface IScriptingProvider extends Closeable
     public ScriptEngineManager getScriptEngineManager();
 
     public ScriptEngineManager getScriptEngineManager(ClassLoader loader);
+
+    public ScriptingProxy proxy(ScriptType type, Resource resource) throws Exception;
+
+    public ScriptingProxy proxy(ScriptType type, Reader reader) throws Exception;
+
+    public ScriptingProxy proxy(ScriptType type, InputStream stream) throws Exception;
 }

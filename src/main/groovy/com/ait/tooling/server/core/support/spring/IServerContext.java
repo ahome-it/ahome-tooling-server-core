@@ -21,8 +21,6 @@ import java.io.Reader;
 import java.util.List;
 import java.util.Map;
 
-import javax.script.ScriptEngine;
-
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
@@ -37,7 +35,6 @@ import com.ait.tooling.server.core.jmx.management.ICoreServerManager;
 import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.support.IJSONUtilities;
 import com.ait.tooling.server.core.scripting.IScriptingProvider;
-import com.ait.tooling.server.core.scripting.ScriptType;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizer;
 import com.ait.tooling.server.core.security.ICryptoProvider;
@@ -118,19 +115,7 @@ public interface IServerContext extends IJSONUtilities, IAuthorizer, IProperties
 
     public <T> T requireNonNull(T object, String message);
 
-    public IScriptingProvider getScriptingProvider();
-
-    public ScriptEngine scripting(ScriptType type);
-
-    public ScriptEngine scripting(ScriptType type, ClassLoader loader);
-
-    public List<String> getScriptingLanguageNames();
-
-    public List<String> getScriptingLanguageNames(ClassLoader loader);
-
-    public List<ScriptType> getScriptingLanguageTypes();
-
-    public List<ScriptType> getScriptingLanguageTypes(ClassLoader loader);
+    public IScriptingProvider scripting();
 
     public Resource resource(String location);
 

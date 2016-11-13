@@ -353,6 +353,20 @@ public class JSONObject extends LinkedHashMap<String, Object> implements JSONObj
         return this;
     }
 
+    public JSONObject merge(final Map<String, ?> map)
+    {
+        putAll(Objects.requireNonNull(map));
+
+        return this;
+    }
+
+    public JSONObject merge(final JSONObject json)
+    {
+        putAll(Objects.requireNonNull(json));
+
+        return this;
+    }
+
     @SuppressWarnings("unchecked")
     public <T> T asType(final Class<T> type)
     {

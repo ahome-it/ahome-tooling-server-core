@@ -16,15 +16,18 @@
 
 package com.ait.tooling.server.core.support.spring.network.websocket
 
+import com.ait.tooling.common.api.java.util.StringOps
+import com.ait.tooling.server.core.json.JSONObject
+import com.ait.tooling.server.core.support.CoreGroovySupport
+
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
-
-import com.ait.tooling.common.api.java.util.StringOps
-import com.ait.tooling.server.core.support.CoreGroovySupport
 
 @CompileStatic
 public abstract class WebSocketServiceSupport extends CoreGroovySupport implements IWebSocketService
 {
+    private JSONObject m_attr = json()
+    
     protected WebSocketServiceSupport()
     {
     }
@@ -46,8 +49,15 @@ public abstract class WebSocketServiceSupport extends CoreGroovySupport implemen
         claz.getName().replace('.', '_')
     }
 
-    @Override
-    public void onOpen(IWebSocketServiceContext context)
+    @Memoized
+    public boolean isText()
     {
+        true
+    }
+    
+    @Override
+    public JSONObject getAttributes()
+    {
+        m_attr
     }
 }

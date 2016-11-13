@@ -17,29 +17,32 @@
 package com.ait.tooling.server.core.support.spring.network.websocket;
 
 import java.io.Closeable;
+import java.util.Collection;
 import java.util.List;
-
-import javax.websocket.Session;
-
-import com.ait.tooling.server.core.json.JSONObject;
+import java.util.Map;
+import java.util.function.Predicate;
 
 public interface IWebSocketServiceProvider extends Closeable
 {
     public List<String> getWebSocketServiceNames();
-    
+
     public IWebSocketService getWebSocketService(String name);
-    
+
     public IWebSocketServiceSession getWebSocketServiceSession(String id);
 
-    public void broadcast(String name, String text);
+    public List<IWebSocketServiceSession> getWebSocketServiceSessions();
 
-    public void broadcast(String name, String text, boolean last);
-    
-    public void broadcast(String name, JSONObject json);
-    
-    public boolean addEndPoint(Session session, String name, IWebSocketService service);
+    public boolean addWebSocketServiceSession(IWebSocketServiceSession session);
 
-    public boolean removeEndPoint(Session session, String name);
+    public boolean removeWebSocketServiceSession(IWebSocketServiceSession session);
 
-    public void onMessage(final Session session, final String name, final String text, final boolean last) throws Exception;
+    public List<IWebSocketServiceSession> findSessions(Predicate<IWebSocketServiceSession> predicate);
+
+    public List<IWebSocketServiceSession> findSessionsByIdentifiers(Collection<String> want);
+
+    public List<IWebSocketServiceSession> findSessionsByServiceNames(Collection<String> want);
+
+    public List<IWebSocketServiceSession> findSessionsByPathParameters(Map<String, String> want);
+
+    public List<IWebSocketServiceSession> findSessionsByPathParameters(Map<String, String> want, boolean some);
 }

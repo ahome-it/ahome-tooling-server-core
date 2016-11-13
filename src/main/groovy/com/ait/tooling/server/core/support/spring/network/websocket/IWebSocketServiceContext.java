@@ -16,14 +16,8 @@
 
 package com.ait.tooling.server.core.support.spring.network.websocket;
 
-import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.support.spring.IServerContext;
 
 public interface IWebSocketServiceContext extends IWebSocketServiceSession, IServerContext
 {
-    public void broadcast(String name, String text);
-
-    public void broadcast(String name, String text, boolean last);
-    
-    public void broadcast(String name, JSONObject json);
 }

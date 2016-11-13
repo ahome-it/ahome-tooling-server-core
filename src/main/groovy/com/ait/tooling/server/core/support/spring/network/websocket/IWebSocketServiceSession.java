@@ -17,6 +17,7 @@
 package com.ait.tooling.server.core.support.spring.network.websocket;
 
 import java.io.Closeable;
+import java.util.Map;
 
 import javax.websocket.Session;
 
@@ -34,15 +35,19 @@ public interface IWebSocketServiceSession extends IIdentified, Closeable
 
     public boolean isStrict();
 
-    public IWebSocketService getSerivce();
+    public JSONObject getAttributes();
 
-    public void reply(String text);
+    public Map<String, String> getPathParameters();
 
-    public void reply(String text, boolean last);
+    public IWebSocketService getService();
 
-    public void reply(JSONObject json);
-    
-    public void reply(JSONArray batch);
-    
-    public void batch(JSONObject json);
+    public void reply(String text) throws Exception;
+
+    public void reply(String text, boolean last) throws Exception;
+
+    public void reply(JSONObject json) throws Exception;
+
+    public void reply(JSONArray batch) throws Exception;
+
+    public void batch(JSONObject json) throws Exception;
 }

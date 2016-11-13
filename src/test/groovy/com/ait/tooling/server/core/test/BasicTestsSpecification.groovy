@@ -19,15 +19,13 @@ package com.ait.tooling.server.core.test
 import javax.script.ScriptEngine
 
 import com.ait.tooling.server.core.json.JSONObject
+import com.ait.tooling.server.core.json.binder.BinderType
 import com.ait.tooling.server.core.json.support.JSONMapToTreeSolver
 import com.ait.tooling.server.core.logging.MDC
 import com.ait.tooling.server.core.scripting.ScriptType
-import com.ait.tooling.server.core.scripting.ScriptingProxy
 import com.ait.tooling.server.core.support.CoreGroovyTrait
-import com.ait.tooling.server.core.support.spring.network.PathParameters
 import com.ait.tooling.server.core.support.spring.testing.IServerCoreTesting.TestingOps
 import com.ait.tooling.server.core.support.spring.testing.spock.ServerCoreSpecification
-import com.ait.tooling.server.core.json.binder.BinderType
 
 class BasicTestsSpecification extends ServerCoreSpecification implements CoreGroovyTrait
 {
@@ -108,7 +106,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     def "test script types"()
     {
         setup:
-        def lang = getScriptingLanguageNames()
+        def lang = scripting().getScriptingLanguageNames()
         println json(languages: lang)
 
         expect:
@@ -118,10 +116,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     def "test JS Script"()
     {
         setup:
-        Reader rsrc = reader('classpath:/com/ait/tooling/server/core/test/test.js')
-        ScriptEngine engine = scripting(ScriptType.JAVASCRIPT)
-        engine.eval(rsrc)
-        rsrc.close()
+        ScriptEngine engine = scripting().engine(ScriptType.JAVASCRIPT, reader('classpath:/com/ait/tooling/server/core/test/test.js'))
         println "JavaScript " + engine.get('x')
         engine.eval('increment_x()')
         println "JavaScript " + engine.get('x')
@@ -133,10 +128,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     def "test Python Script"()
     {
         setup:
-        Reader rsrc = reader('classpath:/com/ait/tooling/server/core/test/test.py')
-        ScriptEngine engine = scripting(ScriptType.PYTHON)
-        engine.eval(rsrc)
-        rsrc.close()
+        ScriptEngine engine = scripting().engine(ScriptType.PYTHON, reader('classpath:/com/ait/tooling/server/core/test/test.py'))
         println "Python " + engine.get('x')
         engine.eval('increment_x()')
         println "Python " + engine.get('x')
@@ -148,10 +140,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     def "test Groovy Script"()
     {
         setup:
-        Reader rsrc = reader('classpath:/com/ait/tooling/server/core/test/test.gy')
-        ScriptEngine engine = scripting(ScriptType.GROOVY)
-        engine.eval(rsrc)
-        rsrc.close()
+        ScriptEngine engine = scripting().engine(ScriptType.GROOVY, reader('classpath:/com/ait/tooling/server/core/test/test.gy'))
         println "Groovy " + engine.get('x')
         engine.eval('increment_x()')
         println "Groovy " + engine.get('x')
@@ -163,10 +152,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     def "test Ruby Script"()
     {
         setup:
-        Reader rsrc = reader('classpath:/com/ait/tooling/server/core/test/test.rb')
-        ScriptEngine engine = scripting(ScriptType.RUBY)
-        engine.eval(rsrc)
-        rsrc.close()
+        ScriptEngine engine = scripting().engine(ScriptType.RUBY, reader('classpath:/com/ait/tooling/server/core/test/test.rb'))
         println "Ruby " + engine.get('x')
         engine.eval('increment_x()')
         println "Ruby " + engine.get('x')
@@ -370,7 +356,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     def "test JavaScript scripting Proxy"()
     {
         setup:
-        def p = new ScriptingProxy(ScriptType.JAVASCRIPT, reader('classpath:/com/ait/tooling/server/core/test/test.js'))
+        def p = scripting().proxy(ScriptType.JAVASCRIPT, reader('classpath:/com/ait/tooling/server/core/test/test.js'))
         
         p.increment_x()
         p.testargs(5, 'dean')
@@ -385,7 +371,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     def "test Groovy scripting Proxy"()
     {
         setup:
-        def p = new ScriptingProxy(ScriptType.GROOVY, reader('classpath:/com/ait/tooling/server/core/test/test.gy'))
+        def p = scripting().proxy(ScriptType.GROOVY, reader('classpath:/com/ait/tooling/server/core/test/test.gy'))
         
         p.increment_x()
         p.testargs(5, 'dean')
@@ -400,7 +386,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     def "test Python scripting Proxy"()
     {
         setup:
-        def p = new ScriptingProxy(ScriptType.PYTHON, reader('classpath:/com/ait/tooling/server/core/test/test.py'))
+        def p = scripting().proxy(ScriptType.PYTHON, reader('classpath:/com/ait/tooling/server/core/test/test.py'))
         
         p.increment_x()
         p.testargs(5, 'dean')
@@ -415,7 +401,7 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     def "test Ruby scripting Proxy"()
     {
         setup:
-        def p = new ScriptingProxy(ScriptType.RUBY, reader('classpath:/com/ait/tooling/server/core/test/test.rb'))
+        def p = scripting().proxy(ScriptType.RUBY, reader('classpath:/com/ait/tooling/server/core/test/test.rb'))
         
         p.increment_x()
         p.testargs(5, 'dean')

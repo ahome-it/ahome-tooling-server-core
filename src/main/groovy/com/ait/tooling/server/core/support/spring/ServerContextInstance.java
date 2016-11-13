@@ -24,8 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.script.ScriptEngine;
-
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
@@ -42,9 +40,8 @@ import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.support.JSONUtilitiesInstance;
 import com.ait.tooling.server.core.pubsub.JSONMessageBuilder;
 import com.ait.tooling.server.core.scripting.IScriptingProvider;
-import com.ait.tooling.server.core.scripting.ScriptType;
-import com.ait.tooling.server.core.security.DefaultAuthorizationProvider;
 import com.ait.tooling.server.core.security.AuthorizationResult;
+import com.ait.tooling.server.core.security.DefaultAuthorizationProvider;
 import com.ait.tooling.server.core.security.IAuthorizationProvider;
 import com.ait.tooling.server.core.security.ICryptoProvider;
 import com.ait.tooling.server.core.security.ISignatoryProvider;
@@ -399,45 +396,9 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
     }
 
     @Override
-    public final IScriptingProvider getScriptingProvider()
+    public final IScriptingProvider scripting()
     {
         return Objects.requireNonNull(getBeanSafely("ScriptingProvider", IScriptingProvider.class), "ScriptingProvider is null, initialization error.");
-    }
-
-    @Override
-    public final ScriptEngine scripting(final ScriptType type)
-    {
-        return getScriptingProvider().getScriptEngine(type);
-    }
-
-    @Override
-    public final ScriptEngine scripting(final ScriptType type, final ClassLoader loader)
-    {
-        return getScriptingProvider().getScriptEngine(type, Objects.requireNonNull(loader));
-    }
-
-    @Override
-    public final List<String> getScriptingLanguageNames()
-    {
-        return getScriptingProvider().getScriptingLanguageNames();
-    }
-
-    @Override
-    public final List<String> getScriptingLanguageNames(final ClassLoader loader)
-    {
-        return getScriptingProvider().getScriptingLanguageNames(Objects.requireNonNull(loader));
-    }
-
-    @Override
-    public final List<ScriptType> getScriptingLanguageTypes()
-    {
-        return getScriptingProvider().getScriptingLanguageTypes();
-    }
-
-    @Override
-    public final List<ScriptType> getScriptingLanguageTypes(final ClassLoader loader)
-    {
-        return getScriptingProvider().getScriptingLanguageTypes(Objects.requireNonNull(loader));
     }
 
     @Override

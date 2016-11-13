@@ -16,11 +16,6 @@
 
 package com.ait.tooling.server.core.support
 
-import groovy.transform.CompileStatic
-import groovy.transform.Memoized
-
-import javax.script.ScriptEngine
-
 import org.springframework.context.ApplicationContext
 import org.springframework.core.env.Environment
 import org.springframework.core.io.Resource
@@ -36,7 +31,6 @@ import com.ait.tooling.server.core.json.JSONObject
 import com.ait.tooling.server.core.json.support.JSONTrait
 import com.ait.tooling.server.core.pubsub.JSONMessageBuilder
 import com.ait.tooling.server.core.scripting.IScriptingProvider
-import com.ait.tooling.server.core.scripting.ScriptType
 import com.ait.tooling.server.core.security.AuthorizationResult
 import com.ait.tooling.server.core.security.IAuthorizationProvider
 import com.ait.tooling.server.core.security.ICryptoProvider
@@ -49,6 +43,9 @@ import com.ait.tooling.server.core.support.spring.IServerContext
 import com.ait.tooling.server.core.support.spring.network.ICoreNetworkProvider
 import com.ait.tooling.server.core.support.spring.network.websocket.IWebSocketService
 import com.ait.tooling.server.core.support.spring.network.websocket.IWebSocketServiceProvider
+
+import groovy.transform.CompileStatic
+import groovy.transform.Memoized
 
 @CompileStatic
 public trait CoreGroovyTrait implements JSONTrait
@@ -249,42 +246,9 @@ public trait CoreGroovyTrait implements JSONTrait
     }
 
     @Memoized
-    public IScriptingProvider getScriptingProvider()
+    public IScriptingProvider scripting()
     {
-        getServerContext().getScriptingProvider()
-    }
-
-    public ScriptEngine scripting(ScriptType type)
-    {
-        getServerContext().scripting(Objects.requireNonNull(type))
-    }
-
-    public ScriptEngine scripting(ScriptType type, ClassLoader loader)
-    {
-        getServerContext().scripting(Objects.requireNonNull(type), Objects.requireNonNull(loader))
-    }
-
-    @Memoized
-    public List<String> getScriptingLanguageNames()
-    {
-        getServerContext().getScriptingLanguageNames()
-    }
-
-    public List<String> getScriptingLanguageNames(ClassLoader loader)
-    {
-        getScriptingProvider().getScriptingLanguageNames(Objects.requireNonNull(loader))
-    }
-
-    @Memoized
-    public List<ScriptType> getScriptingLanguageTypes()
-    {
-        getServerContext().getScriptingLanguageTypes()
-    }
-
-    @Memoized
-    public List<ScriptType> getScriptingLanguageTypes(ClassLoader loader)
-    {
-        getScriptingProvider().getScriptingLanguageTypes(Objects.requireNonNull(loader))
+        getServerContext().scripting()
     }
 
     public Resource resource(String location)
@@ -303,6 +267,7 @@ public trait CoreGroovyTrait implements JSONTrait
         getServerContext().getWebSocketServiceProvider()
     }
 
+    @Memoized
     public IWebSocketService getWebSocketService(String name)
     {
         getWebSocketServiceProvider().getWebSocketService(name)

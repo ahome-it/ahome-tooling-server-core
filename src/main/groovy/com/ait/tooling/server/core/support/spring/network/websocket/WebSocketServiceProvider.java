@@ -18,11 +18,13 @@ package com.ait.tooling.server.core.support.spring.network.websocket;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import javax.websocket.Session;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
@@ -31,35 +33,36 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import com.ait.tooling.common.api.java.util.StringOps;
-import com.ait.tooling.server.core.json.JSONObject;
 
 public class WebSocketServiceProvider implements IWebSocketServiceProvider, BeanFactoryAware
 {
-    private static final Logger                            logger     = Logger.getLogger(WebSocketServiceProvider.class);
+    private static final Logger                                   logger     = Logger.getLogger(WebSocketServiceProvider.class);
 
-    private final LinkedHashMap<String, IWebSocketService> m_factorys = new LinkedHashMap<String, IWebSocketService>();
+    private final LinkedHashMap<String, IWebSocketService>        m_services = new LinkedHashMap<String, IWebSocketService>();
 
-    private final WebSocketEndPointCollection              m_endpoint = new WebSocketEndPointCollection();
+    private final LinkedHashMap<String, IWebSocketServiceSession> m_sessions = new LinkedHashMap<String, IWebSocketServiceSession>();
 
     public WebSocketServiceProvider()
     {
     }
 
-    protected void addFactory(final String name, final IWebSocketService fact)
+    protected void addWebSocketService(final IWebSocketService service)
     {
-        if (null != fact)
+        if (null != service)
         {
+            final String name = StringOps.toTrimOrNull(service.getName());
+
             if (null != name)
             {
-                if (null == m_factorys.get(name))
+                if (null == m_services.get(name))
                 {
-                    m_factorys.put(name, fact);
+                    m_services.put(name, service);
 
-                    logger.info("WebSocketServiceProvider.addService(" + name + ") Registered");
+                    logger.info("WebSocketServiceProvider.addWebSocketService(" + name + ") Registered");
                 }
                 else
                 {
-                    logger.error("WebSocketServiceProvider.addService(" + name + ") Duplicate ignored");
+                    logger.error("WebSocketServiceProvider.addWebSocketService(" + name + ") Duplicate ignored");
                 }
             }
         }
@@ -68,13 +71,13 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
     @Override
     public IWebSocketService getWebSocketService(final String name)
     {
-        return m_factorys.get(StringOps.requireTrimOrNull(name));
+        return m_services.get(StringOps.requireTrimOrNull(name));
     }
 
     @Override
     public List<String> getWebSocketServiceNames()
     {
-        return Collections.unmodifiableList(new ArrayList<String>(m_factorys.keySet()));
+        return Collections.unmodifiableList(new ArrayList<String>(m_services.keySet()));
     }
 
     @Override
@@ -82,11 +85,9 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
     {
         if (factory instanceof DefaultListableBeanFactory)
         {
-            for (String bean : ((DefaultListableBeanFactory) factory).getBeanNamesForType(IWebSocketService.class))
+            for (IWebSocketService service : ((DefaultListableBeanFactory) factory).getBeansOfType(IWebSocketService.class).values())
             {
-                final IWebSocketService service = factory.getBean(bean, IWebSocketService.class);
-
-                addFactory(bean, service);
+                addWebSocketService(service);
             }
         }
     }
@@ -94,7 +95,7 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
     @Override
     public void close() throws IOException
     {
-        for (IWebSocketService sock : m_factorys.values())
+        for (IWebSocketService sock : m_services.values())
         {
             if (null != sock)
             {
@@ -108,48 +109,137 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
                 }
             }
         }
-        m_endpoint.close();
+        for (IWebSocketServiceSession sock : m_sessions.values())
+        {
+            if (null != sock)
+            {
+                try
+                {
+                    sock.close();
+                }
+                catch (Exception e)
+                {
+                    logger.error(sock.getId(), e);
+                }
+            }
+        }
     }
 
     @Override
-    public void broadcast(final String name, final String text)
+    public boolean addWebSocketServiceSession(final IWebSocketServiceSession session)
     {
-        m_endpoint.broadcast(name, text);
+        final String iden = session.getId();
+
+        if (null == m_sessions.get(iden))
+        {
+            m_sessions.put(iden, session);
+
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void broadcast(final String name, final String text, final boolean last)
+    public boolean removeWebSocketServiceSession(final IWebSocketServiceSession session)
     {
-        m_endpoint.broadcast(name, text, last);
+        final String iden = session.getId();
+
+        if (null != m_sessions.get(iden))
+        {
+            m_sessions.remove(iden);
+
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void broadcast(final String name, final JSONObject json)
+    public IWebSocketServiceSession getWebSocketServiceSession(final String iden)
     {
-        m_endpoint.broadcast(name, json);
+        return m_sessions.get(iden);
     }
 
     @Override
-    public boolean addEndPoint(final Session session, final String name, final IWebSocketService service)
+    public List<IWebSocketServiceSession> getWebSocketServiceSessions()
     {
-        return m_endpoint.addEndPoint(session, name, service);
+        return Collections.unmodifiableList(new ArrayList<IWebSocketServiceSession>(m_sessions.values()));
     }
 
     @Override
-    public boolean removeEndPoint(final Session session, final String name)
+    public List<IWebSocketServiceSession> findSessions(final Predicate<IWebSocketServiceSession> predicate)
     {
-        return m_endpoint.removeEndPoint(session, name);
+        return Collections.unmodifiableList(getWebSocketServiceSessions().stream().filter(predicate).collect(Collectors.toList()));
     }
 
     @Override
-    public void onMessage(final Session session, final String name, final String text, final boolean last) throws Exception
+    public List<IWebSocketServiceSession> findSessionsByIdentifiers(final Collection<String> want)
     {
-        m_endpoint.onMessage(session, name, text, last);
+        return findSessions(session -> want.contains(session.getId()));
     }
 
     @Override
-    public IWebSocketServiceSession getWebSocketServiceSession(final String id)
+    public List<IWebSocketServiceSession> findSessionsByServiceNames(final Collection<String> want)
     {
-        return m_endpoint.getWebSocketServiceSession(id);
+        return findSessions(session -> want.contains(session.getService().getName()));
+    }
+
+    @Override
+    public List<IWebSocketServiceSession> findSessionsByPathParameters(final Map<String, String> want)
+    {
+        return findSessionsByPathParameters(want, false);
+    }
+
+    @Override
+    public List<IWebSocketServiceSession> findSessionsByPathParameters(final Map<String, String> want, final boolean some)
+    {
+        return findSessions(new PathPredicate(want, some));
+    }
+
+    private static class PathPredicate implements Predicate<IWebSocketServiceSession>
+    {
+        private final Map<String, String> m_want;
+
+        private final boolean             m_some;
+
+        public PathPredicate(final Map<String, String> want, final boolean some)
+        {
+            m_want = want;
+
+            m_some = some;
+        }
+
+        @Override
+        public boolean test(final IWebSocketServiceSession session)
+        {
+            final Map<String, String> have = session.getPathParameters();
+
+            boolean find = false;
+
+            for (String ikey : m_want.keySet())
+            {
+                final String look = have.get(ikey);
+
+                if (look != null)
+                {
+                    if (look.equals(m_want.get(ikey)))
+                    {
+                        if (m_some)
+                        {
+                            return true;
+                        }
+                        find = true;
+                    }
+                    else if (false == m_some)
+                    {
+                        return false;
+                    }
+                }
+                else if (false == m_some)
+                {
+                    return false;
+                }
+            }
+            return find;
+        }
     }
 }

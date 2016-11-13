@@ -19,10 +19,13 @@ package com.ait.tooling.server.core.support.spring.network.websocket;
 import java.io.Closeable;
 
 import com.ait.tooling.common.api.types.INamed;
+import com.ait.tooling.server.core.json.JSONObject;
 
 public interface IWebSocketService extends INamed, Closeable
 {
     public void onMessage(IWebSocketServiceContext context, String text, boolean last) throws Exception;
-
-    public void onOpen(IWebSocketServiceContext context);
+    
+    public JSONObject getAttributes();
+    
+    public boolean isText();
 }
