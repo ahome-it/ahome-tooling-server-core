@@ -23,15 +23,19 @@ import javax.websocket.EndpointConfig
 import javax.websocket.PongMessage
 import javax.websocket.Session
 
+import org.apache.log4j.Logger
+
 import com.ait.tooling.common.api.java.util.StringOps
 
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 
 @CompileStatic
-public abstract class AbstractWebSocketEndPointByPathPart extends AbstractWebSocketServiceContext
+public abstract class AbstractWebSocketEndPointByPathPart
 {
-    private final String    m_pathpart
+    private final String m_pathpart
+
+    private final WebSocketServiceContext m_context = new WebSocketServiceContext()
 
     protected AbstractWebSocketEndPointByPathPart(final String pathpart)
     {
@@ -40,17 +44,17 @@ public abstract class AbstractWebSocketEndPointByPathPart extends AbstractWebSoc
 
     public void onOpen(final Session session, final EndpointConfig config) throws IOException
     {
-        setSession(session)
+        context().setSession(session)
 
         debug("onOpen(${getEndPointName()}, ${getEndPointIden()})")
 
-        final IWebSocketService service = getWebSocketService(getEndPointName())
+        final IWebSocketService service = context().getWebSocketService(getEndPointName())
 
         if (service)
         {
-            setService(service)
+            context().setService(service)
 
-            if (false == getWebSocketServiceProvider().addWebSocketServiceSession(this))
+            if (false == context().getWebSocketServiceProvider().addWebSocketServiceSession(context()))
             {
                 logger().error("onOpen(${getEndPointName()}, ${getEndPointIden()}) Can't add IWebSocketServiceSession")
 
@@ -83,7 +87,7 @@ public abstract class AbstractWebSocketEndPointByPathPart extends AbstractWebSoc
     {
         debug("onClose(${getEndPointName()}, ${getEndPointIden()})")
 
-        getWebSocketServiceProvider().removeWebSocketServiceSession(this)
+        context().getWebSocketServiceProvider().removeWebSocketServiceSession(context())
     }
 
     protected void debug(final String text)
@@ -95,13 +99,13 @@ public abstract class AbstractWebSocketEndPointByPathPart extends AbstractWebSoc
     {
         try
         {
-            if (isOpen())
+            if (context().isOpen())
             {
-                final IWebSocketService service = getService()
+                final IWebSocketService service = context().getService()
 
                 if (service)
                 {
-                    service.onMessage(this, text, last)
+                    service.onMessage(context(), text, last)
                 }
                 else
                 {
@@ -121,7 +125,7 @@ public abstract class AbstractWebSocketEndPointByPathPart extends AbstractWebSoc
             {
                 try
                 {
-                    close()
+                    context().close()
                 }
                 catch (Exception i)
                 {
@@ -149,13 +153,13 @@ public abstract class AbstractWebSocketEndPointByPathPart extends AbstractWebSoc
     @Memoized
     public String getEndPointIden()
     {
-        getId()
+        context().getId()
     }
 
     @Memoized
     public String getEndPointName()
     {
-        getPathParameter(getPathPart())
+        context().getPathParameter(getPathPart())
     }
 
     @Memoized
@@ -167,5 +171,17 @@ public abstract class AbstractWebSocketEndPointByPathPart extends AbstractWebSoc
     public boolean doCloseOnException(Exception e)
     {
         true
+    }
+
+    @Memoized
+    public WebSocketServiceContext context()
+    {
+        m_context
+    }
+
+    @Memoized
+    public Logger logger()
+    {
+        context().logger()
     }
 }

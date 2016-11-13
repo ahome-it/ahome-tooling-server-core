@@ -27,7 +27,7 @@ import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 
 @CompileStatic
-public abstract class AbstractWebSocketServiceContext extends CoreGroovySupport implements IWebSocketServiceContext
+public class WebSocketServiceContext extends CoreGroovySupport implements IWebSocketServiceContext
 {
     private boolean             m_istrict
 
@@ -37,17 +37,17 @@ public abstract class AbstractWebSocketServiceContext extends CoreGroovySupport 
 
     private IWebSocketService   m_service
 
-    protected AbstractWebSocketServiceContext()
+    public WebSocketServiceContext()
     {
-        this(json())
+        this(new JSONObject())
     }
 
-    protected AbstractWebSocketServiceContext(final JSONObject attr)
+    public WebSocketServiceContext(final JSONObject attr)
     {
         m_attribs = Objects.requireNonNull(attr)
     }
 
-    protected final void setSession(final Session session)
+    public final void setSession(final Session session)
     {
         if (null != m_session)
         {
@@ -61,12 +61,12 @@ public abstract class AbstractWebSocketServiceContext extends CoreGroovySupport 
         }
     }
 
-    protected final void setStrict(final boolean strict)
+    public final void setStrict(final boolean strict)
     {
         m_istrict = strict
     }
 
-    protected final void setService(final IWebSocketService service)
+    public final void setService(final IWebSocketService service)
     {
         if (null != m_service)
         {
