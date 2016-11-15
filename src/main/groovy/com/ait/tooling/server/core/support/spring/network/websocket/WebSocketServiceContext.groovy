@@ -21,13 +21,12 @@ import javax.websocket.Session
 import com.ait.tooling.common.api.java.util.StringOps
 import com.ait.tooling.server.core.json.JSONArray
 import com.ait.tooling.server.core.json.JSONObject
-import com.ait.tooling.server.core.support.CoreGroovySupport
 
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 
 @CompileStatic
-public class WebSocketServiceContext extends CoreGroovySupport implements IWebSocketServiceContext
+public class WebSocketServiceContext implements IWebSocketServiceContext
 {
     private boolean             m_istrict
 

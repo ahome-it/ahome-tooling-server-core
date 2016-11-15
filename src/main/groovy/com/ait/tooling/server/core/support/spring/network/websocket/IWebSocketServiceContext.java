@@ -16,8 +16,6 @@
 
 package com.ait.tooling.server.core.support.spring.network.websocket;
 
-import com.ait.tooling.server.core.support.spring.IServerContext;
-
-public interface IWebSocketServiceContext extends IWebSocketServiceSession, IServerContext
+public interface IWebSocketServiceContext extends IWebSocketServiceSession
 {
 }
