@@ -23,7 +23,6 @@ import com.ait.tooling.server.core.json.JSONArray
 import com.ait.tooling.server.core.json.JSONObject
 
 import groovy.transform.CompileStatic
-import groovy.transform.Memoized
 
 @CompileStatic
 public class WebSocketServiceContext implements IWebSocketServiceContext
@@ -36,47 +35,23 @@ public class WebSocketServiceContext implements IWebSocketServiceContext
 
     private IWebSocketService   m_service
 
-    public WebSocketServiceContext()
+    public WebSocketServiceContext(final Session session, final IWebSocketService service)
     {
-        this(new JSONObject())
+        this(new JSONObject(), session, service)
     }
 
-    public WebSocketServiceContext(final JSONObject attr)
+    public WebSocketServiceContext(final JSONObject attribs, final Session session, final IWebSocketService service)
     {
-        m_attribs = Objects.requireNonNull(attr)
-    }
+        m_session = Objects.requireNonNull(session)
 
-    public final void setSession(final Session session)
-    {
-        if (null != m_session)
-        {
-            m_session = Objects.requireNonNull(session)
+        m_service = Objects.requireNonNull(service)
 
-            m_attribs.merge(m_session.getPathParameters())
-        }
-        else
-        {
-            throw new IllegalArgumentException('WebSocket Session already set')
-        }
+        m_attribs = Objects.requireNonNull(attribs).merge(m_session.getPathParameters()).merge(m_service.getAttributes())
     }
 
     public final void setStrict(final boolean strict)
     {
         m_istrict = strict
-    }
-
-    public final void setService(final IWebSocketService service)
-    {
-        if (null != m_service)
-        {
-            m_service = Objects.requireNonNull(service)
-
-            m_attribs.merge(m_service.getAttributes())
-        }
-        else
-        {
-            throw new IllegalArgumentException('IWebSocketService already set')
-        }
     }
 
     @Override
@@ -108,13 +83,13 @@ public class WebSocketServiceContext implements IWebSocketServiceContext
         getSession().isOpen()
     }
 
-    @Memoized
+    @Override
     public String getPathParameter(final String name)
     {
         getPathParameters().get(StringOps.requireTrimOrNull(name))
     }
 
-    @Memoized
+    @Override
     public Map<String, String> getPathParameters()
     {
         getSession().getPathParameters()
@@ -161,7 +136,7 @@ public class WebSocketServiceContext implements IWebSocketServiceContext
         reply(json.toJSONString(isStrict()))
     }
 
-    @Memoized
+    @Override
     public String getId()
     {
         getSession().getId()
