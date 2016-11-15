@@ -26,6 +26,7 @@ import javax.websocket.Session
 import org.apache.log4j.Logger
 
 import com.ait.tooling.common.api.java.util.StringOps
+import com.ait.tooling.server.core.support.CoreGroovySupport
 import com.ait.tooling.server.core.support.spring.IServerContext
 
 import groovy.transform.CompileStatic
@@ -174,7 +175,7 @@ public abstract class AbstractWebSocketEndPointByPathPart
     @Memoized
     public IServerContext server()
     {
-
+        CoreGroovySupport.getCoreGroovySupport()
     }
 
     public boolean doCloseOnException(Exception e)
