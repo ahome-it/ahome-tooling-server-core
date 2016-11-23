@@ -24,21 +24,23 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
-import com.ait.tooling.common.api.java.util.StringOps;
+import com.ait.tooling.common.api.types.INamedType;
 
 public class WebSocketServiceProvider implements IWebSocketServiceProvider, BeanFactoryAware
 {
     private static final Logger                                   logger     = Logger.getLogger(WebSocketServiceProvider.class);
 
-    private final LinkedHashMap<String, IWebSocketService>        m_services = new LinkedHashMap<String, IWebSocketService>();
+    private final LinkedHashMap<String, IWebSocketServiceFactory> m_services = new LinkedHashMap<String, IWebSocketServiceFactory>();
 
     private final LinkedHashMap<String, IWebSocketServiceSession> m_sessions = new LinkedHashMap<String, IWebSocketServiceSession>();
 
@@ -46,23 +48,21 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
     {
     }
 
-    protected void addWebSocketService(final IWebSocketService service)
+    protected void addWebSocketServiceFactory(final String name, final IWebSocketServiceFactory service)
     {
         if (null != service)
         {
-            final String name = StringOps.toTrimOrNull(service.getName());
-
             if (null != name)
             {
                 if (null == m_services.get(name))
                 {
                     m_services.put(name, service);
 
-                    logger.info("WebSocketServiceProvider.addWebSocketService(" + name + ") Registered");
+                    logger.info("WebSocketServiceProvider.addWebSocketServiceFactory(" + name + ") Registered");
                 }
                 else
                 {
-                    logger.error("WebSocketServiceProvider.addWebSocketService(" + name + ") Duplicate ignored");
+                    logger.error("WebSocketServiceProvider.addWebSocketServiceFactory(" + name + ") Duplicate ignored");
                 }
             }
         }
@@ -71,7 +71,13 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
     @Override
     public IWebSocketService getWebSocketService(final String name)
     {
-        return m_services.get(StringOps.requireTrimOrNull(name));
+        final IWebSocketServiceFactory fact = m_services.get(name);
+
+        if (null != fact)
+        {
+            return fact.get();
+        }
+        return null;
     }
 
     @Override
@@ -85,9 +91,61 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
     {
         if (factory instanceof DefaultListableBeanFactory)
         {
-            for (IWebSocketService service : ((DefaultListableBeanFactory) factory).getBeansOfType(IWebSocketService.class).values())
+            final DefaultListableBeanFactory listable = ((DefaultListableBeanFactory) factory);
+
+            for (String name : listable.getBeanNamesForType(IWebSocketService.class))
             {
-                addWebSocketService(service);
+                final BeanDefinition defn = listable.getBeanDefinition(name);
+
+                if (false == defn.isAbstract())
+                {
+                    if (defn.isPrototype())
+                    {
+                        addWebSocketServiceFactory(name, new IWebSocketServiceFactory()
+                        {
+                            @Override
+                            public IWebSocketService get()
+                            {
+                                final IWebSocketService service = listable.getBean(name, IWebSocketService.class);
+
+                                if (service instanceof INamedType)
+                                {
+                                    ((INamedType) service).setName(name);
+                                }
+                                return service;
+                            }
+
+                            @Override
+                            public boolean isPrototype()
+                            {
+                                return true;
+                            }
+                        });
+                    }
+                    else
+                    {
+                        final IWebSocketService service = listable.getBean(name, IWebSocketService.class);
+
+                        if (service instanceof INamedType)
+                        {
+                            ((INamedType) service).setName(name);
+                        }
+                        addWebSocketServiceFactory(name, new IWebSocketServiceFactory()
+                        {
+                            @Override
+                            public IWebSocketService get()
+                            {
+                                return service;
+                            }
+
+                            @Override
+                            public boolean isPrototype()
+                            {
+                                return false;
+                            }
+                        });
+                    }
+                }
             }
         }
     }
@@ -95,20 +153,6 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
     @Override
     public void close() throws IOException
     {
-        for (IWebSocketService sock : m_services.values())
-        {
-            if (null != sock)
-            {
-                try
-                {
-                    sock.close();
-                }
-                catch (Exception e)
-                {
-                    logger.error(sock.getName(), e);
-                }
-            }
-        }
         for (IWebSocketServiceSession sock : m_sessions.values())
         {
             if (null != sock)
@@ -241,5 +285,10 @@ public class WebSocketServiceProvider implements IWebSocketServiceProvider, Bean
             }
             return find;
         }
+    }
+
+    protected interface IWebSocketServiceFactory extends Supplier<IWebSocketService>
+    {
+        public boolean isPrototype();
     }
 }

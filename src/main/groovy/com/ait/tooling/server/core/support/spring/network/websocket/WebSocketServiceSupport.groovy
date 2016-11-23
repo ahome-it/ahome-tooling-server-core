@@ -16,7 +16,10 @@
 
 package com.ait.tooling.server.core.support.spring.network.websocket
 
+import org.springframework.stereotype.Service
+
 import com.ait.tooling.common.api.java.util.StringOps
+import com.ait.tooling.common.api.types.INamedType
 import com.ait.tooling.server.core.json.JSONObject
 import com.ait.tooling.server.core.support.CoreGroovySupport
 
@@ -24,29 +27,34 @@ import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 
 @CompileStatic
-public abstract class WebSocketServiceSupport extends CoreGroovySupport implements IWebSocketService
+public abstract class WebSocketServiceSupport extends CoreGroovySupport implements IWebSocketService, INamedType
 {
-    private JSONObject m_attr = json()
+    private String      m_name
+    
+    private JSONObject  m_attr = json()
     
     protected WebSocketServiceSupport()
     {
     }
 
-    @Memoized
     public String getName()
     {
+        if (m_name)
+        {
+            return m_name
+        }
         final Class<?> claz = getClass()
 
-        if (claz.isAnnotationPresent(WSService))
+        if (claz.isAnnotationPresent(Service))
         {
-            final String name = StringOps.toTrimOrNull(claz.getAnnotation(WSService).name())
+            final String name = StringOps.toTrimOrNull(claz.getAnnotation(Service).value())
 
             if (name)
             {
                 return name
             }
         }
-        claz.getName().replace('.', '_')
+        claz.getSimpleName()
     }
 
     @Memoized
@@ -59,5 +67,11 @@ public abstract class WebSocketServiceSupport extends CoreGroovySupport implemen
     public JSONObject getAttributes()
     {
         m_attr
+    }
+
+    @Override
+    public void setName(final String name)
+    {
+        m_name = name
     }
 }
