@@ -48,16 +48,6 @@
 			<list>
 				<bean class="com.ait.tooling.server.core.scripting.GroovyScriptingProperties"/>
 				<bean class="com.ait.tooling.server.core.scripting.JavaScriptScriptingProperties"/>
-				<bean class="com.ait.tooling.server.core.scripting.RubyScriptingProperties">
-					<constructor-arg>
-						<value>classpath:/com/ait/tooling/server/core/test/jruby.properties</value>
-					</constructor-arg>
-				</bean>
-				<bean class="com.ait.tooling.server.core.scripting.PythonScriptingProperties">
-					<constructor-arg>
-						<value>classpath:/com/ait/tooling/server/core/test/python.properties</value>
-					</constructor-arg>
-				</bean>
 			</list>
 		</constructor-arg>
 	</bean>

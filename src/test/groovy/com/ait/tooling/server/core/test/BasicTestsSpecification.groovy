@@ -125,18 +125,6 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         "dean" == "dean"
     }
 
-    def "test Python Script"()
-    {
-        setup:
-        ScriptEngine engine = scripting().engine(ScriptType.PYTHON, reader('classpath:/com/ait/tooling/server/core/test/test.py'))
-        println "Python " + engine.get('x')
-        engine.eval('increment_x()')
-        println "Python " + engine.get('x')
-
-        expect:
-        "dean" == "dean"
-    }
-
     def "test Groovy Script"()
     {
         setup:
@@ -144,18 +132,6 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         println "Groovy " + engine.get('x')
         engine.eval('increment_x()')
         println "Groovy " + engine.get('x')
-
-        expect:
-        "dean" == "dean"
-    }
-
-    def "test Ruby Script"()
-    {
-        setup:
-        ScriptEngine engine = scripting().engine(ScriptType.RUBY, reader('classpath:/com/ait/tooling/server/core/test/test.rb'))
-        println "Ruby " + engine.get('x')
-        engine.eval('increment_x()')
-        println "Ruby " + engine.get('x')
 
         expect:
         "dean" == "dean"
@@ -372,36 +348,6 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
     {
         setup:
         def p = scripting().proxy(ScriptType.GROOVY, reader('classpath:/com/ait/tooling/server/core/test/test.gy'))
-        
-        p.increment_x()
-        p.testargs(5, 'dean')
-        p.x = 5
-        def z = p.x
-        println z
-        
-        expect:
-        z == 5
-    }
-    
-    def "test Python scripting Proxy"()
-    {
-        setup:
-        def p = scripting().proxy(ScriptType.PYTHON, reader('classpath:/com/ait/tooling/server/core/test/test.py'))
-        
-        p.increment_x()
-        p.testargs(5, 'dean')
-        p.x = 5
-        def z = p.x
-        println z
-        
-        expect:
-        z == 5
-    }
-    
-    def "test Ruby scripting Proxy"()
-    {
-        setup:
-        def p = scripting().proxy(ScriptType.RUBY, reader('classpath:/com/ait/tooling/server/core/test/test.rb'))
         
         p.increment_x()
         p.testargs(5, 'dean')

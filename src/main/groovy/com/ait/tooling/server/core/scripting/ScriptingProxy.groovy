@@ -61,10 +61,6 @@ class ScriptingProxy extends CoreGroovySupport
     {
         def pref = ''
 
-        if (m_type == ScriptType.RUBY)
-        {
-            pref = '$'
-        }
         def bind = m_engine.getBindings(ScriptContext.ENGINE_SCOPE)
 
         vals.each { k, v ->
@@ -78,10 +74,6 @@ class ScriptingProxy extends CoreGroovySupport
     {
         def pref = ''
 
-        if (m_type == ScriptType.RUBY)
-        {
-            pref = '$'
-        }
         if ((null == args) || (args.size() == 0))
         {
             return m_engine.eval("${name}()")

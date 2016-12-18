@@ -21,7 +21,7 @@ import com.ait.tooling.common.api.types.IStringValued;
 
 public enum ScriptType implements IStringValued
 {
-    GROOVY("groovy"), JAVASCRIPT("javascript"), PYTHON("python"), RUBY("ruby");
+    GROOVY("groovy"), JAVASCRIPT("javascript");
 
     private final String m_value;
 
