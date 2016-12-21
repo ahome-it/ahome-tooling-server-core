@@ -40,7 +40,7 @@ public class SimpleMemoryServerSessionRepository extends AbstractServerSessionRe
     @Override
     public void save(final IServerSession session)
     {
-        m_sessions.put(session.getId(), session);
+        m_sessions.putIfAbsent(session.getId(), session);
     }
 
     @Override
@@ -82,5 +82,6 @@ public class SimpleMemoryServerSessionRepository extends AbstractServerSessionRe
     @Override
     public void close() throws IOException
     {
+        m_sessions.clear();
     }
 }

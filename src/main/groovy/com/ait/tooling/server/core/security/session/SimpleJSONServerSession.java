@@ -41,8 +41,14 @@ public class SimpleJSONServerSession implements IServerSession
         m_attr = new JSONObject();
 
         m_repo = Objects.requireNonNull(repo);
-        
+
         m_attr.put(getHelper().getSessionIdKey(), ServerContextInstance.getServerContextInstance().uuid());
+
+        final long time = System.currentTimeMillis();
+
+        m_attr.put(m_repo.getHelper().getCreationTimeKey(), time);
+
+        m_attr.put(m_repo.getHelper().getLastAccessedTimeKey(), time);
     }
 
     public SimpleJSONServerSession(final Map<String, ?> attr, final IServerSessionRepository repo)
@@ -52,8 +58,18 @@ public class SimpleJSONServerSession implements IServerSession
         m_repo = Objects.requireNonNull(repo);
 
         if (null == getId())
-        {            
+        {
             m_attr.put(getHelper().getSessionIdKey(), ServerContextInstance.getServerContextInstance().uuid());
+        }
+        final long time = System.currentTimeMillis();
+
+        if (0 == getCreationTime())
+        {
+            m_attr.put(m_repo.getHelper().getCreationTimeKey(), time);
+        }
+        if (0 == getLastAccessedTime())
+        {
+            m_attr.put(m_repo.getHelper().getLastAccessedTimeKey(), time);
         }
     }
 
@@ -115,6 +131,10 @@ public class SimpleJSONServerSession implements IServerSession
         if (m_attr.isBoolean(getHelper().getExpiredKey()))
         {
             return m_attr.getAsBoolean(getHelper().getExpiredKey());
+        }
+        if ((getLastAccessedTime() + (getMaxInactiveIntervalInSeconds() * 1000L)) < System.currentTimeMillis())
+        {
+            return true;
         }
         return false;
     }
