@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+ * Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,19 +24,21 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 public final class YAMLBinder extends AbstractDataBinder
 {
+    private static final ObjectMapper INSTANCE = new ObjectMapper(new YAMLFactory());
+
     public YAMLBinder()
     {
-        super(new ObjectMapper(new YAMLFactory()));
+        super(INSTANCE);
     }
 
     public YAMLBinder(final MapperFeature... features)
     {
-        super(new ObjectMapper(new YAMLFactory()), features);
+        super(INSTANCE, features);
     }
 
     public YAMLBinder(final List<MapperFeature> features)
     {
-        super(new ObjectMapper(new YAMLFactory()), features);
+        super(INSTANCE, features);
     }
 
     @Override

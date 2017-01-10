@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+ * Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import java.io.Reader;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.core.io.Resource;
 
 import com.ait.tooling.server.core.json.JSONArray;
 import com.ait.tooling.server.core.json.JSONObject;
@@ -48,6 +50,8 @@ public interface IJSONUtilities
     public JSONObject jsonParse(Reader reader) throws JSONParserException;
 
     public JSONObject jsonParse(InputStream stream) throws JSONParserException;
+    
+    public JSONObject jsonParse(Resource stream) throws JSONParserException;
 
     public JSONArray jarr();
 

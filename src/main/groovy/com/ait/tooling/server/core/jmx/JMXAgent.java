@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+ * Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,21 +44,28 @@ public class JMXAgent implements Closeable
 
     public JMXAgent(final String portstring)
     {
-        this(portstring, null, null, null);
+        this(true, portstring, null, null, null);
     }
 
     public JMXAgent(final String portstring, final String hostname)
     {
-        this(portstring, hostname, null, null);
+        this(true, portstring, hostname, null, null);
     }
 
-    public JMXAgent(final String portstring, final String hostname, final String passfile, final String rolefile)
+    public JMXAgent(final boolean is_running, final String portstring, final String hostname, final String passfile, final String rolefile)
     {
-        logger.info("JMXAgent()");
+        logger.info("JMXAgent(" + is_running + ")");
 
-        m_cs = make(portstring, hostname, passfile, rolefile);
+        if (is_running)
+        {
+            m_cs = make(portstring, hostname, passfile, rolefile);
 
-        start();
+            start();
+        }
+        else
+        {
+            m_cs = null;
+        }
     }
 
     protected void start()
@@ -183,7 +190,10 @@ public class JMXAgent implements Closeable
         {
             if (null != m_cs)
             {
-                m_cs.stop();
+                if (m_cs.isActive())
+                {
+                    m_cs.stop();
+                }
             }
         }
         catch (Exception e)

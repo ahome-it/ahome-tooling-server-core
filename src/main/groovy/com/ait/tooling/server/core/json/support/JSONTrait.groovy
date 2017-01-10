@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+ * Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,31 @@
 
 package com.ait.tooling.server.core.json.support
 
-import groovy.transform.CompileStatic
+import org.springframework.core.io.Resource
 
 import com.ait.tooling.server.core.json.JSONArray
 import com.ait.tooling.server.core.json.JSONObject
-import com.ait.tooling.server.core.json.binder.BinderType;
+import com.ait.tooling.server.core.json.binder.BinderType
 import com.ait.tooling.server.core.json.binder.IBinder
 import com.ait.tooling.server.core.json.binder.JSONBinder
-import com.ait.tooling.server.core.json.binder.XMLBinder;
-import com.ait.tooling.server.core.json.binder.YAMLBinder;
+import com.ait.tooling.server.core.json.binder.XMLBinder
+import com.ait.tooling.server.core.json.binder.YAMLBinder
 import com.ait.tooling.server.core.json.parser.JSONParser
 import com.ait.tooling.server.core.json.parser.JSONParserException
-import com.ait.tooling.server.core.json.schema.JSONSchema;
+import com.ait.tooling.server.core.json.schema.JSONSchema
+
+import groovy.transform.CompileStatic
+import groovy.transform.Memoized
 
 @CompileStatic
 public trait JSONTrait
 {
+    @Memoized
+    public IJSONUtilities getJSONUtilities()
+    {
+        JSONUtilitiesInstance.getJSONUtilitiesInstance()
+    }
+    
     public JSONObject json()
     {
         new JSONObject()
@@ -88,6 +97,11 @@ public trait JSONTrait
     public JSONObject jsonParse(InputStream stream) throws JSONParserException
     {
         new JSONParser().parse(Objects.requireNonNull(stream))
+    }
+    
+    public JSONObject jsonParse(Resource resource) throws JSONParserException
+    {
+        getJSONUtilities().jsonParse(Objects.requireNonNull(resource))
     }
 
     public JSONArray jarr()

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+ * Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package com.ait.tooling.server.core.json.parser;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayDeque;
 import java.util.List;
@@ -125,7 +125,7 @@ public final class JSONParser
 
         try
         {
-            result = parse_(new InputStreamReader(in));
+            result = parse_(new NoSyncProxyReader(in));
         }
         catch (IOException e)
         {
@@ -144,7 +144,7 @@ public final class JSONParser
 
         try
         {
-            result = parse_(in);
+            result = parse_(new BufferedReader(in));
         }
         catch (IOException e)
         {
@@ -177,9 +177,9 @@ public final class JSONParser
     {
         reset(in);
 
-        final ArrayDeque<Integer> statusStack = new ArrayDeque<Integer>();
+        final ArrayDeque<Integer> statusStack = new ArrayDeque<Integer>(2048);
 
-        final ArrayDeque<Object> valuesStack = new ArrayDeque<Object>();
+        final ArrayDeque<Object> valuesStack = new ArrayDeque<Object>(2048);
 
         try
         {

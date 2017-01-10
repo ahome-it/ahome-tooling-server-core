@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+ * Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.springframework.core.io.Resource;
 
 import com.ait.tooling.server.core.json.JSONArray;
 import com.ait.tooling.server.core.json.JSONObject;
@@ -114,6 +116,19 @@ public class JSONUtilitiesInstance implements IJSONUtilities
     public final JSONObject jsonParse(final InputStream stream) throws JSONParserException
     {
         return new JSONParser().parse(Objects.requireNonNull(stream));
+    }
+
+    @Override
+    public JSONObject jsonParse(final Resource resource) throws JSONParserException
+    {
+        try
+        {
+            return jsonParse(resource.getInputStream());
+        }
+        catch (Exception e)
+        {
+            throw new JSONParserException(e);
+        }
     }
 
     @Override

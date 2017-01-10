@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+ * Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -331,6 +331,12 @@ public class CoreGroovySupport implements IServerContext, Closeable
     public JSONObject jsonParse(InputStream stream) throws JSONParserException
     {
         getServerContext().jsonParse(Objects.requireNonNull(stream))
+    }
+    
+    @Override
+    public JSONObject jsonParse(Resource resource) throws JSONParserException
+    {
+        getServerContext().jsonParse(Objects.requireNonNull(resource))
     }
 
     @Override

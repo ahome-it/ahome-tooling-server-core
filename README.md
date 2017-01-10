@@ -41,7 +41,7 @@ https://lienzo-core.com/documents/reports/ahome-tooling-server-core/checkstyle/
 
 License:
 
-Copyright (c) 2014,2015,2016 Ahome Innovation Technologies. All rights reserved.
+Copyright (c) 2017 Ahome Innovation Technologies. All rights reserved.
 
 Ahome Tooling Server Core is released under version 2.0 of the Apache License.
 

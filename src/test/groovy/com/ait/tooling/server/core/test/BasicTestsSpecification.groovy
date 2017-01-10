@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+ * Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import com.ait.tooling.server.core.json.JSONObject
 import com.ait.tooling.server.core.json.binder.BinderType
 import com.ait.tooling.server.core.json.support.JSONMapToTreeSolver
 import com.ait.tooling.server.core.logging.MDC
+import com.ait.tooling.server.core.logging.NanoTimer
 import com.ait.tooling.server.core.scripting.ScriptType
 import com.ait.tooling.server.core.support.CoreGroovyTrait
 import com.ait.tooling.server.core.support.spring.testing.IServerCoreTesting.TestingOps
@@ -357,5 +358,130 @@ class BasicTestsSpecification extends ServerCoreSpecification implements CoreGro
         
         expect:
         z == 5
+    }
+    
+    def "Nano Timer"()
+    {
+        setup:
+        def t = new NanoTimer()
+        println t
+        
+        expect:
+        "dean" == "dean"
+    }
+    
+    def "Nano Timer Delay"()
+    {
+        setup:
+        def t = new NanoTimer()
+        Thread.sleep(500)
+        println t
+        
+        expect:
+        "dean" == "dean"
+    }
+    
+    def "Parse Tiger JSON"()
+    {
+        setup:
+        def t = new NanoTimer()
+        for(int i = 0; i < 5000; i++)
+        {
+            def r = reader('classpath:/com/ait/tooling/server/core/test/tiger.json')
+            jsonParse(r)
+            r.close()
+        }
+        println t.toString() + " Tiger JSON parsed"
+        
+        expect:
+        "dean" == "dean"
+    }
+    
+    def "Parse Tiger Binder"()
+    {
+        setup:
+        def t = new NanoTimer()
+        for(int i = 0; i < 5000; i++)
+        {
+            def r = reader('classpath:/com/ait/tooling/server/core/test/tiger.json')
+            binder().bindJSON(r)
+            r.close()
+        }
+        println t.toString() + " Tiger BINDER parsed"
+        
+        expect:
+        "dean" == "dean"
+    }
+    
+    def "Parse Lion JSON"()
+    {
+        setup:
+        def t = new NanoTimer()
+        for(int i = 0; i < 5000; i++)
+        {
+            def r = reader('classpath:/com/ait/tooling/server/core/test/lion.json')
+            jsonParse(r)
+            r.close()
+        }
+        println t.toString() + " Lion JSON parsed"
+        
+        expect:
+        "dean" == "dean"
+    }
+    
+    def "Parse Lion Binder"()
+    {
+        setup:
+        def t = new NanoTimer()
+        for(int i = 0; i < 5000; i++)
+        {
+            def r = reader('classpath:/com/ait/tooling/server/core/test/lion.json')
+            binder().bindJSON(r)
+            r.close()
+        }
+        println t.toString() + " Lion BINDER parsed"
+        
+        expect:
+        "dean" == "dean"
+    }
+    
+    def "Parse Tiny JSON"()
+    {
+        setup:
+        def t = new NanoTimer()
+        for(int i = 0; i < 5000; i++)
+        {
+            def r = resource('classpath:/com/ait/tooling/server/core/test/tiny.json')
+            jsonParse(r)
+        }
+        println t.toString() + " Tiny JSON parsed"
+        
+        expect:
+        "dean" == "dean"
+    }
+    
+    def "Parse Tiny Binder"()
+    {
+        setup:
+        def t = new NanoTimer()
+        for(int i = 0; i < 5000; i++)
+        {
+            def r = resource('classpath:/com/ait/tooling/server/core/test/tiny.json')
+            binder().bindJSON(r)
+        }
+        println t.toString() + " Tiny BINDER parsed"
+        
+        expect:
+        "dean" == "dean"
+    }
+    
+    def "Nano Timer Last"()
+    {
+        setup:
+        def t = new NanoTimer()
+        println t
+        
+        expect:
+        "dean" == "dean"
     }
 }

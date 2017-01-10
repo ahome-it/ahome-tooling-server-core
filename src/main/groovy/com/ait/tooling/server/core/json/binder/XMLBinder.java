@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+ * Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,19 +23,21 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 public final class XMLBinder extends AbstractDataBinder
 {
+    private static XmlMapper INSTANCE = new XmlMapper();
+
     public XMLBinder()
     {
-        super(new XmlMapper());
+        super(INSTANCE);
     }
 
     public XMLBinder(final MapperFeature... features)
     {
-        super(new XmlMapper(), features);
+        super(INSTANCE, features);
     }
 
     public XMLBinder(final List<MapperFeature> features)
     {
-        super(new XmlMapper(), features);
+        super(INSTANCE, features);
     }
 
     @Override

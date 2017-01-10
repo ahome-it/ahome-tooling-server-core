@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+ * Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,14 @@ public class CoreServerManager implements ICoreServerManager
     @ManagedAttribute(description = "Set global Log4j Level.")
     public final void setLoggingLevelAsString(final String level)
     {
-        setLoggingLevel(Level.toLevel(StringOps.toTrimOrNull(level)));
+        try
+        {
+            setLoggingLevel(Level.toLevel(StringOps.toTrimOrNull(level), Level.INFO));
+        }
+        catch (Exception e)
+        {
+            logger.error("Error setting log level string to " + level, e);
+        }
     }
 
     @ManagedOperation(description = "Resume Server.")

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+ * Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,14 +27,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.core.io.Resource;
 
-import com.ait.tooling.common.server.io.NoCloseProxyReader;
 import com.ait.tooling.common.server.io.NoSyncOrCloseBufferedWriter;
 import com.ait.tooling.common.server.io.NoSyncStringBuilderWriter;
 import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.parser.JSONParser;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -55,6 +56,8 @@ public abstract class AbstractDataBinder implements IBinder
     protected AbstractDataBinder(final ObjectMapper mapper)
     {
         m_mapper = mapper;
+        
+        m_mapper.getDeserializationConfig().without(JsonParser.Feature.AUTO_CLOSE_SOURCE);
     }
 
     protected AbstractDataBinder(final ObjectMapper mapper, final MapperFeature... features)
@@ -153,8 +156,8 @@ public abstract class AbstractDataBinder implements IBinder
     public <T> T bind(final InputStream stream, final Class<T> claz)
     {
         try
-        {
-            return m_mapper.readValue(new NoCloseProxyReader(stream), claz);
+        {            
+            return m_mapper.readValue(stream, claz);
         }
         catch (Exception e)
         {
@@ -168,7 +171,7 @@ public abstract class AbstractDataBinder implements IBinder
     {
         try
         {
-            return m_mapper.readValue(new NoCloseProxyReader(reader), claz);
+            return m_mapper.readValue(reader, claz);
         }
         catch (Exception e)
         {
@@ -182,7 +185,13 @@ public abstract class AbstractDataBinder implements IBinder
     {
         try
         {
-            return m_mapper.readValue(resource.getInputStream(), claz);
+            final InputStream stream = resource.getInputStream();
+            
+            final T value = m_mapper.readValue(stream, claz);
+            
+            IOUtils.closeQuietly(stream);
+            
+            return value;
         }
         catch (Exception e)
         {

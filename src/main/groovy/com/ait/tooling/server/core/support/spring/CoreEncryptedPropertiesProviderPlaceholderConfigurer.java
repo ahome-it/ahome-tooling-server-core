@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+ * Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,9 +36,11 @@ import com.ait.tooling.server.core.security.IStringCryptoProvider;
 
 public final class CoreEncryptedPropertiesProviderPlaceholderConfigurer extends CorePropertiesProviderPlaceholderConfigurer implements ICoreLoggingOperations
 {
-    private Level   m_levels = Level.OFF;
+    private static final Logger logger   = Logger.getLogger(CoreEncryptedPropertiesProviderPlaceholderConfigurer.class);
 
-    private boolean m_onsave = false;
+    private Level               m_levels = Level.OFF;
+
+    private boolean             m_onsave = false;
 
     public CoreEncryptedPropertiesProviderPlaceholderConfigurer(final IStringCryptoProvider crypto, final String prefix)
     {
@@ -58,6 +60,10 @@ public final class CoreEncryptedPropertiesProviderPlaceholderConfigurer extends 
         {
             m_levels = level;
         }
+        else
+        {
+            logger.error("Error setting log level to null");
+        }
     }
 
     @Override
@@ -69,7 +75,14 @@ public final class CoreEncryptedPropertiesProviderPlaceholderConfigurer extends 
     @Override
     public void setLoggingLevelAsString(final String level)
     {
-        setLoggingLevel(Level.toLevel(level, Level.OFF));
+        try
+        {
+            setLoggingLevel(Level.toLevel(StringOps.toTrimOrNull(level), Level.OFF));
+        }
+        catch (Exception e)
+        {
+            logger.error("Error setting log level string to " + level, e);
+        }
     }
 
     public void setEncryptOnSave(final boolean onsave)
@@ -183,15 +196,15 @@ public final class CoreEncryptedPropertiesProviderPlaceholderConfigurer extends 
                 {
                     if (v.startsWith(m_prefix))
                     {
-                        final String r = v.replace(m_prefix, "");
+                        final String r = v.replace(m_prefix, "").trim();
 
                         final String d = (r.isEmpty() ? r : m_crypto.decrypt(r));
 
                         if (logson)
                         {
-                            logger.log(level, "decrypt(name: '" + k + "', encrypted: '" + v + "')");
+                            logger.log(level, "decrypt(name: '" + k + "', encrypted string: '" + v + "')");
 
-                            logger.log(level, "decrypt(name: '" + k + "', decrypted: '" + d + "')");
+                            logger.log(level, "decrypt(name: '" + k + "', decrypted length: '" + d.length() + "')");
                         }
                         saved.put(k, d);
                     }
