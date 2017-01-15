@@ -27,22 +27,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import org.springframework.core.io.Resource;
 
+import com.ait.tooling.common.server.io.NoCloseBufferedReader;
 import com.ait.tooling.common.server.io.NoSyncOrCloseBufferedWriter;
 import com.ait.tooling.common.server.io.NoSyncStringBuilderWriter;
 import com.ait.tooling.server.core.json.JSONObject;
-import com.ait.tooling.server.core.json.parser.JSONParser;
-import com.fasterxml.jackson.core.JsonParser;
+import com.ait.tooling.server.core.json.ParserException;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractDataBinder implements IBinder
 {
-    private final Logger m_logger = Logger.getLogger(getClass());
-
     private ObjectMapper m_mapper;
 
     private boolean      m_strict = false;
@@ -56,8 +52,6 @@ public abstract class AbstractDataBinder implements IBinder
     protected AbstractDataBinder(final ObjectMapper mapper)
     {
         m_mapper = mapper;
-        
-        m_mapper.getDeserializationConfig().without(JsonParser.Feature.AUTO_CLOSE_SOURCE);
     }
 
     protected AbstractDataBinder(final ObjectMapper mapper, final MapperFeature... features)
@@ -139,7 +133,7 @@ public abstract class AbstractDataBinder implements IBinder
     }
 
     @Override
-    public <T> T bind(final File file, final Class<T> claz)
+    public <T> T bind(final File file, final Class<T> claz) throws ParserException
     {
         try
         {
@@ -147,61 +141,51 @@ public abstract class AbstractDataBinder implements IBinder
         }
         catch (Exception e)
         {
-            logger().error("bind(" + claz.getName() + ")", e);
+            throw new ParserException(e);
         }
-        return null;
     }
 
     @Override
-    public <T> T bind(final InputStream stream, final Class<T> claz)
-    {
-        try
-        {            
-            return m_mapper.readValue(stream, claz);
-        }
-        catch (Exception e)
-        {
-            logger().error("bind(" + claz.getName() + ")", e);
-        }
-        return null;
-    }
-
-    @Override
-    public <T> T bind(final Reader reader, final Class<T> claz)
+    public <T> T bind(final InputStream stream, final Class<T> claz) throws ParserException
     {
         try
         {
-            return m_mapper.readValue(reader, claz);
+            return m_mapper.readValue(new NoCloseBufferedReader(stream), claz);
         }
         catch (Exception e)
         {
-            logger().error("bind(" + claz.getName() + ")", e);
+            throw new ParserException(e);
         }
-        return null;
     }
 
     @Override
-    public <T> T bind(final Resource resource, final Class<T> claz)
+    public <T> T bind(final Reader reader, final Class<T> claz) throws ParserException
     {
         try
         {
-            final InputStream stream = resource.getInputStream();
-            
-            final T value = m_mapper.readValue(stream, claz);
-            
-            IOUtils.closeQuietly(stream);
-            
-            return value;
+            return m_mapper.readValue(new NoCloseBufferedReader(reader), claz);
         }
         catch (Exception e)
         {
-            logger().error("bind(" + claz.getName() + ")", e);
+            throw new ParserException(e);
         }
-        return null;
     }
 
     @Override
-    public <T> T bind(final URL url, final Class<T> claz)
+    public <T> T bind(final Resource resource, final Class<T> claz) throws ParserException
+    {
+        try
+        {
+            return m_mapper.readValue(resource.getInputStream(), claz);
+        }
+        catch (Exception e)
+        {
+            throw new ParserException(e);
+        }
+    }
+
+    @Override
+    public <T> T bind(final URL url, final Class<T> claz) throws ParserException
     {
         try
         {
@@ -209,13 +193,12 @@ public abstract class AbstractDataBinder implements IBinder
         }
         catch (Exception e)
         {
-            logger().error("bind(" + claz.getName() + ")", e);
+            throw new ParserException(e);
         }
-        return null;
     }
 
     @Override
-    public <T> T bind(final String text, final Class<T> claz)
+    public <T> T bind(final String text, final Class<T> claz) throws ParserException
     {
         try
         {
@@ -223,103 +206,54 @@ public abstract class AbstractDataBinder implements IBinder
         }
         catch (Exception e)
         {
-            logger().error("bind(" + claz.getName() + ")", e);
+            throw new ParserException(e);
         }
-        return null;
     }
 
     @Override
-    public <T> T bind(final JSONObject json, final Class<T> claz)
+    public <T> T bind(final JSONObject json, final Class<T> claz) throws ParserException
     {
         return bind(json.toJSONString(isStrict()), claz);
     }
 
     @Override
-    public JSONObject bindJSON(final File file)
+    public JSONObject bindJSON(final File file) throws ParserException
     {
-        try
-        {
-            return MAKE(bind(file, LinkedHashMap.class));
-        }
-        catch (Exception e)
-        {
-            logger().error("bindJSON()", e);
-        }
-        return null;
+        return MAKE(bind(file, LinkedHashMap.class));
     }
 
     @Override
-    public JSONObject bindJSON(final InputStream stream)
+    public JSONObject bindJSON(final InputStream stream) throws ParserException
     {
-        try
-        {
-            return MAKE(bind(stream, LinkedHashMap.class));
-        }
-        catch (Exception e)
-        {
-            logger().error("bindJSON()", e);
-        }
-        return null;
+        return MAKE(bind(stream, LinkedHashMap.class));
     }
 
     @Override
-    public JSONObject bindJSON(final Reader reader)
+    public JSONObject bindJSON(final Reader reader) throws ParserException
     {
-        try
-        {
-            return MAKE(bind(reader, LinkedHashMap.class));
-        }
-        catch (Exception e)
-        {
-            logger().error("bindJSON()", e);
-        }
-        return null;
+        return MAKE(bind(reader, LinkedHashMap.class));
     }
 
     @Override
-    public JSONObject bindJSON(final Resource resource)
+    public JSONObject bindJSON(final Resource resource) throws ParserException
     {
-        try
-        {
-            return MAKE(bind(resource, LinkedHashMap.class));
-        }
-        catch (Exception e)
-        {
-            logger().error("bindJSON()", e);
-        }
-        return null;
+        return MAKE(bind(resource, LinkedHashMap.class));
     }
 
     @Override
-    public JSONObject bindJSON(final URL url)
+    public JSONObject bindJSON(final URL url) throws ParserException
     {
-        try
-        {
-            return MAKE(bind(url, LinkedHashMap.class));
-        }
-        catch (Exception e)
-        {
-            logger().error("bindJSON()", e);
-        }
-        return null;
+        return MAKE(bind(url, LinkedHashMap.class));
     }
 
     @Override
-    public JSONObject bindJSON(final String text)
+    public JSONObject bindJSON(final String text) throws ParserException
     {
-        try
-        {
-            return MAKE(bind(text, LinkedHashMap.class));
-        }
-        catch (Exception e)
-        {
-            logger().error("bindJSON()", e);
-        }
-        return null;
+        return MAKE(bind(text, LinkedHashMap.class));
     }
 
     @Override
-    public void send(final File file, final Object object)
+    public void send(final File file, final Object object) throws ParserException
     {
         Objects.requireNonNull(object);
 
@@ -329,12 +263,12 @@ public abstract class AbstractDataBinder implements IBinder
         }
         catch (Exception e)
         {
-            logger().error("send()", e);
+            throw new ParserException(e);
         }
     }
 
     @Override
-    public void send(final OutputStream stream, final Object object)
+    public void send(final OutputStream stream, final Object object) throws ParserException
     {
         Objects.requireNonNull(object);
 
@@ -344,12 +278,12 @@ public abstract class AbstractDataBinder implements IBinder
         }
         catch (Exception e)
         {
-            logger().error("send()", e);
+            throw new ParserException(e);
         }
     }
 
     @Override
-    public void send(final Writer writer, final Object object)
+    public void send(final Writer writer, final Object object) throws ParserException
     {
         Objects.requireNonNull(object);
 
@@ -359,12 +293,12 @@ public abstract class AbstractDataBinder implements IBinder
         }
         catch (Exception e)
         {
-            logger().error("send()", e);
+            throw new ParserException(e);
         }
     }
 
     @Override
-    public String toString(final Object object)
+    public String toString(final Object object) throws ParserException
     {
         Objects.requireNonNull(object);
 
@@ -374,13 +308,13 @@ public abstract class AbstractDataBinder implements IBinder
         }
         catch (Exception e)
         {
-            logger().error("toString()", e);
+            throw new ParserException(e);
         }
-        return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public JSONObject toJSONObject(final Object object)
+    public JSONObject toJSONObject(final Object object) throws ParserException
     {
         Objects.requireNonNull(object);
 
@@ -390,47 +324,33 @@ public abstract class AbstractDataBinder implements IBinder
             {
                 return ((JSONObject) object);
             }
+            else if (object instanceof Map)
+            {
+                return new JSONObject(((Map<String, ?>) object));
+            }
+            else if (object instanceof String)
+            {
+                return bindJSON(object.toString());
+            }
             else
             {
                 final NoSyncStringBuilderWriter writer = new NoSyncStringBuilderWriter();
 
                 getMapperForJSON().writeValue(writer, object);
 
-                final JSONParser parser = new JSONParser();
-
-                final Object result = parser.parse(writer.toString());
-
-                if (null == result)
-                {
-                    logger().error("toJSONObject() JSONObject null");
-                }
-                else if (result instanceof JSONObject)
-                {
-                    return ((JSONObject) result);
-                }
-                else
-                {
-                    logger().error("toJSONObject() not JSONObject " + object.getClass().getName());
-                }
+                return bindJSON(writer.toString());
             }
         }
         catch (Exception e)
         {
-            logger().error("toJSONObject()", e);
+            throw new ParserException(e);
         }
-        return null;
     }
 
     @Override
-    public String toJSONString(final Object object)
+    public String toJSONString(final Object object) throws ParserException
     {
-        final JSONObject json = toJSONObject(object);
-
-        if (null != json)
-        {
-            return json.toJSONString(isStrict());
-        }
-        return null;
+        return toJSONObject(object).toJSONString(isStrict());
     }
 
     @Override
@@ -449,13 +369,8 @@ public abstract class AbstractDataBinder implements IBinder
         return false;
     }
 
-    protected final Logger logger()
-    {
-        return m_logger;
-    }
-
     protected ObjectMapper getMapperForJSON()
     {
-        return new ObjectMapper().setConfig(m_mapper.getDeserializationConfig());
+        return new ObjectMapper();
     }
 }

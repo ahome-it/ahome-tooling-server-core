@@ -51,7 +51,7 @@ sourceCompatibility = 1.8
 
 targetCompatibility = 1.8
 
-version = '1.1.29-RELEASE'
+version = '1.1.30-RELEASE'
 
 group = 'com.ahome-it'
 
@@ -68,7 +68,6 @@ checkstyle {
 
 tasks.withType(Checkstyle) {
     source 'src/main'
-    exclude "**/Yylex.java"
 }
 
 task deleteConfigs(type: Delete) {
@@ -245,7 +244,7 @@ dependencies {
     compile(group: 'org.slf4j', name: 'log4j-over-slf4j', version: '1.7.22')
     compile(group: 'cglib', name: 'cglib-nodep', version: '3.2.4')
     compile(group: 'org.fusesource.jansi', name: 'jansi', version: '1.11')
-    compile(group: 'joda-time', name: 'joda-time', version: '2.9.6')
+    compile(group: 'joda-time', name: 'joda-time', version: '2.9.7')
     compile(group: 'commons-io', name: 'commons-io', version: '2.4')
     compile(group: 'commons-net', name: 'commons-net', version: '3.4')
     compile(group: 'commons-lang', name: 'commons-lang', version: '2.6')
@@ -258,13 +257,13 @@ dependencies {
     compile(group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.2')
     compile(group: 'com.google.guava', name: 'guava', version: '20.0')
     compile(group: 'io.javaslang', name: 'javaslang', version: '2.0.5')
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.8.5')
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.5')
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.8.5')
-    compile(group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda', version: '2.8.5')
-    compile(group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.8.5')
-    compile(group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.8.5')
-    compile(group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.0.3')
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.8.6')
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.6')
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.8.6')
+    compile(group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda', version: '2.8.6')
+    compile(group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.8.6')
+    compile(group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.8.6')
+    compile(group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.0.4')
     compile(group: 'org.spockframework', name: 'spock-core', version: '1.0-groovy-2.4') {
         exclude(group: 'org.codehaus.groovy', module: 'groovy-all')
     }
@@ -293,7 +292,7 @@ dependencies {
     compile(group: 'org.springframework.statemachine', name: 'spring-statemachine-core', version: '1.2.0.RELEASE')
     compile(group: 'org.springframework.batch', name: 'spring-batch-core', version: '3.0.7.RELEASE')
     compile(group: 'org.springframework.amqp', name: 'spring-rabbit', version: '1.6.5.RELEASE')
-    compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.7', classifier: 'indy')
+    compile(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.8', classifier: 'indy')
     compile(group: 'org.codehaus.gpars', name: 'gpars', version: '1.2.1')
     compile(group: 'javax.persistence', name: 'persistence-api', version: '1.0.2')
     compile(group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0')

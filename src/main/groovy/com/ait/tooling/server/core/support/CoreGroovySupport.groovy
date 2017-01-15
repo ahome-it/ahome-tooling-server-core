@@ -32,7 +32,6 @@ import com.ait.tooling.server.core.json.JSONArray
 import com.ait.tooling.server.core.json.JSONObject
 import com.ait.tooling.server.core.json.binder.BinderType
 import com.ait.tooling.server.core.json.binder.IBinder
-import com.ait.tooling.server.core.json.parser.JSONParserException
 import com.ait.tooling.server.core.json.schema.JSONSchema
 import com.ait.tooling.server.core.pubsub.JSONMessageBuilder
 import com.ait.tooling.server.core.scripting.IScriptingProvider
@@ -313,30 +312,6 @@ public class CoreGroovySupport implements IServerContext, Closeable
     public String uuid()
     {
         getServerContext().uuid()
-    }
-
-    @Override
-    public JSONObject jsonParse(String string) throws JSONParserException
-    {
-        getServerContext().jsonParse(Objects.requireNonNull(string))
-    }
-
-    @Override
-    public JSONObject jsonParse(Reader reader) throws JSONParserException
-    {
-        getServerContext().jsonParse(Objects.requireNonNull(reader))
-    }
-
-    @Override
-    public JSONObject jsonParse(InputStream stream) throws JSONParserException
-    {
-        getServerContext().jsonParse(Objects.requireNonNull(stream))
-    }
-    
-    @Override
-    public JSONObject jsonParse(Resource resource) throws JSONParserException
-    {
-        getServerContext().jsonParse(Objects.requireNonNull(resource))
     }
 
     @Override

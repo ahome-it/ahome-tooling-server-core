@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.ait.tooling.server.core.json.parser;
+package com.ait.tooling.server.core.json;
 
-public class JSONParserException extends Exception
+public class ParserException extends Exception
 {
     private static final long serialVersionUID           = -1386449426626594502L;
 
@@ -32,24 +32,24 @@ public class JSONParserException extends Exception
 
     private int               m_position                 = -1;
 
-    public JSONParserException(final Exception e)
+    public ParserException(final Exception e)
     {
         super(e);
 
         m_errorType = ERROR_UNEXPECTED_EXCEPTION;
     }
 
-    public JSONParserException(final int errorType)
+    public ParserException(final int errorType)
     {
         this(-1, errorType, null);
     }
 
-    public JSONParserException(final int errorType, final Object unexpectedObject)
+    public ParserException(final int errorType, final Object unexpectedObject)
     {
         this(-1, errorType, unexpectedObject);
     }
 
-    public JSONParserException(final int position, final int errorType, final Object unexpectedObject)
+    public ParserException(final int position, final int errorType, final Object unexpectedObject)
     {
         m_position = position;
 

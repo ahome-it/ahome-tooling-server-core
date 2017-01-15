@@ -27,30 +27,29 @@ import java.util.Objects;
 import org.apache.commons.io.IOUtils;
 
 import com.ait.tooling.server.core.json.JSONObject;
+import com.ait.tooling.server.core.json.ParserException;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public final class JSONBinder extends AbstractDataBinder
+public class JSONBinder extends AbstractDataBinder
 {
-    private static final ObjectMapper INSTANCE = new ObjectMapper();
-
     public JSONBinder()
     {
-        super(INSTANCE);
+        super(new ObjectMapper());
     }
 
     public JSONBinder(final MapperFeature... features)
     {
-        super(INSTANCE, features);
+        super(new ObjectMapper(), features);
     }
 
     public JSONBinder(final List<MapperFeature> features)
     {
-        super(INSTANCE, features);
+        super(new ObjectMapper(), features);
     }
 
     @Override
-    public void send(final File file, final Object object)
+    public void send(final File file, final Object object) throws ParserException
     {
         Objects.requireNonNull(object);
 
@@ -71,12 +70,12 @@ public final class JSONBinder extends AbstractDataBinder
         }
         catch (Exception e)
         {
-            logger().error("send()", e);
+            throw new ParserException(e);
         }
     }
 
     @Override
-    public void send(final OutputStream stream, final Object object)
+    public void send(final OutputStream stream, final Object object) throws ParserException
     {
         Objects.requireNonNull(object);
 
@@ -93,12 +92,12 @@ public final class JSONBinder extends AbstractDataBinder
         }
         catch (Exception e)
         {
-            logger().error("send()", e);
+            throw new ParserException(e);
         }
     }
 
     @Override
-    public void send(final Writer writer, final Object object)
+    public void send(final Writer writer, final Object object) throws ParserException
     {
         Objects.requireNonNull(object);
 
@@ -115,7 +114,7 @@ public final class JSONBinder extends AbstractDataBinder
         }
         catch (Exception e)
         {
-            logger().error("send()", e);
+            throw new ParserException(e);
         }
     }
 

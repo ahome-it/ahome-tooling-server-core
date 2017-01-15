@@ -16,19 +16,14 @@
 
 package com.ait.tooling.server.core.json.support;
 
-import java.io.InputStream;
-import java.io.Reader;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.core.io.Resource;
 
 import com.ait.tooling.server.core.json.JSONArray;
 import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.binder.BinderType;
 import com.ait.tooling.server.core.json.binder.IBinder;
-import com.ait.tooling.server.core.json.parser.JSONParserException;
 import com.ait.tooling.server.core.json.schema.JSONSchema;
 
 public interface IJSONUtilities
@@ -45,14 +40,6 @@ public interface IJSONUtilities
 
     public JSONSchema jsonSchema(Map<String, ?> schema);
 
-    public JSONObject jsonParse(String string) throws JSONParserException;
-
-    public JSONObject jsonParse(Reader reader) throws JSONParserException;
-
-    public JSONObject jsonParse(InputStream stream) throws JSONParserException;
-    
-    public JSONObject jsonParse(Resource stream) throws JSONParserException;
-
     public JSONArray jarr();
 
     public JSONArray jarr(JSONObject object);
@@ -66,6 +53,6 @@ public interface IJSONUtilities
     public JSONArray jarr(Collection<?> collection);
 
     public IBinder binder();
-    
+
     public IBinder binder(BinderType type);
 }

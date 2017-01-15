@@ -17,11 +17,15 @@
 package com.ait.tooling.server.core.json;
 
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,33 +36,37 @@ import com.ait.tooling.server.core.json.binder.JSONBinder;
 
 public final class JSONUtils
 {
-    private static final Logger     logger          = Logger.getLogger(JSONUtils.class);
+    private static final Logger                         logger          = Logger.getLogger(JSONUtils.class);
 
-    private static final String     NULL_FOR_OUTPUT = "null".intern();
+    private static final String                         NULL_FOR_OUTPUT = "null".intern();
 
-    private final static BigDecimal BIG_DECIMAL_MAX = BigDecimal.valueOf(Double.MAX_VALUE);
+    private final static BigDecimal                     BIG_DECIMAL_MAX = BigDecimal.valueOf(Double.MAX_VALUE);
 
-    private final static BigDecimal BIG_DECIMAL_MIN = BigDecimal.valueOf(Double.MIN_VALUE);
+    private final static BigDecimal                     BIG_DECIMAL_MIN = BigDecimal.valueOf(Double.MIN_VALUE);
 
-    private final static BigInteger BIG_INTEGER_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
+    private final static BigInteger                     BIG_INTEGER_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
 
-    private final static BigInteger BIG_INTEGER_MIN = BigInteger.valueOf(Integer.MIN_VALUE);
+    private final static BigInteger                     BIG_INTEGER_MIN = BigInteger.valueOf(Integer.MIN_VALUE);
 
-    private final static BigInteger BIG_INTLONG_MAX = BigInteger.valueOf(Long.MAX_VALUE);
+    private final static BigInteger                     BIG_INTLONG_MAX = BigInteger.valueOf(Long.MAX_VALUE);
 
-    private final static BigInteger BIG_INTLONG_MIN = BigInteger.valueOf(Long.MIN_VALUE);
+    private final static BigInteger                     BIG_INTLONG_MIN = BigInteger.valueOf(Long.MIN_VALUE);
 
-    private final static BigDecimal BIG_DEC_INT_MAX = BigDecimal.valueOf(Integer.MAX_VALUE);
+    private final static BigDecimal                     BIG_DEC_INT_MAX = BigDecimal.valueOf(Integer.MAX_VALUE);
 
-    private final static BigDecimal BIG_DEC_INT_MIN = BigDecimal.valueOf(Integer.MIN_VALUE);
+    private final static BigDecimal                     BIG_DEC_INT_MIN = BigDecimal.valueOf(Integer.MIN_VALUE);
 
-    private final static BigDecimal BIG_DEC_LONGMAX = BigDecimal.valueOf(Long.MAX_VALUE);
+    private final static BigDecimal                     BIG_DEC_LONGMAX = BigDecimal.valueOf(Long.MAX_VALUE);
 
-    private final static BigDecimal BIG_DEC_LONGMIN = BigDecimal.valueOf(Long.MIN_VALUE);
+    private final static BigDecimal                     BIG_DEC_LONGMIN = BigDecimal.valueOf(Long.MIN_VALUE);
 
-    private final static BigInteger BIG_INT_DEC_MAX = BIG_DECIMAL_MAX.toBigInteger();
+    private final static BigInteger                     BIG_INT_DEC_MAX = BIG_DECIMAL_MAX.toBigInteger();
 
-    private final static BigInteger BIG_INT_DEC_MIN = BIG_DECIMAL_MIN.toBigInteger();
+    private final static BigInteger                     BIG_INT_DEC_MIN = BIG_DECIMAL_MIN.toBigInteger();
+
+    private final static int                            INDENT_ADDED    = 4;
+
+    private static final LinkedHashMap<Integer, String> INDENT_CACHE    = new LinkedHashMap<Integer, String>();
 
     protected JSONUtils()
     {
@@ -93,6 +101,216 @@ public final class JSONUtils
             throw new RuntimeException(e);
         }
         return out.toString();
+    }
+
+    public static final synchronized String getIndent(final Integer indent)
+    {
+        if ((null == indent) || (indent < 1))
+        {
+            return "";
+        }
+        String find = INDENT_CACHE.get(indent);
+
+        if (null != find)
+        {
+            return find;
+        }
+        final StringBuilder b = new StringBuilder(indent);
+
+        for (int i = 0; i < indent; i++)
+        {
+            b.append("-");
+        }
+        find = b.toString();
+
+        INDENT_CACHE.put(indent, find);
+
+        return find;
+    }
+
+    public static final String getLineNumber(final int lineno)
+    {
+        return String.format("%1$-4d", lineno).replaceAll(" ", "-");
+    }
+
+    public static final String dumpClassNamesToString(final Object o)
+    {
+        final NoSyncStringBuilderWriter w = new NoSyncStringBuilderWriter();
+
+        dumpClassNames(o, new PrintWriter(w));
+
+        return w.toString();
+    }
+
+    public static final void dumpClassNames(final Object o)
+    {
+        dumpClassNames(o, System.out);
+    }
+
+    public static final void dumpClassNames(final Object o, final PrintStream stream)
+    {
+        dumpClassNames(o, new PrintWriter(stream), 0, 0);
+    }
+
+    public static final void dumpClassNames(final Object o, final PrintWriter writer)
+    {
+        dumpClassNames(o, writer, 0, 0);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static final int dumpClassNames(final Object o, final PrintWriter writer, final int indent, int lineno)
+    {
+        if (null != o)
+        {
+            if (o instanceof List)
+            {
+                lineno = dumpClassNames((List<?>) o, writer, indent + INDENT_ADDED, lineno);
+            }
+            else if (o instanceof Map)
+            {
+                lineno = dumpClassNames((Map<String, ?>) o, writer, indent + INDENT_ADDED, lineno);
+            }
+            else if (o instanceof Collection)
+            {
+                lineno = dumpClassNames((Collection<?>) o, writer, indent + INDENT_ADDED, lineno);
+            }
+            else
+            {
+                lineno++;
+
+                writer.println(getLineNumber(lineno) + getIndent(indent) + "Unnown=" + o.getClass().getName());
+            }
+        }
+        return lineno;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static final int dumpClassNames(final List<?> list, final PrintWriter writer, final int indent, int lineno)
+    {
+        if (null != list)
+        {
+            final int size = list.size();
+
+            final String p = getIndent(indent);
+
+            final String t = list.getClass().getName();
+
+            for (int i = 0; i < size; i++)
+            {
+                lineno++;
+
+                final Object o = list.get(i);
+
+                if (null == o)
+                {
+                    writer.println(getLineNumber(lineno) + p + t + "[" + i + "]=null");
+                }
+                else
+                {
+                    writer.println(getLineNumber(lineno) + p + t + "[" + i + "]=" + o.getClass().getName());
+
+                    if (o instanceof List)
+                    {
+                        lineno = dumpClassNames((List<?>) o, writer, indent + INDENT_ADDED, lineno);
+                    }
+                    else if (o instanceof Map)
+                    {
+                        lineno = dumpClassNames((Map<String, ?>) o, writer, indent + INDENT_ADDED, lineno);
+                    }
+                    else if (o instanceof Collection)
+                    {
+                        lineno = dumpClassNames((Collection<?>) o, writer, indent + INDENT_ADDED, lineno);
+                    }
+                }
+            }
+        }
+        return lineno;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static final int dumpClassNames(final Collection<?> collection, final PrintWriter writer, final int indent, int lineno)
+    {
+        if (null != collection)
+        {
+            final ArrayList<Object> list = new ArrayList<Object>(collection);
+
+            final int size = list.size();
+
+            final String t = collection.getClass().getName();
+
+            final String p = getIndent(indent);
+
+            for (int i = 0; i < size; i++)
+            {
+                lineno++;
+
+                final Object o = list.get(i);
+
+                if (null == o)
+                {
+                    writer.println(getLineNumber(lineno) + p + t + "[" + i + "]=null");
+                }
+                else
+                {
+                    writer.println(getLineNumber(lineno) + p + t + "[" + i + "]=" + o.getClass().getName());
+
+                    if (o instanceof List)
+                    {
+                        lineno = dumpClassNames((List<?>) o, writer, indent + INDENT_ADDED, lineno);
+                    }
+                    else if (o instanceof Map)
+                    {
+                        lineno = dumpClassNames((Map<String, ?>) o, writer, indent + INDENT_ADDED, lineno);
+                    }
+                    else if (o instanceof Collection)
+                    {
+                        lineno = dumpClassNames((Collection<?>) o, writer, indent + INDENT_ADDED, lineno);
+                    }
+                }
+            }
+        }
+        return lineno;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static final int dumpClassNames(final Map<String, ?> map, final PrintWriter writer, final int indent, int lineno)
+    {
+        if (null != map)
+        {
+            final String p = getIndent(indent);
+
+            final String t = map.getClass().getName();
+
+            for (String k : map.keySet())
+            {
+                lineno++;
+
+                final Object o = map.get(k);
+
+                if (null == o)
+                {
+                    writer.println(getLineNumber(lineno) + p + t + "[" + k + "]=null");
+                }
+                else
+                {
+                    writer.println(getLineNumber(lineno) + p + t + "[" + k + "]=" + o.getClass().getName());
+
+                    if (o instanceof List)
+                    {
+                        lineno = dumpClassNames((List<?>) o, writer, indent + INDENT_ADDED, lineno);
+                    }
+                    else if (o instanceof Map)
+                    {
+                        lineno = dumpClassNames((Map<String, ?>) o, writer, indent + INDENT_ADDED, lineno);
+                    }
+                    else if (o instanceof Collection)
+                    {
+                        lineno = dumpClassNames((Collection<?>) o, writer, indent + INDENT_ADDED, lineno);
+                    }
+                }
+            }
+        }
+        return lineno;
     }
 
     public static final void writeJSONString(final Object value, final Writer out, final IJSONContext context, final boolean strict) throws IOException
@@ -424,6 +642,26 @@ public final class JSONUtils
             return (isInteger(object) || isDouble(object));
         }
         return false;
+    }
+
+    public static final boolean isObject(final Object object)
+    {
+        return (object instanceof Map);
+    }
+
+    public static final boolean isArray(final Object object)
+    {
+        return (object instanceof List);
+    }
+
+    public static final boolean isString(final Object object)
+    {
+        return (object instanceof String);
+    }
+
+    public static final boolean isBoolean(final Object object)
+    {
+        return (object instanceof Boolean);
     }
 
     public static final Integer asInteger(final Object object)

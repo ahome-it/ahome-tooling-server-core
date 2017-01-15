@@ -38,6 +38,8 @@ public class JSONObject extends LinkedHashMap<String, Object> implements JSONObj
 {
     private static final long   serialVersionUID = -6811236788038367702L;
 
+    private static final String NULL_FOR_OUTPUT  = "null".intern();
+
     private static final char[] FLUSH_KEY_ARRAY  = { '"', ':' };
 
     public JSONObject()
@@ -59,42 +61,24 @@ public class JSONObject extends LinkedHashMap<String, Object> implements JSONObj
         put(Objects.requireNonNull(name), value);
     }
 
+    public final String dumpClassNamesToString()
+    {
+        return JSONUtils.dumpClassNamesToString(this);
+    }
+
+    public final void dumpClassNames()
+    {
+        dumpClassNames(System.out);
+    }
+
     public void dumpClassNames(final PrintWriter out)
     {
-        Objects.requireNonNull(out);
-
-        for (String key : keys())
-        {
-            final Object o = get(key);
-
-            if (null == o)
-            {
-                out.println("JSONObject[" + key + "]=null");
-            }
-            else
-            {
-                out.println("JSONObject[" + key + "]=" + o.getClass().getName());
-            }
-        }
+        JSONUtils.dumpClassNames(this, out);
     }
 
     public void dumpClassNames(final PrintStream out)
     {
-        Objects.requireNonNull(out);
-
-        for (String key : keys())
-        {
-            final Object o = get(key);
-
-            if (null == o)
-            {
-                out.println("JSONObject[" + key + "]=null");
-            }
-            else
-            {
-                out.println("JSONObject[" + key + "]=" + o.getClass().getName());
-            }
-        }
+        JSONUtils.dumpClassNames(this, out);
     }
 
     public JSONObject asClassNames()
@@ -121,33 +105,14 @@ public class JSONObject extends LinkedHashMap<String, Object> implements JSONObj
 
         out.write('{');
 
-        IJSONObjectReplacer replacer = null;
-
-        if (null != context)
-        {
-            replacer = context.getObjectReplacer();
-        }
         while (iter.hasNext())
         {
             final Entry<String, Object> entry = iter.next();
 
             final String name = entry.getKey();
 
-            if (null == name)
-            {
-                continue;
-            }
-            Object valu = entry.getValue();
+            final Object valu = entry.getValue();
 
-            if (null != replacer)
-            {
-                valu = replacer.replace(name, valu);
-
-                if (IJSONObjectReplacer.UNDEFINED == valu)
-                {
-                    continue;
-                }
-            }
             if (first)
             {
                 first = false;
@@ -162,6 +127,12 @@ public class JSONObject extends LinkedHashMap<String, Object> implements JSONObj
 
             out.write(FLUSH_KEY_ARRAY, 0, 2);
 
+            if (null == valu)
+            {
+                out.write(NULL_FOR_OUTPUT);
+
+                continue;
+            }
             JSONUtils.writeJSONString(valu, out, context, strict);
         }
         out.write('}');
@@ -380,11 +351,18 @@ public class JSONObject extends LinkedHashMap<String, Object> implements JSONObj
         {
             return (T) this;
         }
-        final T valu = new JSONBinder().bind(this, type);
-
-        if (null != valu)
+        try
         {
-            return valu;
+            T valu = new JSONBinder().bind(this, type);
+
+            if (null != valu)
+            {
+                return valu;
+            }
+        }
+        catch (ParserException e)
+        {
+            throw new ClassCastException(getClass().getName() + " cannot be parsed into " + type.getName());
         }
         throw new ClassCastException(getClass().getName() + " cannot be coerced into " + type.getName());
     }

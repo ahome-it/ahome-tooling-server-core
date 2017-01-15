@@ -27,35 +27,36 @@ import java.util.List;
 import org.springframework.core.io.Resource;
 
 import com.ait.tooling.server.core.json.JSONObject;
+import com.ait.tooling.server.core.json.ParserException;
 import com.fasterxml.jackson.databind.MapperFeature;
 
 public interface IBinder
 {
-    public <T> T bind(File file, Class<T> claz);
+    public <T> T bind(File file, Class<T> claz) throws ParserException;
 
-    public <T> T bind(InputStream stream, Class<T> claz);
+    public <T> T bind(InputStream stream, Class<T> claz) throws ParserException;
 
-    public <T> T bind(Reader reader, Class<T> claz);
+    public <T> T bind(Reader reader, Class<T> claz) throws ParserException;
 
-    public <T> T bind(Resource resource, Class<T> claz);
+    public <T> T bind(Resource resource, Class<T> claz) throws ParserException;
 
-    public <T> T bind(String text, Class<T> claz);
+    public <T> T bind(String text, Class<T> claz) throws ParserException;
 
-    public <T> T bind(URL url, Class<T> claz);
-    
-    public <T> T bind(JSONObject json, Class<T> claz);
+    public <T> T bind(URL url, Class<T> claz) throws ParserException;
 
-    public JSONObject bindJSON(File file);
+    public <T> T bind(JSONObject json, Class<T> claz) throws ParserException;
 
-    public JSONObject bindJSON(InputStream stream);
+    public JSONObject bindJSON(File file) throws ParserException;
 
-    public JSONObject bindJSON(Reader reader);
+    public JSONObject bindJSON(InputStream stream) throws ParserException;
 
-    public JSONObject bindJSON(Resource resource);
+    public JSONObject bindJSON(Reader reader) throws ParserException;
 
-    public JSONObject bindJSON(String text);
+    public JSONObject bindJSON(Resource resource) throws ParserException;
 
-    public JSONObject bindJSON(URL url);
+    public JSONObject bindJSON(String text) throws ParserException;
+
+    public JSONObject bindJSON(URL url) throws ParserException;
 
     public IBinder configure(MapperFeature feature, boolean state);
 
@@ -71,23 +72,23 @@ public interface IBinder
 
     public boolean isStrict();
 
-    public void send(File file, Object object);
+    public void send(File file, Object object) throws ParserException;
 
-    public void send(OutputStream stream, Object object);
+    public void send(OutputStream stream, Object object) throws ParserException;
 
-    public void send(Writer writer, Object object);
+    public void send(Writer writer, Object object) throws ParserException;
 
     public IBinder setStrict(boolean strict);
 
-    public String toString(Object object);
+    public String toString(Object object) throws ParserException;
 
     public BinderType getType();
-    
-    public JSONObject toJSONObject(Object object);
-    
-    public String toJSONString(Object object);
-    
+
+    public JSONObject toJSONObject(Object object) throws ParserException;
+
+    public String toJSONString(Object object) throws ParserException;
+
     public boolean canSerializeType(Class<?> type);
-    
+
     public boolean canSerializeObject(Object object);
 }

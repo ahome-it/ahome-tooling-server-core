@@ -16,8 +16,6 @@
 
 package com.ait.tooling.server.core.json.support
 
-import org.springframework.core.io.Resource
-
 import com.ait.tooling.server.core.json.JSONArray
 import com.ait.tooling.server.core.json.JSONObject
 import com.ait.tooling.server.core.json.binder.BinderType
@@ -25,8 +23,6 @@ import com.ait.tooling.server.core.json.binder.IBinder
 import com.ait.tooling.server.core.json.binder.JSONBinder
 import com.ait.tooling.server.core.json.binder.XMLBinder
 import com.ait.tooling.server.core.json.binder.YAMLBinder
-import com.ait.tooling.server.core.json.parser.JSONParser
-import com.ait.tooling.server.core.json.parser.JSONParserException
 import com.ait.tooling.server.core.json.schema.JSONSchema
 
 import groovy.transform.CompileStatic
@@ -82,26 +78,6 @@ public trait JSONTrait
     public JSONSchema jsonSchema(Map<String, ?> schema)
     {
         JSONSchema.cast(json(Objects.requireNonNull(schema)))
-    }
-
-    public JSONObject jsonParse(String string) throws JSONParserException
-    {
-        new JSONParser().parse(Objects.requireNonNull(string))
-    }
-
-    public JSONObject jsonParse(Reader reader) throws JSONParserException
-    {
-        new JSONParser().parse(Objects.requireNonNull(reader))
-    }
-
-    public JSONObject jsonParse(InputStream stream) throws JSONParserException
-    {
-        new JSONParser().parse(Objects.requireNonNull(stream))
-    }
-    
-    public JSONObject jsonParse(Resource resource) throws JSONParserException
-    {
-        getJSONUtilities().jsonParse(Objects.requireNonNull(resource))
     }
 
     public JSONArray jarr()

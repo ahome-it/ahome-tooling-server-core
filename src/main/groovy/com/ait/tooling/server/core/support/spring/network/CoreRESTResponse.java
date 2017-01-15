@@ -22,8 +22,8 @@ import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 
 import com.ait.tooling.server.core.json.JSONObject;
+import com.ait.tooling.server.core.json.ParserException;
 import com.ait.tooling.server.core.json.parser.JSONParser;
-import com.ait.tooling.server.core.json.parser.JSONParserException;
 
 public class CoreRESTResponse implements IRESTResponse
 {
@@ -84,7 +84,7 @@ public class CoreRESTResponse implements IRESTResponse
             }
             return (m_json = (new JSONParser().parse(body)));
         }
-        catch (JSONParserException e)
+        catch (ParserException e)
         {
             logger.error("Error parsing JSON", e);
         }

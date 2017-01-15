@@ -16,15 +16,11 @@
 
 package com.ait.tooling.server.core.json.support;
 
-import java.io.InputStream;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import org.springframework.core.io.Resource;
 
 import com.ait.tooling.server.core.json.JSONArray;
 import com.ait.tooling.server.core.json.JSONObject;
@@ -33,8 +29,6 @@ import com.ait.tooling.server.core.json.binder.IBinder;
 import com.ait.tooling.server.core.json.binder.JSONBinder;
 import com.ait.tooling.server.core.json.binder.XMLBinder;
 import com.ait.tooling.server.core.json.binder.YAMLBinder;
-import com.ait.tooling.server.core.json.parser.JSONParser;
-import com.ait.tooling.server.core.json.parser.JSONParserException;
 import com.ait.tooling.server.core.json.schema.JSONSchema;
 
 public class JSONUtilitiesInstance implements IJSONUtilities
@@ -98,37 +92,6 @@ public class JSONUtilitiesInstance implements IJSONUtilities
     public final JSONSchema jsonSchema(final Map<String, ?> schema)
     {
         return JSONSchema.cast(json(Objects.requireNonNull(schema)));
-    }
-
-    @Override
-    public final JSONObject jsonParse(final String string) throws JSONParserException
-    {
-        return new JSONParser().parse(Objects.requireNonNull(string));
-    }
-
-    @Override
-    public final JSONObject jsonParse(final Reader reader) throws JSONParserException
-    {
-        return new JSONParser().parse(Objects.requireNonNull(reader));
-    }
-
-    @Override
-    public final JSONObject jsonParse(final InputStream stream) throws JSONParserException
-    {
-        return new JSONParser().parse(Objects.requireNonNull(stream));
-    }
-
-    @Override
-    public JSONObject jsonParse(final Resource resource) throws JSONParserException
-    {
-        try
-        {
-            return jsonParse(resource.getInputStream());
-        }
-        catch (Exception e)
-        {
-            throw new JSONParserException(e);
-        }
     }
 
     @Override

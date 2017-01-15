@@ -22,23 +22,21 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
-public final class YAMLBinder extends AbstractDataBinder
+public class YAMLBinder extends AbstractDataBinder
 {
-    private static final ObjectMapper INSTANCE = new ObjectMapper(new YAMLFactory());
-
     public YAMLBinder()
     {
-        super(INSTANCE);
+        super(new ObjectMapper(new YAMLFactory()));
     }
 
     public YAMLBinder(final MapperFeature... features)
     {
-        super(INSTANCE, features);
+        super(new ObjectMapper(new YAMLFactory()), features);
     }
 
     public YAMLBinder(final List<MapperFeature> features)
     {
-        super(INSTANCE, features);
+        super(new ObjectMapper(new YAMLFactory()), features);
     }
 
     @Override

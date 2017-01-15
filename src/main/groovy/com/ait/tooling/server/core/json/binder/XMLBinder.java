@@ -21,23 +21,21 @@ import java.util.List;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-public final class XMLBinder extends AbstractDataBinder
+public class XMLBinder extends AbstractDataBinder
 {
-    private static XmlMapper INSTANCE = new XmlMapper();
-
     public XMLBinder()
     {
-        super(INSTANCE);
+        super(new XmlMapper());
     }
 
     public XMLBinder(final MapperFeature... features)
     {
-        super(INSTANCE, features);
+        super(new XmlMapper(), features);
     }
 
     public XMLBinder(final List<MapperFeature> features)
     {
-        super(INSTANCE, features);
+        super(new XmlMapper(), features);
     }
 
     @Override

@@ -26,8 +26,8 @@ import org.springframework.jms.support.converter.SimpleMessageConverter;
 import org.springframework.util.ObjectUtils;
 
 import com.ait.tooling.server.core.json.JSONObject;
+import com.ait.tooling.server.core.json.ParserException;
 import com.ait.tooling.server.core.json.parser.JSONParser;
-import com.ait.tooling.server.core.json.parser.JSONParserException;
 
 public class SimpleJMSMessageConverter extends SimpleMessageConverter
 {
@@ -69,7 +69,7 @@ public class SimpleJMSMessageConverter extends SimpleMessageConverter
                     return result;
                 }
             }
-            catch (JSONParserException e)
+            catch (ParserException e)
             {
                 throw new MessageConversionException("Error parsing JSON", e);
             }

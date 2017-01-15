@@ -58,53 +58,31 @@ public class JSONArray extends ArrayList<Object> implements JSONArrayDefinition<
         return this;
     }
 
-    public final JSONArray push(Object value)
+    public final JSONArray push(final Object value)
     {
-        add(Objects.requireNonNull(value));
+        add(value);
 
         return this;
     }
 
+    public final String dumpClassNamesToString()
+    {
+        return JSONUtils.dumpClassNamesToString(this);
+    }
+
+    public final void dumpClassNames()
+    {
+        dumpClassNames(System.out);
+    }
+
     public final void dumpClassNames(final PrintWriter out)
     {
-        Objects.requireNonNull(out);
-
-        final int size = size();
-
-        for (int i = 0; i < size; i++)
-        {
-            final Object o = get(i);
-
-            if (null == o)
-            {
-                out.println("JSONArray[" + i + "]=null");
-            }
-            else
-            {
-                out.println("JSONArray[" + i + "]=" + o.getClass().getName());
-            }
-        }
+        JSONUtils.dumpClassNames(this, out);
     }
 
     public final void dumpClassNames(final PrintStream out)
     {
-        Objects.requireNonNull(out);
-
-        final int size = size();
-
-        for (int i = 0; i < size; i++)
-        {
-            final Object o = get(i);
-
-            if (null == o)
-            {
-                out.println("JSONArray[" + i + "]=null");
-            }
-            else
-            {
-                out.println("JSONArray[" + i + "]=" + o.getClass().getName());
-            }
-        }
+        JSONUtils.dumpClassNames(this, out);
     }
 
     public JSONArray asClassNames()
@@ -130,25 +108,10 @@ public class JSONArray extends ArrayList<Object> implements JSONArrayDefinition<
 
         out.write('[');
 
-        IJSONArrayReplacer replacer = null;
-
-        if (null != context)
-        {
-            replacer = context.getArrayReplacer();
-        }
         for (int i = 0; i < size; i++)
         {
             Object valu = list.get(i);
 
-            if (null != replacer)
-            {
-                valu = replacer.replace(i, valu);
-
-                if (IJSONArrayReplacer.UNDEFINED == valu)
-                {
-                    continue;
-                }
-            }
             if (first)
             {
                 first = false;
@@ -182,29 +145,10 @@ public class JSONArray extends ArrayList<Object> implements JSONArrayDefinition<
 
         out.write('[');
 
-        int i = 0 - 1;
-
-        IJSONArrayReplacer replacer = null;
-
-        if (null != context)
-        {
-            replacer = context.getArrayReplacer();
-        }
         while (iter.hasNext())
         {
-            i++;
+            final Object valu = iter.next();
 
-            Object valu = iter.next();
-
-            if (null != replacer)
-            {
-                valu = replacer.replace(i, valu);
-
-                if (IJSONArrayReplacer.UNDEFINED == valu)
-                {
-                    continue;
-                }
-            }
             if (first)
             {
                 first = false;
