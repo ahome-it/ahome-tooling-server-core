@@ -31,7 +31,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.ait.tooling.common.server.io.NoSyncStringBuilderWriter;
+import com.ait.tooling.server.core.io.NoSyncStringBuilderWriter;
 import com.ait.tooling.server.core.json.binder.JSONBinder;
 
 public final class JSONUtils

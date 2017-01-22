@@ -29,9 +29,11 @@ import java.util.Objects;
 
 import org.springframework.core.io.Resource;
 
-import com.ait.tooling.common.server.io.NoCloseBufferedReader;
-import com.ait.tooling.common.server.io.NoSyncOrCloseBufferedWriter;
-import com.ait.tooling.common.server.io.NoSyncStringBuilderWriter;
+import com.ait.tooling.server.core.io.NoCloseProxyInputStream;
+import com.ait.tooling.server.core.io.NoCloseProxyOutputStream;
+import com.ait.tooling.server.core.io.NoCloseProxyReader;
+import com.ait.tooling.server.core.io.NoCloseProxyWriter;
+import com.ait.tooling.server.core.io.NoSyncStringBuilderWriter;
 import com.ait.tooling.server.core.json.JSONObject;
 import com.ait.tooling.server.core.json.ParserException;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -44,7 +46,7 @@ public abstract class AbstractDataBinder implements IBinder
     private boolean      m_strict = false;
 
     @SuppressWarnings("unchecked")
-    protected final static JSONObject MAKE(Map<?, ?> make)
+    protected final static JSONObject MAKE(final Object make)
     {
         return new JSONObject((Map<String, Object>) make);
     }
@@ -150,7 +152,7 @@ public abstract class AbstractDataBinder implements IBinder
     {
         try
         {
-            return m_mapper.readValue(new NoCloseBufferedReader(stream), claz);
+            return m_mapper.readValue(new NoCloseProxyInputStream(stream), claz);
         }
         catch (Exception e)
         {
@@ -163,7 +165,7 @@ public abstract class AbstractDataBinder implements IBinder
     {
         try
         {
-            return m_mapper.readValue(new NoCloseBufferedReader(reader), claz);
+            return m_mapper.readValue(new NoCloseProxyReader(reader), claz);
         }
         catch (Exception e)
         {
@@ -274,7 +276,7 @@ public abstract class AbstractDataBinder implements IBinder
 
         try
         {
-            m_mapper.writeValue(new NoSyncOrCloseBufferedWriter(stream), object);
+            m_mapper.writeValue(new NoCloseProxyOutputStream(stream), object);
         }
         catch (Exception e)
         {
@@ -289,7 +291,7 @@ public abstract class AbstractDataBinder implements IBinder
 
         try
         {
-            m_mapper.writeValue(new NoSyncOrCloseBufferedWriter(writer), object);
+            m_mapper.writeValue(new NoCloseProxyWriter(writer), object);
         }
         catch (Exception e)
         {
@@ -312,7 +314,6 @@ public abstract class AbstractDataBinder implements IBinder
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public JSONObject toJSONObject(final Object object) throws ParserException
     {
@@ -326,7 +327,7 @@ public abstract class AbstractDataBinder implements IBinder
             }
             else if (object instanceof Map)
             {
-                return new JSONObject(((Map<String, ?>) object));
+                return MAKE(object);
             }
             else if (object instanceof String)
             {
