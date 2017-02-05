@@ -40,6 +40,7 @@ import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProv
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IPropertiesResolver
 import com.ait.tooling.server.core.support.spring.IServerContext
+import com.ait.tooling.server.core.support.spring.IServletContextCustomizerProvider
 import com.ait.tooling.server.core.support.spring.network.ICoreNetworkProvider
 import com.ait.tooling.server.core.support.spring.network.websocket.IWebSocketService
 import com.ait.tooling.server.core.support.spring.network.websocket.IWebSocketServiceProvider
@@ -90,6 +91,12 @@ public trait CoreGroovyTrait implements JSONTrait
     public IBuildDescriptorProvider getBuildDescriptorProvider()
     {
         getServerContext().getBuildDescriptorProvider()
+    }
+    
+    @Memoized
+    public IServletContextCustomizerProvider getServletContextCustomizerProvider()
+    {
+        getServerContext().getServletContextCustomizerProvider()
     }
 
     @Memoized

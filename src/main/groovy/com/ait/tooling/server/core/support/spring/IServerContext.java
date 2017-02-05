@@ -70,6 +70,8 @@ public interface IServerContext extends IJSONUtilities, IAuthorizer, IProperties
     public ICoreServerManager getCoreServerManager();
 
     public IBuildDescriptorProvider getBuildDescriptorProvider();
+    
+    public IServletContextCustomizerProvider getServletContextCustomizerProvider();
 
     public IPropertiesResolver getPropertiesResolver();
 
