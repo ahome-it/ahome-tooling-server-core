@@ -16,8 +16,6 @@
 
 package com.ait.tooling.server.core.support
 
-import java.util.Objects
-
 import org.apache.log4j.Logger
 import org.springframework.context.ApplicationContext
 import org.springframework.core.env.Environment
@@ -46,7 +44,6 @@ import com.ait.tooling.server.core.security.session.IServerSessionRepositoryProv
 import com.ait.tooling.server.core.support.spring.IBuildDescriptorProvider
 import com.ait.tooling.server.core.support.spring.IPropertiesResolver
 import com.ait.tooling.server.core.support.spring.IServerContext
-import com.ait.tooling.server.core.support.spring.IServletContextCustomizerProvider
 import com.ait.tooling.server.core.support.spring.ServerContextInstance
 import com.ait.tooling.server.core.support.spring.network.ICoreNetworkProvider
 import com.ait.tooling.server.core.support.spring.network.websocket.IWebSocketService
@@ -144,12 +141,6 @@ public class CoreGroovySupport implements IServerContext, Closeable
         getServerContext().getAuthorizationProvider()
     }
     
-    @Memoized
-    public IServletContextCustomizerProvider getServletContextCustomizerProvider()
-    {
-        getServerContext().getServletContextCustomizerProvider()
-    }
-
     @Memoized
     public IServerSessionRepositoryProvider getServerSessionRepositoryProvider()
     {

@@ -56,10 +56,6 @@ public class CoreWebContextLoaderListener extends ContextLoaderListener
 
         ServerContextInstance.setApplicationContext(context);
         
-        for (IServletContextCustomizer customizer : ServerContextInstance.getServerContextInstance().getServletContextCustomizerProvider().getServletContextCustomizerList())
-        {
-            customizer.customize(sc, context);
-        }
         logger.info("CoreWebContextLoaderListener.customizeContext() COMPLETE");
     }
 }

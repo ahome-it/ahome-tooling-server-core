@@ -258,12 +258,6 @@ public class ServerContextInstance extends JSONUtilitiesInstance implements ISer
         return Objects.requireNonNull(getBeanSafely("NetworkProvider", ICoreNetworkProvider.class), "NetworkProvider is null, initialization error.");
     }
 
-    @Override
-    public final IServletContextCustomizerProvider getServletContextCustomizerProvider()
-    {
-        return Objects.requireNonNull(getBeanSafely("ServletContextCustomizerProvider", IServletContextCustomizerProvider.class), "ServletContextCustomizerProvider is null, initialization error.");
-    }
-
     private final CorePropertiesResolver getCorePropertiesResolver()
     {
         return Objects.requireNonNull(getBeanSafely("CorePropertiesResolver", CorePropertiesResolver.class), "CorePropertiesResolver is null, initialization error.");

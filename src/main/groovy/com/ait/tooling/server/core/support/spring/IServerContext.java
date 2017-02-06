@@ -71,8 +71,6 @@ public interface IServerContext extends IJSONUtilities, IAuthorizer, IProperties
 
     public IBuildDescriptorProvider getBuildDescriptorProvider();
     
-    public IServletContextCustomizerProvider getServletContextCustomizerProvider();
-
     public IPropertiesResolver getPropertiesResolver();
 
     public ICryptoProvider getCryptoProvider();
