@@ -22,6 +22,7 @@ import javax.servlet.ServletContextEvent;
 import org.apache.log4j.Logger;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.WebApplicationContext;
 
 public class CoreWebContextLoaderListener extends ContextLoaderListener
 {
@@ -33,7 +34,18 @@ public class CoreWebContextLoaderListener extends ContextLoaderListener
         logger.info("CoreWebContextLoaderListener.contextInitialized() STARTING");
 
         super.contextInitialized(event);
+        
+        final ServerContextInstance instance = ServerContextInstance.getServerContextInstance();
 
+        final IServletContextCustomizerProvider provider = instance.getBeanSafely("ServletContextCustomizerProvider", IServletContextCustomizerProvider.class);
+
+        if (null != provider)
+        {
+            for (IServletContextCustomizer customizer : provider.getServletContextCustomizers())
+            {
+                customizer.customize(event.getServletContext(), (WebApplicationContext) instance.getApplicationContext());
+            }
+        }
         logger.info("CoreWebContextLoaderListener.contextInitialized() COMPLETE");
     }
 

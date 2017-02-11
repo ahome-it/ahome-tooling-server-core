@@ -67,6 +67,8 @@
 	<bean id="SignatoryProvider" class="com.ait.tooling.server.core.security.SignatoryProvider" destroy-method="close"/>
 
 	<bean id="ServerSessionRepositoryProvider" class="com.ait.tooling.server.core.security.session.ServerSessionRepositoryProvider" destroy-method="close"/>
+	
+	<bean id="ServletContextCustomizerProvider" class="com.ait.tooling.server.core.support.spring.ServletContextCustomizerProvider" destroy-method="close"/>
 		
 	<context:component-scan base-package="com.ait.tooling.server.core.jmx"/>
 
